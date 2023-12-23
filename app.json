@@ -1,0 +1,43 @@
+{
+  "expo": {
+    "name": "notify",
+    "slug": "notify",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/notify-icon.png",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/notify-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#000",
+      "dark": {
+        "image": "./assets/notify-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#000"
+   }
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.anonymous.SpeectToTextApp",
+ "infoPlist": {
+        "NSSpeechRecognitionUsageDescription": "This app uses speech recognition to convert your speech to text.",
+        "NSCameraUsageDescription": "This app uses the camera to let user put a photo in his profile page."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/notify-icon.png",
+        "backgroundColor": "#000"
+      },
+      "permissions": ["android.permission.RECORD_AUDIO"],
+      "package": "com.anonymous.SpeectToTextApp"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": ["@react-native-voice/voice"]
+  }
+}
