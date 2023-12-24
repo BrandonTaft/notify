@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useReducer } from 'react';
 import { StyleSheet, Text, View, Pressable, ScrollView } from 'react-native';
 import Create from './Create';
 import { CheckBox, Button } from '@rneui/themed';
@@ -10,12 +10,51 @@ import * as SplashScreen from 'expo-splash-screen';
 export default function List({ reminders, onSucess }) {
     const [editable, setEditable] = useState({});
     const [modalVisible, setModalVisible] = useState(false);
-    const [items, setItems] = useState(reminders);
-    const [scheduled, setScheduled] = useState(reminders.scheduled)
+    //const [items, setItems] = useState(reminders);
+    //const [selected, setSelected] = useState([]);
+    // const [scheduled, setScheduled] = useState(reminders.scheduled);
+    //const [unScheduled, setUnScheduled] = useState(reminders.unScheduled)
     const [fontsLoaded] = useFonts({
         'Rubik-Medium': require('../../assets/fonts/Rubik-Medium.ttf'),
         'Rubik-Regular': require('../../assets/fonts/Rubik-Regular.ttf'),
     });
+
+    const initialState = {
+        scheduled: [...reminders.scheduled],
+        unScheduled: [...reminders.unScheduled],
+        selected: []
+    }
+    const [state, dispatch] = useReducer(reducer, initialState);
+    const { scheduled, unScheduled, selected } = state;
+
+    function reducer(state, action) {
+        console.log(state)
+        switch (action.type) {
+            case "UPDATESCHEDULED": {
+                return ({
+                    ...state,
+                    scheduled: action.payload,
+                })
+            }
+            case "UPDATEUNSCHEDULED": {
+                return ({
+                    ...state,
+                    unScheduled: action.payload,
+                })
+            }
+            case "UPDATESELECTED": {
+                return ({
+                    ...state,
+                    selected: action.payload,
+                })
+            }
+            default:
+                return state;
+        }
+    };
+
+
+
 
     const onLayoutRootView = useCallback(async () => {
         if (fontsLoaded) {
@@ -29,47 +68,45 @@ export default function List({ reminders, onSucess }) {
 
 
     //Marks all checked reminders as priority: true
-    const handleCheck = (reminder) => {
-        console.log(reminder._id)
-        console.log(items.scheduled)
-        let temp = scheduled.map((item) => {
-            console.log("ITEM",item._id)
+    const handleCheck = (reminder, list, type) => {
+        let temp = list.map((item) => {
             if (reminder._id === item._id) {
-                console.log("RETURN", { ...item, priority: !item.priority })
+                if (item.priority === false) {
+                    // setSelected([...selected, item._id])
+                    dispatch({ type: "UPDATESELECTED", payload: [...selected, item._id] });
+                } else if (item.priority === true) {
+                    // setSelected(selected.filter(existing => existing !== item._id))
+                    dispatch({ type: "UPDATESELECTED", payload: selected.filter(existing => existing !== item._id) });
+                }
                 return { ...item, priority: !item.priority };
             }
-            console.log("ITEMMM", item)
             return item;
         });
-       console.log("TEMPPPPP", temp)
-        setScheduled(temp);
-        //updateReminder(reminder)
+        dispatch({ type: type, payload: temp });
+        //setScheduled(temp);
     };
+    console.log("SELECTED", selected)
 
-    //Filters all checked reminders into  an array
-    //const selected = items.filter((item) => item.priority).map((item) => item["_id"])
-    // const scheduled = items.filter((item) => item.notification && !item.done && !item.isDeleted)
-    // const unScheduled = items.filter((item) => !item.notification && !item.done && !item.isDeleted)
     // const completed = items.filter((item) => item.done && !item.isDeleted)
 
     //Sends all selected reminders to server to be marked as done
-    // const handleCompleted = () => {
-    //     fetch(config.BASE_URL + '/complete', {
-    //         method: 'POST',
-    //         headers: {
-    //             Accept: 'application/json',
-    //             'Content-Type': 'application/json',
-    //         },
-    //         body: JSON.stringify({
-    //             selected: selected
-    //         })
-    //     }).then(response => response.json())
-    //         .then(result => {
-    //             if (result.success) {
-    //                 onSucess()
-    //             }
-    //         })
-    // }
+    const handleCompleted = () => {
+        fetch(config.BASE_URL + '/complete', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                selected: selected
+            })
+        }).then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    onSucess()
+                }
+            })
+    }
 
     //Sends all selected reminders to server to be marked as done as soon as checked
     // const updateReminder = (reminder) => {
@@ -96,23 +133,23 @@ export default function List({ reminders, onSucess }) {
     // }
 
     //Sends all selected reminders to server to be deleted
-    // const deleteChecked = () => {
-    //     fetch(config.BASE_URL + "/delete", {
-    //         method: 'POST',
-    //         headers: {
-    //             Accept: 'application/json',
-    //             'Content-Type': 'application/json',
-    //         },
-    //         body: JSON.stringify({
-    //             selected: selected
-    //         })
-    //     }).then(response => response.json())
-    //         .then(result => {
-    //             if (result.success) {
-    //                 onSucess()
-    //             }
-    //         })
-    // }
+    const deleteChecked = () => {
+        fetch(config.BASE_URL + "/delete", {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                selected: selected
+            })
+        }).then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    onSucess()
+                }
+            })
+    }
 
     return (
         <View style={styles.container}>
@@ -144,7 +181,7 @@ export default function List({ reminders, onSucess }) {
                                         >
                                             <CheckBox
                                                 checked={reminder.priority}
-                                                onPress={() => { handleCheck(reminder) }}
+                                                onPress={() => { handleCheck(reminder, scheduled, "UPDATESCHEDULED") }}
                                                 size={25}
                                                 containerStyle={styles.checkBox}
                                                 right={false}
@@ -174,9 +211,9 @@ export default function List({ reminders, onSucess }) {
                             <Text style={styles.emptyText} >YOU ARE ALL CAUGHT UP</Text>
                         </View>}
                     <Text style={styles.title} >UNSCHEDULED</Text>
-                    {reminders.unScheduled.length > 0 ?
+                    {unScheduled.length > 0 ?
                         <>
-                            {reminders.unScheduled.map((reminder) => {
+                            {unScheduled.map((reminder) => {
                                 return (
                                     <View key={reminder._id}>
                                         <Pressable
@@ -194,7 +231,7 @@ export default function List({ reminders, onSucess }) {
                                         >
                                             <CheckBox
                                                 checked={reminder.priority}
-                                                onPress={() => { handleCheck(reminder) }}
+                                                onPress={() => { handleCheck(reminder, unScheduled, "UPDATEUNSCHEDULED") }}
                                                 size={25}
                                                 containerStyle={styles.checkBox}
                                                 right={true}
@@ -290,7 +327,7 @@ export default function List({ reminders, onSucess }) {
                             foreground: false
                         }
                     }
-                    // disabled={selected.length ? false : true}
+                // disabled={selected.length ? false : true}
                 >
                     <Icon name="check" color="#b804d1de" size={34} />
                     <Text style={styles.btn}>Done</Text>
@@ -319,7 +356,7 @@ export default function List({ reminders, onSucess }) {
                             foreground: false
                         }
                     }
-                    // disabled={selected.length ? false : true}
+                // disabled={selected.length ? false : true}
                 >
                     <Icon name="delete" color="#b804d1de" size={34} />
                     <Text style={styles.btn}>Delete</Text>
