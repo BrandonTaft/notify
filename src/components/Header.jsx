@@ -1,10 +1,10 @@
 import { useRef, useState, useCallback } from "react";
-import { Pressable, Button, View, Text, StyleSheet, DrawerLayoutAndroid, ScrollView } from "react-native";
+import { Pressable, View, Text, StyleSheet, DrawerLayoutAndroid, ScrollView } from "react-native";
 import { Icon } from "@rneui/base";
+import { FontAwesome5 } from '@expo/vector-icons';
 import { CheckBox } from '@rneui/themed';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-
 
 export default function Header({ reminders, children }) {
 
@@ -14,6 +14,7 @@ export default function Header({ reminders, children }) {
     const drawer = useRef(null);
     const [fontsLoaded] = useFonts({
         'Rubik-Black': require('../../assets/fonts/Rubik-Black.ttf'),
+        'Rubik-Medium': require('../../assets/fonts/Rubik-Medium.ttf'),
     });
 
     const onLayoutRootView = useCallback(async () => {
@@ -40,25 +41,24 @@ export default function Header({ reminders, children }) {
     //const selected = items.filter((item) => item.priority).map((item) => item["_id"])
 
     const navigationView = () => (
-        <View style={[styles.container, styles.navigationContainer]}>
-            
-                <View style={styles.menuTitleContainer}>
-                    <Pressable
-                        android_ripple={
-                            RippleConfig = {
-                                color: '#121212',
-                                foreground: true,
-                                borderLess: true
-                            }
-                        }
-                        style={styles.menuIcon}
-                        onPress={() => drawer.current.closeDrawer()}
-                    >
-                        <Icon name="close" color="#b804d1de" size={40} />
-                    </Pressable >
-                    <Text style={styles.menuTitle}>NOTIFY</Text>
-                </View>
+        <View style={styles.drawer}>
+            <View style={styles.drawerHeader}>
                 <Pressable
+                    android_ripple={
+                        RippleConfig = {
+                            color: '#121212',
+                            foreground: true,
+                            borderLess: true
+                        }
+                    }
+                    style={styles.drawerHeaderIcon}
+                    onPress={() => drawer.current.closeDrawer()}
+                >
+                    <Icon name="close" color="#b804d1de" size={40} />
+                </Pressable >
+                <Text style={styles.drawerHeaderText}>NOTIFY</Text>
+            </View>
+            {/* <Pressable
                     android_ripple={
                         RippleConfig = {
                             color: '#121212',
@@ -68,10 +68,10 @@ export default function Header({ reminders, children }) {
                     }
                     onPress={() => setShowCompleted(!showCompleted)}
                 >
-                    <Text style={styles.menuButtonText}>Messages</Text>
-                </Pressable>
+                    <Text style={styles.menuBtnText}>Messages</Text>
+                </Pressable> */}
 
-                <Pressable
+            {/* <Pressable
                     android_ripple={
                         RippleConfig = {
                             color: '#121212',
@@ -82,11 +82,11 @@ export default function Header({ reminders, children }) {
                     style={{flexDirection:'row'}}
                     onPress={() => setShowCompleted(!showCompleted)}
                 >
-                    <Text style={styles.menuButtonText}>Completed</Text>
+                    <Text style={styles.menuBtnText}>Completed</Text>
                     <Icon name="close" color="#b804d1de" size={40} />
-                </Pressable>
+                </Pressable> */}
 
-                {items.length ?
+            {/* {items.length ?
                     <View style={styles.deleteBtn}>
                         <Button
                             title="Left button"
@@ -95,9 +95,9 @@ export default function Header({ reminders, children }) {
                     </View>
                     :
                     null
-                }
+                } */}
 
-                {showCompleted &&
+            {/* {showCompleted &&
                     <ScrollView>
                         {items.map((reminder) => {
 
@@ -139,64 +139,53 @@ export default function Header({ reminders, children }) {
                             );
                         })}
                     </ScrollView>
+                } */}
+            <Pressable
+                onPress={() => setShowDeleted(!showDeleted)}
+                style={styles.menuBtn}
+            >
+                <FontAwesome5 name="trash" size={28} color="#b804d1de" />
+                <Text style={styles.menuBtnText}>Deleted</Text>
+                {showDeleted ?
+                    <FontAwesome5 name="chevron-circle-down" size={30} color="#fff" style={{marginLeft:'auto', marginTop:5}} />
+                    :
+                    <FontAwesome5 name="chevron-circle-right" size={30} color="#fff" style={{marginLeft:'auto', marginTop:5}} />
                 }
-                <Pressable
-                    android_ripple={
-                        RippleConfig = {
-                            color: '#121212',
-                            foreground: true,
-                            borderLess: true
-                        }
-                    }
-                    onPress={() => setShowDeleted(!showDeleted)}
-                >
-                    <Icon name="delete" color="#b804d1de" size={34} />
-                    <Text style={styles.menuButtonText}>Deleted</Text>
-                </Pressable>
-                {showDeleted &&
-                    <ScrollView>
-                        {reminders.map((reminder) => {
+            </Pressable>
+            {showDeleted &&
+                <ScrollView>
+                    {reminders.deleted.map((reminder) => {
+                        return (
+                            <View key={reminder._id} style={styles.item}>
+                                    <CheckBox
+                                        checked={reminder.priority}
+                                        onPress={() => { handleCheck(reminder) }}
+                                        size={25}
+                                        containerStyle={styles.checkBox}
+                                        right={true}
+                                        checkedIcon='check'
+                                        checkedColor='#b804d1de'
+                                        uncheckedIcon='circle-o'
+                                        uncheckedColor='#b804d1de'
+                                    />
+                                    <View style={styles.horizontal}>
+                                        <Text style={styles.itemText}>{reminder.name}</Text>
 
-                            return (
-                                <View key={reminder._id}>
-                                    {reminder.isDeleted &&
-                                         <View
-                                         style={styles.item}
-                                     >
+                                        {reminder.notification &&
 
-                                         <CheckBox
-                                             checked={reminder.priority}
-                                             onPress={() => { handleCheck(reminder) }}
-                                             size={25}
-                                             containerStyle={styles.checkBox}
-                                             right={true}
-                                             checkedIcon='check'
-                                             checkedColor='#b804d1de'
-                                             uncheckedIcon='circle-o'
-                                             uncheckedColor='#b804d1de'
-                                         />
-                                         <View style={styles.horizontal}>
-                                             <Text style={styles.itemText}>{reminder.name}</Text>
-                                        
-                                         {reminder.notification &&
-                                            
-                                                 <Text style={styles.time}>
-                                                     {new Date(reminder.notification).toLocaleDateString([], {
-                                                         weekday: 'short', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit'
-                                                     })}
-                                                 </Text>
-                                            
-                                         }
-                                          </View>
+                                            <Text style={styles.time}>
+                                                {new Date(reminder.notification).toLocaleDateString([], {
+                                                    weekday: 'short', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit'
+                                                })}
+                                            </Text>
+                                        }
+                                    </View>
+                            </View>
+                        );
+                    })}
+                </ScrollView>
+            }
 
-                                     </View>
-                                    }
-                                </View>
-                            );
-                        })}
-                    </ScrollView>
-                }
-           
         </View>
     );
 
@@ -205,9 +194,9 @@ export default function Header({ reminders, children }) {
             ref={drawer}
             drawerWidth={300}
             drawerPosition={'left'}
-            renderNavigationView={navigationView}>
-
-
+            renderNavigationView={navigationView}
+            drawerBackgroundColor="rgba(0,0,0,0.75)" 
+            >
             <View style={styles.container}>
                 <View style={styles.header}>
                     <Pressable
@@ -243,13 +232,38 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
     },
+   
+    drawerHeader: {
+        flexDirection: 'row',
+        alignItems: "center",
+        backgroundColor:"#000"
+    },
+    drawerHeaderText: {
+        fontFamily: "Rubik-Black",
+        color: '#b804d1de',
+        fontSize: 28,
+        marginLeft: 'auto',
+        marginRight: 'auto',
+    },
+    menuBtn: {  
+        backgroundColor:'#121212',
+        borderRadius:0,
+        borderBottomLeftRadius:0,
+        borderBottomRightRadius:0,
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingLeft: 20,
+        paddingRight:20
+    },
+    menuBtnText: {
+        fontFamily: 'Rubik-Medium',
+        color: '#b804d1de',
+        fontSize: 24,
+        margin: 16,
+        marginBottom: 8
+    },
     listContainer: {
         flex: 10,
-        backgroundColor: '#000',
-    },
-    navigationContainer: {
-        backgroundColor: '#121212',
-        opacity: 1
     },
     headerTitle: {
         fontFamily: "Rubik-Black",
@@ -257,30 +271,14 @@ const styles = StyleSheet.create({
         fontSize: 28,
         marginRight: 'auto',
     },
-    menuTitleContainer: {
-        flexDirection: 'row',
-        alignItems: "center",
-    },
-    menuIcon: {
-        backgroundColor: '121212',
+    drawerHeaderIcon: {
         position: 'absolute'
     },
-    menuTitle: {
-        fontFamily: "Rubik-Black",
-        color: '#b804d1de',
-        fontSize: 28,
-        marginLeft: 'auto',
-        marginRight: 'auto',
-    },
-    menuButtonText: {
-        color: '#b804d1de',
-        fontSize: 22,
-        margin: 16
-    },
+
+   
     item: {
         backgroundColor: '#121212',
         flexDirection: 'row',
-        borderRadius: 20,
         margin: 4,
         marginLeft: 0,
         marginRight: 0,
@@ -306,7 +304,7 @@ const styles = StyleSheet.create({
         fontSize: 17
     },
     deleteBtn: {
-        position:"fixed",
-        top:99
+        position: "fixed",
+        top: 99
     }
 });

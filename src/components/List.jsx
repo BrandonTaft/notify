@@ -1,7 +1,7 @@
 import { useState, useCallback, useReducer } from 'react';
 import { StyleSheet, Text, View, Pressable, ScrollView } from 'react-native';
 import Create from './Create';
-import { CheckBox, Button } from '@rneui/themed';
+import Item from './Item';
 import { Icon } from "@rneui/base";
 import config from '../../config';
 import { useFonts } from 'expo-font';
@@ -10,10 +10,6 @@ import * as SplashScreen from 'expo-splash-screen';
 export default function List({ reminders, onSucess }) {
     const [editable, setEditable] = useState({});
     const [modalVisible, setModalVisible] = useState(false);
-    //const [items, setItems] = useState(reminders);
-    //const [selected, setSelected] = useState([]);
-    // const [scheduled, setScheduled] = useState(reminders.scheduled);
-    //const [unScheduled, setUnScheduled] = useState(reminders.unScheduled)
     const [fontsLoaded] = useFonts({
         'Rubik-Medium': require('../../assets/fonts/Rubik-Medium.ttf'),
         'Rubik-Regular': require('../../assets/fonts/Rubik-Regular.ttf'),
@@ -22,13 +18,13 @@ export default function List({ reminders, onSucess }) {
     const initialState = {
         scheduled: [...reminders.scheduled],
         unScheduled: [...reminders.unScheduled],
+        completed: [...reminders.completed],
         selected: []
     }
     const [state, dispatch] = useReducer(reducer, initialState);
-    const { scheduled, unScheduled, selected } = state;
+    const { scheduled, unScheduled, selected, completed } = state;
 
     function reducer(state, action) {
-        console.log(state)
         switch (action.type) {
             case "UPDATESCHEDULED": {
                 return ({
@@ -48,13 +44,16 @@ export default function List({ reminders, onSucess }) {
                     selected: action.payload,
                 })
             }
+            case "COMPLETED": {
+                return ({
+                    ...state,
+                    completed: action.payload,
+                })
+            }
             default:
                 return state;
         }
     };
-
-
-
 
     const onLayoutRootView = useCallback(async () => {
         if (fontsLoaded) {
@@ -66,16 +65,13 @@ export default function List({ reminders, onSucess }) {
         return null;
     }
 
-
     //Marks all checked reminders as priority: true
     const handleCheck = (reminder, list, type) => {
         let temp = list.map((item) => {
             if (reminder._id === item._id) {
                 if (item.priority === false) {
-                    // setSelected([...selected, item._id])
                     dispatch({ type: "UPDATESELECTED", payload: [...selected, item._id] });
                 } else if (item.priority === true) {
-                    // setSelected(selected.filter(existing => existing !== item._id))
                     dispatch({ type: "UPDATESELECTED", payload: selected.filter(existing => existing !== item._id) });
                 }
                 return { ...item, priority: !item.priority };
@@ -83,14 +79,11 @@ export default function List({ reminders, onSucess }) {
             return item;
         });
         dispatch({ type: type, payload: temp });
-        //setScheduled(temp);
     };
-    console.log("SELECTED", selected)
-
-    // const completed = items.filter((item) => item.done && !item.isDeleted)
 
     //Sends all selected reminders to server to be marked as done
     const handleCompleted = () => {
+        dispatch({ type: 'COMPLETE', payload: selected });
         fetch(config.BASE_URL + '/complete', {
             method: 'POST',
             headers: {
@@ -107,30 +100,6 @@ export default function List({ reminders, onSucess }) {
                 }
             })
     }
-
-    //Sends all selected reminders to server to be marked as done as soon as checked
-    // const updateReminder = (reminder) => {
-    //     try {
-    //         fetch("https://8a2b-2600-6c5a-4a7f-463a-65d7-decf-3555-933b.ngrok.io", {
-    //             method: 'PUT',
-    //             headers: {
-    //                 Accept: 'application/json',
-    //                 'Content-Type': 'application/json',
-    //             },
-    //             body: JSON.stringify({
-    //                 id: reminder._id,
-    //                 done: !reminder.done
-    //             })
-    //         }).then(response => response.json())
-    //             .then(result => {
-    //                 if (result.success) {
-
-    //                 }
-    //             })
-    //     } catch (e) {
-    //         console.error(e);
-    //     }
-    // }
 
     //Sends all selected reminders to server to be deleted
     const deleteChecked = () => {
@@ -156,144 +125,32 @@ export default function List({ reminders, onSucess }) {
             <View style={styles.listContainer}>
                 <ScrollView>
                     <Text style={styles.title} >SCHEDULED</Text>
-                    {scheduled.length > 0 ?
-                        <>
-                            {scheduled.sort((a, b) => {
-                                if (a.notification !== null && b.notification !== null) {
-                                    return new Date(a.notification) - new Date(b.notification);
-                                }
-                            }).map((reminder) => {
-                                return (
-                                    <View key={reminder._id}>
-
-                                        <Pressable
-                                            android_ripple={
-                                                RippleConfig = {
-                                                    color: '#b804d1de',
-                                                    foreground: false
-                                                }
-                                            }
-                                            onPress={() => {
-                                                setEditable(reminder)
-                                                setModalVisible(!modalVisible)
-                                            }}
-                                            style={styles.item}
-                                        >
-                                            <CheckBox
-                                                checked={reminder.priority}
-                                                onPress={() => { handleCheck(reminder, scheduled, "UPDATESCHEDULED") }}
-                                                size={25}
-                                                containerStyle={styles.checkBox}
-                                                right={false}
-                                                checkedIcon='check'
-                                                checkedColor='#b804d1de'
-                                                uncheckedIcon='circle-o'
-                                                uncheckedColor='#b804d1de'
-                                            />
-                                            <View style={styles.horizontal}>
-                                                <Text style={styles.itemText}>
-                                                    {reminder.name}
-                                                </Text>
-                                                <Text style={styles.time}>
-                                                    {new Date(reminder.notification).toLocaleDateString([], {
-                                                        weekday: 'short', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit'
-                                                    })}
-                                                </Text>
-                                            </View>
-                                        </Pressable>
-
-                                    </View>
-                                );
-                            })}
-                        </>
-                        :
-                        <View style={[styles.item, styles.empty]}>
-                            <Text style={styles.emptyText} >YOU ARE ALL CAUGHT UP</Text>
-                        </View>}
+                    <Item
+                        list={scheduled}
+                        type={"UPDATESCHEDULED"}
+                        setEditable={setEditable}
+                        modalVisible={modalVisible}
+                        setModalVisible={setModalVisible}
+                        handleCheck={handleCheck}
+                    />
                     <Text style={styles.title} >UNSCHEDULED</Text>
-                    {unScheduled.length > 0 ?
-                        <>
-                            {unScheduled.map((reminder) => {
-                                return (
-                                    <View key={reminder._id}>
-                                        <Pressable
-                                            android_ripple={
-                                                RippleConfig = {
-                                                    color: '#b804d1de',
-                                                    foreground: true
-                                                }
-                                            }
-                                            onPress={() => {
-                                                setEditable(reminder)
-                                                setModalVisible(!modalVisible)
-                                            }}
-                                            style={[styles.item, styles.unscheduledItem]}
-                                        >
-                                            <CheckBox
-                                                checked={reminder.priority}
-                                                onPress={() => { handleCheck(reminder, unScheduled, "UPDATEUNSCHEDULED") }}
-                                                size={25}
-                                                containerStyle={styles.checkBox}
-                                                right={true}
-                                                checkedIcon='check'
-                                                checkedColor='#b804d1de'
-                                                uncheckedIcon='circle-o'
-                                                uncheckedColor='#b804d1de'
-                                            />
-                                            <View style={styles.horizontal}>
-                                                <Text style={styles.itemText}>{reminder.name}</Text>
-                                            </View>
-                                        </Pressable>
-                                    </View>
-                                );
-                            })}
-                        </>
-                        :
-                        <View style={[styles.item, styles.empty]}>
-                            <Text style={styles.emptyText} >YOU ARE ALL CAUGHT UP</Text>
-                        </View>}
+                    <Item
+                        list={unScheduled}
+                        type={"UPDATEUNSCHEDULED"}
+                        setEditable={setEditable}
+                        modalVisible={modalVisible}
+                        setModalVisible={setModalVisible}
+                        handleCheck={handleCheck}
+                    />
                     <Text style={styles.title} >COMPLETED</Text>
-                    {reminders.completed.length > 0 ?
-                        <>
-                            {reminders.completed.map((reminder) => {
-                                return (
-                                    <View key={reminder._id}>
-                                        <Pressable
-                                            android_ripple={
-                                                RippleConfig = {
-                                                    color: '#b804d1de',
-                                                    foreground: true
-                                                }
-                                            }
-                                            onPress={() => {
-                                                setEditable(reminder)
-                                                setModalVisible(!modalVisible)
-                                            }}
-                                            style={[styles.item, styles.unscheduledItem]}
-                                        >
-                                            <CheckBox
-                                                checked={reminder.priority}
-                                                onPress={() => { handleCheck(reminder) }}
-                                                size={25}
-                                                containerStyle={styles.checkBox}
-                                                right={true}
-                                                checkedIcon='check'
-                                                checkedColor='#b804d1de'
-                                                uncheckedIcon='circle-o'
-                                                uncheckedColor='#b804d1de'
-                                            />
-                                            <View style={styles.horizontal}>
-                                                <Text style={styles.itemText}>{reminder.name}</Text>
-                                            </View>
-                                        </Pressable>
-                                    </View>
-                                );
-                            })}
-                        </>
-                        :
-                        <View style={[styles.item, styles.empty]}>
-
-                        </View>}
+                    <Item
+                        list={completed}
+                        type={"COMPLETED"}
+                        setEditable={setEditable}
+                        modalVisible={modalVisible}
+                        setModalVisible={setModalVisible}
+                        handleCheck={handleCheck}
+                    />
                 </ScrollView>
                 <Create
                     onSucess={onSucess}
@@ -327,7 +184,7 @@ export default function List({ reminders, onSucess }) {
                             foreground: false
                         }
                     }
-                // disabled={selected.length ? false : true}
+                 disabled={selected.length ? false : true}
                 >
                     <Icon name="check" color="#b804d1de" size={34} />
                     <Text style={styles.btn}>Done</Text>
@@ -356,7 +213,7 @@ export default function List({ reminders, onSucess }) {
                             foreground: false
                         }
                     }
-                // disabled={selected.length ? false : true}
+                disabled={selected.length ? false : true}
                 >
                     <Icon name="delete" color="#b804d1de" size={34} />
                     <Text style={styles.btn}>Delete</Text>
@@ -384,49 +241,6 @@ const styles = StyleSheet.create({
         fontSize: 19,
         margin: 0,
     },
-    item: {
-        backgroundColor: '#121212',
-        flexDirection: 'row',
-        borderRadius: 20,
-        margin: 4,
-        marginLeft: 0,
-        marginRight: 0,
-        paddingTop: 6,
-        paddingBottom: 6
-    },
-    empty: {
-        minHeight: 200,
-        textAlign: 'center',
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    emptyText: {
-        fontFamily: "Rubik-Medium",
-        color: '#b804d1de',
-        fontSize: 18
-    },
-    unscheduledItem: {
-        paddingTop: 16,
-        paddingBottom: 16
-    },
-    horizontal: {
-        flexDirection: 'column',
-        alignItems: 'stat',
-    },
-    checkBox: {
-        backgroundColor: '#121212',
-        padding: 0,
-    },
-    itemText: {
-        fontFamily: "Rubik-Medium",
-        color: 'white',
-        fontSize: 19
-    },
-    time: {
-        fontFamily: "Rubik-Regular",
-        color: 'grey',
-        fontSize: 17
-    },
     btnContainer: {
         flex: 1,
         padding: 12,
@@ -437,7 +251,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#121212',
         width: '100%',
     },
-
     btn: {
         color: '#fff',
         fontSize: 18,
