@@ -10,7 +10,7 @@ export default function Header({ reminders, children }) {
 
     const [showCompleted, setShowCompleted] = useState(false);
     const [showDeleted, setShowDeleted] = useState(false);
-    const [items, setItems] = useState(reminders);
+    const [items, setItems] = useState(reminders.deleted);
     const drawer = useRef(null);
     const [fontsLoaded] = useFonts({
         'Rubik-Black': require('../../assets/fonts/Rubik-Black.ttf'),
@@ -26,6 +26,7 @@ export default function Header({ reminders, children }) {
     if (!fontsLoaded) {
         return null;
     }
+
 
 
     const handleCheck = (reminder) => {
@@ -236,7 +237,10 @@ const styles = StyleSheet.create({
     drawerHeader: {
         flexDirection: 'row',
         alignItems: "center",
-        backgroundColor:"#000"
+        backgroundColor:"#000",
+        marginTop:16,
+        borderBottomWidth:1,
+        borderBottomColor:'grey'
     },
     drawerHeaderText: {
         fontFamily: "Rubik-Black",
@@ -253,7 +257,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         paddingLeft: 20,
-        paddingRight:20
+        paddingRight:20,
+        marginTop:30
     },
     menuBtnText: {
         fontFamily: 'Rubik-Medium',
@@ -278,12 +283,13 @@ const styles = StyleSheet.create({
    
     item: {
         backgroundColor: '#121212',
+        borderRadius:6,
         flexDirection: 'row',
-        margin: 4,
+        margin: 1,
         marginLeft: 0,
         marginRight: 0,
-        paddingTop: 6,
-        paddingBottom: 6
+        paddingTop: 16,
+        paddingBottom: 16
     },
     checkBox: {
         backgroundColor: '#121212',

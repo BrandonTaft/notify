@@ -12,17 +12,17 @@
       "backgroundColor": "#000",
       "dark": {
         "image": "./assets/notify-icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#000"
-   }
+        "resizeMode": "contain",
+        "backgroundColor": "#000"
+      }
     },
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.SpeectToTextApp",
- "infoPlist": {
+      "bundleIdentifier": "com.notify.notify",
+      "infoPlist": {
         "NSSpeechRecognitionUsageDescription": "This app uses speech recognition to convert your speech to text.",
         "NSCameraUsageDescription": "This app uses the camera to let user put a photo in his profile page."
       }
@@ -32,12 +32,23 @@
         "foregroundImage": "./assets/notify-icon.png",
         "backgroundColor": "#000"
       },
-      "permissions": ["android.permission.RECORD_AUDIO"],
-      "package": "com.anonymous.SpeectToTextApp"
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ],
+      "googleServicesFile": "./google-services.json",
+      "package": "com.notify.notify"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": ["@react-native-voice/voice"]
+    "plugins": [
+      "@react-native-voice/voice"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "5b4ed91b-ba74-4d95-9497-1117ae9e1bb1"
+      }
+    },
+    "owner": "btaft6278"
   }
 }
