@@ -67,7 +67,7 @@ function Item({
 
 const styles = StyleSheet.create({
     item: {
-        backgroundColor: '#121212',
+        backgroundColor: '#2e2e2f',
         flexDirection: 'row',
         borderRadius: 20,
         margin: 4,
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
         alignItems: 'stat',
     },
     checkBox: {
-        backgroundColor: '#121212',
+        backgroundColor: '#2e2e2f',
         padding: 0,
     },
     itemText: {

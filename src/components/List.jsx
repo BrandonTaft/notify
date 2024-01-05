@@ -248,7 +248,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-evenly',
         borderRadius: 20,
-        backgroundColor: '#121212',
+        backgroundColor: '#2e2e2f',
         width: '100%',
     },
     btn: {
