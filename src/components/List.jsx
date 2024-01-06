@@ -7,7 +7,7 @@ import config from '../../config';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 
-export default function List({ reminders, onSucess }) {
+export default function List({ reminders, expoPushToken, onSucess }) {
     const [editable, setEditable] = useState({});
     const [modalVisible, setModalVisible] = useState(false);
     const [fontsLoaded] = useFonts({
@@ -154,6 +154,7 @@ export default function List({ reminders, onSucess }) {
                 </ScrollView>
                 <Create
                     onSucess={onSucess}
+                    expoPushToken={expoPushToken}
                     editable={editable}
                     setEditable={setEditable}
                     setModalVisible={setModalVisible}

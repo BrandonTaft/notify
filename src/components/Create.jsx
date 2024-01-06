@@ -8,6 +8,7 @@ import config from '../../config';
 
 export default function Create({
   onSucess,
+  expoPushToken,
   modalVisible,
   setModalVisible,
   editable,
@@ -52,7 +53,8 @@ export default function Create({
           body: JSON.stringify({
             id: editable._id,
             name: name,
-            notification: selectedDate
+            notification: selectedDate,
+            expoPushToken: expoPushToken
           })
         }).then(response => response.json())
           .then(result => {
