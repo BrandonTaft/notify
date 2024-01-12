@@ -5,16 +5,18 @@ import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 import { Audio } from 'expo-av';
+
 import Loader from './src/components/Loader';
 import List from './src/components/List';
 import useFetch from './src/components/useFetch';
 import Header from './src/components/Header';
+import Timer from './src/components/Timer';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
     shouldPlaySound: true,
-    shouldSetBadge: false,
+    shouldSetBadge: true,
   }),
 });
 
@@ -26,7 +28,7 @@ async function registerForPushNotificationsAsync() {
       name: 'default',
       importance: Notifications.AndroidImportance.MAX,
       vibrationPattern: [0, 250, 250, 250],
-      lightColor: '#FF231F7C',
+      lightColor: '#b804d1de',
     });
   }
 
@@ -55,7 +57,9 @@ export default function App() {
   const [expoPushToken, setExpoPushToken] = useState('');
   const [notification, setNotification] = useState(false);
   const [sound, setSound] = useState();
-  const [showAlarm, setShowAlarm] = useState(false)
+  const [showAlarm, setShowAlarm] = useState(false);
+  const [stopTime, setStopTime] = useState()
+  const [showTimer, setShowTimer] = useState(false);
   const notificationListener = useRef();
   const responseListener = useRef();
   const { isLoading, reminders, setRefresh, refresh } = useFetch();
@@ -68,7 +72,7 @@ export default function App() {
       console.log(notification.request.content.body)
       playSound()
       setShowAlarm(true)
-     
+
     });
 
     responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
@@ -101,10 +105,34 @@ export default function App() {
       : undefined;
   }, [sound]);
 
+  async function sendPushNotification(expoPushToken) {
+    const message = {
+      to: expoPushToken,
+      title: 'TIME',
+      body: 'IS UP',
+      data: { someData: 'goes here' },
+    };
+
+    await fetch('https://exp.host/--/api/v2/push/send', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Accept-encoding': 'gzip, deflate',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(message),
+    });
+  }
+console.log(showTimer,"show")
   return (
     <SafeAreaProvider>
       {isLoading ? <Loader /> :
-        <Header reminders={reminders}>
+        <Header
+          reminders={reminders}
+          stopTime={stopTime}
+          setStopTime={setStopTime}
+          setShowTimer={setShowTimer}
+        >
           <List
             reminders={reminders}
             expoPushToken={expoPushToken}
@@ -119,7 +147,7 @@ export default function App() {
               setShowAlarm(!showAlarm);
             }}>
             <View style={styles.alarm}>
-            <Text style={{ color: 'white', fontSize: 19 }}>{notification}</Text>
+              <Text style={{ color: 'white', fontSize: 19 }}>{notification}</Text>
               <Pressable android_ripple={
                 RippleConfig = {
                   color: '#121212',
@@ -137,6 +165,20 @@ export default function App() {
               </Pressable>
             </View>
           </Modal>
+          
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={showTimer}
+            style={styles.alarmContainer}
+            onRequestClose={() => {
+              setShowTimer(!showTimer);
+            }}>
+            <View style={styles.alarm}>
+              <Timer setShowTimer={setShowTimer} stopTime={stopTime}/>
+            </View>
+          </Modal>
+
           <StatusBar backgroundColor='#b804d1de' />
         </Header>
       }
@@ -150,11 +192,11 @@ const styles = StyleSheet.create({
   },
   alarm: {
     backgroundColor: '#00030ae0',
-    flex:.25,
-    margin:20,
-    borderRadius:20,
-    marginTop:'auto',
-    marginBottom:'auto',
+    flex: .25,
+    margin: 20,
+    borderRadius: 20,
+    marginTop: 'auto',
+    marginBottom: 'auto',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -162,5 +204,8 @@ const styles = StyleSheet.create({
     width: 200,
     height: 60,
     backgroundColor: 'blue'
+  },
+  horizontal: {
+    flexDirection: 'row'
   }
 })

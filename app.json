@@ -49,6 +49,9 @@
         "projectId": "5b4ed91b-ba74-4d95-9497-1117ae9e1bb1"
       }
     },
+    "notification": {
+      "color":"#b804d1de",
+    },
     "owner": "btaft6278"
   }
 }

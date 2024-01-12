@@ -1,16 +1,23 @@
 import { useRef, useState, useCallback } from "react";
 import { Pressable, View, Text, StyleSheet, DrawerLayoutAndroid, ScrollView } from "react-native";
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { Icon } from "@rneui/base";
-import { FontAwesome5 } from '@expo/vector-icons';
+import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
 import { CheckBox } from '@rneui/themed';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 
-export default function Header({ reminders, children }) {
+export default function Header({
+    reminders,
+    stopTime,
+    setStopTime,
+    setShowTimer,
+    children
+}) {
 
-    const [showCompleted, setShowCompleted] = useState(false);
     const [showDeleted, setShowDeleted] = useState(false);
     const [items, setItems] = useState(reminders.deleted);
+    const [showPicker, setShowPicker] = useState(false);
     const drawer = useRef(null);
     const [fontsLoaded] = useFonts({
         'Rubik-Black': require('../../assets/fonts/Rubik-Black.ttf'),
@@ -142,15 +149,24 @@ export default function Header({ reminders, children }) {
                     </ScrollView>
                 } */}
             <Pressable
+                onPress={() => setShowPicker(!showPicker)}
+                style={styles.menuBtn}
+            >
+                <MaterialCommunityIcons name="timer" size={30} color="#b804d1de" />
+                <Text style={styles.menuBtnText}>Timer</Text>
+                <FontAwesome5 name="chevron-circle-right" size={30} color="#fff" style={{ marginLeft: 'auto', marginTop: 5 }} />
+
+            </Pressable>
+            <Pressable
                 onPress={() => setShowDeleted(!showDeleted)}
                 style={styles.menuBtn}
             >
                 <FontAwesome5 name="trash" size={28} color="#b804d1de" />
                 <Text style={styles.menuBtnText}>Deleted</Text>
                 {showDeleted ?
-                    <FontAwesome5 name="chevron-circle-down" size={30} color="#fff" style={{marginLeft:'auto', marginTop:5}} />
+                    <FontAwesome5 name="chevron-circle-down" size={30} color="#fff" style={{ marginLeft: 'auto', marginTop: 5 }} />
                     :
-                    <FontAwesome5 name="chevron-circle-right" size={30} color="#fff" style={{marginLeft:'auto', marginTop:5}} />
+                    <FontAwesome5 name="chevron-circle-right" size={30} color="#fff" style={{ marginLeft: 'auto', marginTop: 5 }} />
                 }
             </Pressable>
             {showDeleted &&
@@ -158,29 +174,29 @@ export default function Header({ reminders, children }) {
                     {reminders.deleted.map((reminder) => {
                         return (
                             <View key={reminder._id} style={styles.item}>
-                                    <CheckBox
-                                        checked={reminder.priority}
-                                        onPress={() => { handleCheck(reminder) }}
-                                        size={25}
-                                        containerStyle={styles.checkBox}
-                                        right={true}
-                                        checkedIcon='check'
-                                        checkedColor='#b804d1de'
-                                        uncheckedIcon='circle-o'
-                                        uncheckedColor='#b804d1de'
-                                    />
-                                    <View style={styles.horizontal}>
-                                        <Text style={styles.itemText}>{reminder.name}</Text>
+                                <CheckBox
+                                    checked={reminder.priority}
+                                    onPress={() => { handleCheck(reminder) }}
+                                    size={25}
+                                    containerStyle={styles.checkBox}
+                                    right={true}
+                                    checkedIcon='check'
+                                    checkedColor='#b804d1de'
+                                    uncheckedIcon='circle-o'
+                                    uncheckedColor='#b804d1de'
+                                />
+                                <View style={styles.horizontal}>
+                                    <Text style={styles.itemText}>{reminder.name}</Text>
 
-                                        {reminder.notification &&
+                                    {reminder.notification &&
 
-                                            <Text style={styles.time}>
-                                                {new Date(reminder.notification).toLocaleDateString([], {
-                                                    weekday: 'short', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit'
-                                                })}
-                                            </Text>
-                                        }
-                                    </View>
+                                        <Text style={styles.time}>
+                                            {new Date(reminder.notification).toLocaleDateString([], {
+                                                weekday: 'short', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit'
+                                            })}
+                                        </Text>
+                                    }
+                                </View>
                             </View>
                         );
                     })}
@@ -196,8 +212,8 @@ export default function Header({ reminders, children }) {
             drawerWidth={300}
             drawerPosition={'left'}
             renderNavigationView={navigationView}
-            drawerBackgroundColor="rgba(0,0,0,0.75)" 
-            >
+            drawerBackgroundColor="rgba(0,0,0,0.75)"
+        >
             <View style={styles.container}>
                 <View style={styles.header}>
                     <Pressable
@@ -219,6 +235,28 @@ export default function Header({ reminders, children }) {
                     {children}
                 </View>
             </View>
+            {showPicker &&
+           
+            <DateTimePicker
+              value={new Date()}
+              is24Hour={true}
+              mode="time"
+              display='spinner'
+              onChange={(selectedTime) => {
+                console.log(selectedTime)
+                let t = new Date(selectedTime.nativeEvent.timestamp)
+                t.setSeconds(0)
+                setShowPicker(false)
+                setStopTime(t)
+                 setShowTimer(true)
+                drawer.current.closeDrawer()
+              }}
+              onCancel={() => {
+                console.log("STOP")
+                setShowPicker(false)
+              }} 
+            />
+}
         </DrawerLayoutAndroid>
     );
 };
@@ -233,14 +271,14 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
     },
-   
+
     drawerHeader: {
         flexDirection: 'row',
         alignItems: "center",
-        backgroundColor:"#000",
-        marginTop:16,
-        borderBottomWidth:1,
-        borderBottomColor:'grey'
+        backgroundColor: "#000",
+        marginTop: 16,
+        borderBottomWidth: 1,
+        borderBottomColor: 'grey'
     },
     drawerHeaderText: {
         fontFamily: "Rubik-Black",
@@ -249,16 +287,16 @@ const styles = StyleSheet.create({
         marginLeft: 'auto',
         marginRight: 'auto',
     },
-    menuBtn: {  
-        backgroundColor:'#121212',
-        borderRadius:0,
-        borderBottomLeftRadius:0,
-        borderBottomRightRadius:0,
+    menuBtn: {
+        backgroundColor: '#121212',
+        borderRadius: 0,
+        borderBottomLeftRadius: 0,
+        borderBottomRightRadius: 0,
         flexDirection: 'row',
         alignItems: 'center',
         paddingLeft: 20,
-        paddingRight:20,
-        marginTop:30
+        paddingRight: 20,
+        marginTop: 30
     },
     menuBtnText: {
         fontFamily: 'Rubik-Medium',
@@ -280,10 +318,10 @@ const styles = StyleSheet.create({
         position: 'absolute'
     },
 
-   
+
     item: {
         backgroundColor: '#121212',
-        borderRadius:6,
+        borderRadius: 6,
         flexDirection: 'row',
         margin: 1,
         marginLeft: 0,
