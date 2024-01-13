@@ -10,7 +10,6 @@ import Loader from './src/components/Loader';
 import List from './src/components/List';
 import useFetch from './src/components/useFetch';
 import Header from './src/components/Header';
-import Timer from './src/components/Timer';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -58,8 +57,6 @@ export default function App() {
   const [notification, setNotification] = useState(false);
   const [sound, setSound] = useState();
   const [showAlarm, setShowAlarm] = useState(false);
-  const [stopTime, setStopTime] = useState()
-  const [showTimer, setShowTimer] = useState(false);
   const notificationListener = useRef();
   const responseListener = useRef();
   const { isLoading, reminders, setRefresh, refresh } = useFetch();
@@ -123,15 +120,12 @@ export default function App() {
       body: JSON.stringify(message),
     });
   }
-console.log(showTimer,"show")
+
   return (
     <SafeAreaProvider>
       {isLoading ? <Loader /> :
         <Header
           reminders={reminders}
-          stopTime={stopTime}
-          setStopTime={setStopTime}
-          setShowTimer={setShowTimer}
         >
           <List
             reminders={reminders}
@@ -165,20 +159,6 @@ console.log(showTimer,"show")
               </Pressable>
             </View>
           </Modal>
-          
-          <Modal
-            animationType="slide"
-            transparent={true}
-            visible={showTimer}
-            style={styles.alarmContainer}
-            onRequestClose={() => {
-              setShowTimer(!showTimer);
-            }}>
-            <View style={styles.alarm}>
-              <Timer setShowTimer={setShowTimer} stopTime={stopTime}/>
-            </View>
-          </Modal>
-
           <StatusBar backgroundColor='#b804d1de' />
         </Header>
       }

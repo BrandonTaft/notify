@@ -6,16 +6,17 @@ import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
 import { CheckBox } from '@rneui/themed';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
+import Timer from "./Timer";
+import config from "../../config";
 
 export default function Header({
     reminders,
-    stopTime,
-    setStopTime,
-    setShowTimer,
     children
 }) {
-
+    const [showTimer, setShowTimer] = useState(false);
+    const [stopTime, setStopTime] = useState()
     const [showDeleted, setShowDeleted] = useState(false);
+    const [selected, setSelected] = useState([]);
     const [items, setItems] = useState(reminders.deleted);
     const [showPicker, setShowPicker] = useState(false);
     const drawer = useRef(null);
@@ -34,7 +35,8 @@ export default function Header({
         return null;
     }
 
-
+    let initialValue = new Date()
+    initialValue.setHours(0, 1, 0, 0)
 
     const handleCheck = (reminder) => {
         let temp = items.map((item) => {
@@ -44,9 +46,27 @@ export default function Header({
             return item;
         });
         setItems(temp);
+        setSelected(items.filter((item) => item.priority).map((item) => item["_id"]))
+        console.log(selected)
     };
 
-    //const selected = items.filter((item) => item.priority).map((item) => item["_id"])
+    const deleteForGood = () => {
+        fetch(config.BASE_URL + "/wipe", {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                selected: selected
+            })
+        }).then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                   console.log("DONE")
+                }
+            })
+    }
 
     const navigationView = () => (
         <View style={styles.drawer}>
@@ -66,88 +86,7 @@ export default function Header({
                 </Pressable >
                 <Text style={styles.drawerHeaderText}>NOTIFY</Text>
             </View>
-            {/* <Pressable
-                    android_ripple={
-                        RippleConfig = {
-                            color: '#121212',
-                            foreground: true,
-                            borderLess: true
-                        }
-                    }
-                    onPress={() => setShowCompleted(!showCompleted)}
-                >
-                    <Text style={styles.menuBtnText}>Messages</Text>
-                </Pressable> */}
 
-            {/* <Pressable
-                    android_ripple={
-                        RippleConfig = {
-                            color: '#121212',
-                            foreground: true,
-                            borderLess: true
-                        }
-                    }
-                    style={{flexDirection:'row'}}
-                    onPress={() => setShowCompleted(!showCompleted)}
-                >
-                    <Text style={styles.menuBtnText}>Completed</Text>
-                    <Icon name="close" color="#b804d1de" size={40} />
-                </Pressable> */}
-
-            {/* {items.length ?
-                    <View style={styles.deleteBtn}>
-                        <Button
-                            title="Left button"
-                            color="#f194ff"
-                        />
-                    </View>
-                    :
-                    null
-                } */}
-
-            {/* {showCompleted &&
-                    <ScrollView>
-                        {items.map((reminder) => {
-
-                            return (
-                                <View key={reminder._id}>
-                                    {reminder.done &&
-                                        <View
-                                            style={styles.item}
-                                        >
-
-                                            <CheckBox
-                                                checked={reminder.priority}
-                                                onPress={() => { handleCheck(reminder) }}
-                                                size={25}
-                                                containerStyle={styles.checkBox}
-                                                right={true}
-                                                checkedIcon='check'
-                                                checkedColor='#b804d1de'
-                                                uncheckedIcon='circle-o'
-                                                uncheckedColor='#b804d1de'
-                                            />
-                                            <View style={styles.horizontal}>
-                                                <Text style={styles.itemText}>{reminder.name}</Text>
-                                           
-                                            {reminder.notification &&
-                                               
-                                                    <Text style={styles.time}>
-                                                        {new Date(reminder.notification).toLocaleDateString([], {
-                                                            weekday: 'short', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit'
-                                                        })}
-                                                    </Text>
-                                               
-                                            }
-                                             </View>
-
-                                        </View>
-                                    }
-                                </View>
-                            );
-                        })}
-                    </ScrollView>
-                } */}
             <Pressable
                 onPress={() => setShowPicker(!showPicker)}
                 style={styles.menuBtn}
@@ -157,6 +96,21 @@ export default function Header({
                 <FontAwesome5 name="chevron-circle-right" size={30} color="#fff" style={{ marginLeft: 'auto', marginTop: 5 }} />
 
             </Pressable>
+
+            {selected.length ? 
+     
+     <Pressable
+     onPress={() => deleteForGood()}
+     style={styles.menuBtn}
+ >
+     <MaterialCommunityIcons name="timer" size={30} color="#b804d1de" />
+     <Text style={styles.menuBtnText}>Delete for good</Text>
+     <FontAwesome5 name="chevron-circle-right" size={30} color="#fff" style={{ marginLeft: 'auto', marginTop: 5 }} />
+ 
+ </Pressable>
+ : ""
+     }
+
             <Pressable
                 onPress={() => setShowDeleted(!showDeleted)}
                 style={styles.menuBtn}
@@ -171,7 +125,7 @@ export default function Header({
             </Pressable>
             {showDeleted &&
                 <ScrollView>
-                    {reminders.deleted.map((reminder) => {
+                    {items.map((reminder) => {
                         return (
                             <View key={reminder._id} style={styles.item}>
                                 <CheckBox
@@ -202,7 +156,9 @@ export default function Header({
                     })}
                 </ScrollView>
             }
-
+           
+    
+    
         </View>
     );
 
@@ -233,30 +189,34 @@ export default function Header({
                 </View>
                 <View style={styles.listContainer}>
                     {children}
+                    {showTimer &&
+                        <View style={styles.alarm}>
+                            <Timer setShowTimer={setShowTimer} stopTime={stopTime} />
+                        </View>
+                    }
                 </View>
             </View>
             {showPicker &&
-           
-            <DateTimePicker
-              value={new Date()}
-              is24Hour={true}
-              mode="time"
-              display='spinner'
-              onChange={(selectedTime) => {
-                console.log(selectedTime)
-                let t = new Date(selectedTime.nativeEvent.timestamp)
-                t.setSeconds(0)
-                setShowPicker(false)
-                setStopTime(t)
-                 setShowTimer(true)
-                drawer.current.closeDrawer()
-              }}
-              onCancel={() => {
-                console.log("STOP")
-                setShowPicker(false)
-              }} 
-            />
-}
+                <DateTimePicker
+                    value={initialValue}
+                    is24Hour={true}
+                    mode="time"
+                    display='spinner'
+                    onChange={(selectedTime) => {
+                        console.log(selectedTime)
+                        let t = new Date(selectedTime.nativeEvent.timestamp)
+                        t.setSeconds(0)
+                        setShowPicker(false)
+                        setStopTime(t)
+                        setShowTimer(true)
+                        drawer.current.closeDrawer()
+                    }}
+                    onCancel={() => {
+                        console.log("STOP")
+                        setShowPicker(false)
+                    }}
+                />
+            }
         </DrawerLayoutAndroid>
     );
 };
@@ -265,13 +225,22 @@ const styles = StyleSheet.create({
     container: {
         height: '100%',
         backgroundColor: '#000',
+        position: 'relative',
     },
     header: {
         flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
     },
-
+    alarm: {
+        position: "absolute",
+        left: 0,
+        right: 0,
+        backgroundColor: '#00030ae0',
+        marginLeft:20,
+        marginRight:20,
+        borderRadius:20
+    },
     drawerHeader: {
         flexDirection: 'row',
         alignItems: "center",
@@ -307,6 +276,8 @@ const styles = StyleSheet.create({
     },
     listContainer: {
         flex: 10,
+        justifyContent: 'center',
+
     },
     headerTitle: {
         fontFamily: "Rubik-Black",
