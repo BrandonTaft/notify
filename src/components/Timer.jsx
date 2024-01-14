@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import { Text, StyleSheet, View, Pressable, Button } from "react-native";
+import { Text, StyleSheet, View, Pressable, Modal } from "react-native";
 import { Audio } from 'expo-av';
 import { FontAwesome } from '@expo/vector-icons';
 
 function Timer({ setShowTimer, stopTime }) {
     const [started, setStarted] = useState(false);
-    const [paused, setPaused] = useState(false)
+    const [isTimeUp, setisTimeUp] = useState(false)
     const [difference, setDifference] = useState()
     const [sound, setSound] = useState();
     const [timeUnits, setTimeUnits] = useState({
@@ -35,13 +35,21 @@ function Timer({ setShowTimer, stopTime }) {
 
     useEffect(() => {
         var d = new Date();
-        setDifference((stopTime.getTime() - d.setHours(0, 0, 0, 0)) / 10)
-    }, [])
+        if (stopTime) {
+            setDifference((stopTime.getTime() - d.setHours(0, 0, 0, 0)) / 10)
+        } else {
+            setDifference(1)
+        }
+    }, [stopTime])
 
     useEffect(() => {
-        if (difference <= 0) {
-            playSound()
-            return;
+        if (difference < 0) {
+            const timerAudio = setInterval(() => {
+                setisTimeUp(true)
+                playSound()
+            }, 15000);
+
+            return () => clearInterval(timerAudio);
         }
 
         setTimeUnits({
@@ -58,16 +66,45 @@ function Timer({ setShowTimer, stopTime }) {
 
             return () => clearInterval(timer);
         }
-    }, [difference, started, paused]);
+    }, [difference, started]);
 
     return (
         <View style={styles.container}>
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={isTimeUp}
+                onRequestClose={() => {
+                    setShowAlarm(!showAlarm);
+                }}>
+                <View style={styles.timeIsUp}>
+                    <Text style={styles.timeIsUpText}>TIME IS UP</Text>
+                
+                <Pressable android_ripple={
+                    RippleConfig = {
+                        color: '#121212',
+                        foreground: true,
+                        borderLess: true
+                    }
+                }
+                    style={styles.timeIsUpBtn}
+                    onPress={() => {
+                        setSound()
+                        setStarted(false)
+                        setisTimeUp(false)
+                        setShowTimer(false)
+                    }}
+                >
+                    <Text style={styles.timeIsUpBtnText}>End</Text>
+                </Pressable>
+                </View>
+            </Modal>
             <View style={styles.timer}>
                 <View>
                     <Text style={styles.subtitle}>
                         H
                     </Text>
-                    <Text style={ styles.timeUnit }>
+                    <Text style={styles.timeUnit}>
                         {timeUnits.hours.toString().padStart(2, "0")}
                     </Text>
                 </View>
@@ -78,7 +115,7 @@ function Timer({ setShowTimer, stopTime }) {
                     <Text style={styles.subtitle}>
                         M
                     </Text>
-                    <Text style={ styles.timeUnit } >
+                    <Text style={styles.timeUnit} >
                         {timeUnits.minutes.toString().padStart(2, "0")}
                     </Text>
                 </View>
@@ -89,7 +126,7 @@ function Timer({ setShowTimer, stopTime }) {
                     <Text style={styles.subtitle}>
                         S
                     </Text>
-                    <Text style={ styles.timeUnit }>
+                    <Text style={styles.timeUnit}>
                         {timeUnits.seconds.toString().padStart(2, "0")}
                     </Text>
                 </View>
@@ -126,11 +163,11 @@ function Timer({ setShowTimer, stopTime }) {
                     onPress={() => {
                         setSound()
                         setStarted(false)
-                        //setSeconds(0)
+                        setisTimeUp(false)
                         setShowTimer(false)
                     }}
                 >
-                    <Text style={{ fontSize: 19, fontWeight:"bold", color:"#fff" }}>End</Text>
+                    <Text style={{ fontSize: 19, fontWeight: "bold", color: "#fff" }}>End</Text>
                 </Pressable>
             </View>
         </View>
@@ -158,12 +195,12 @@ const styles = StyleSheet.create({
         paddingRight: 19,
         fontWeight: "bold",
         color: "rgba(128,128,128,0.75)",
-        textAlign:"center"
+        textAlign: "center"
     },
     timer: {
         flexDirection: "row",
         alignItems: "center",
-        marginBottom:20
+        marginBottom: 20,
     },
     timeUnit: {
         backgroundColor: "red",
@@ -179,8 +216,8 @@ const styles = StyleSheet.create({
         fontSize: 24,
         fontWeight: "bold",
         marginHorizontal: 8,
-        marginTop:'auto',
-        marginBottom:15
+        marginTop: 'auto',
+        marginBottom: 15
     },
     timetitle: {
         fontSize: 17,
@@ -204,5 +241,38 @@ const styles = StyleSheet.create({
         height: 70,
         elevation: 2,
     },
-
+    timeIsUp: {
+        height: '40%',
+        width: '90%',
+        backgroundColor: '#b804d1de',
+        borderRadius: 18,
+        position: 'absolute',
+        top:'33%',
+        bottom:'33%',
+        alignItems: 'center',
+        justifyContent: 'center',
+       
+        marginLeft:20,
+        marginRight:20,
+    },
+    timeIsUpText: {
+        color:'#fff',
+        fontSize:35,
+        fontWeight:'bold',    
+    },
+    timeIsUpBtn: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'red',
+        borderRadius: 20,
+        width: '50%',
+        padding:20,
+        marginTop:20,
+        elevation: 2,
+    },
+    timeIsUpBtnText: {
+        fontSize:25,
+        fontWeight:'bold',
+        color:'#fff'
+    }
 }); 

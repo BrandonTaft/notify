@@ -1,5 +1,5 @@
 import { useRef, useState, useCallback } from "react";
-import { Pressable, View, Text, StyleSheet, DrawerLayoutAndroid, ScrollView } from "react-native";
+import { Pressable, View, Text, StyleSheet, DrawerLayoutAndroid, ScrollView, Modal, TextInput } from "react-native";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Icon } from "@rneui/base";
 import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
@@ -16,6 +16,8 @@ export default function Header({
     const [showTimer, setShowTimer] = useState(false);
     const [stopTime, setStopTime] = useState()
     const [showDeleted, setShowDeleted] = useState(false);
+    const [showNotes, setShowNotes] = useState(false);
+    const [note, onChangeNote] = useState("");
     const [selected, setSelected] = useState([]);
     const [items, setItems] = useState(reminders.deleted);
     const [showPicker, setShowPicker] = useState(false);
@@ -63,7 +65,8 @@ export default function Header({
         }).then(response => response.json())
             .then(result => {
                 if (result.success) {
-                   console.log("DONE")
+                    console.log("DONE")
+                    drawer.current.closeDrawer()
                 }
             })
     }
@@ -94,22 +97,49 @@ export default function Header({
                 <MaterialCommunityIcons name="timer" size={30} color="#b804d1de" />
                 <Text style={styles.menuBtnText}>Timer</Text>
                 <FontAwesome5 name="chevron-circle-right" size={30} color="#fff" style={{ marginLeft: 'auto', marginTop: 5 }} />
+            </Pressable>
+            <Pressable
+                onPress={() => setShowNotes(true)}
+                style={styles.menuBtn}
+            >
+                <MaterialCommunityIcons name="timer" size={30} color="#b804d1de" />
+                <Text style={styles.menuBtnText}>Notes</Text>
+                <FontAwesome5 name="chevron-circle-right" size={30} color="#fff" style={{ marginLeft: 'auto', marginTop: 5 }} />
 
             </Pressable>
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={showNotes}
+                onRequestClose={() => {
+                    setShowNotes(!showNotes);
+                }}>
+                <View style={styles.timeIsUp}>
+                    <TextInput
+                        autoFocus={true}
+                        multiline={true}
+                        numberOfLines={6}
+                        placeholderTextColor="#fff"
+                        style={styles.input}
+                        onChangeText={onChangeNote}
+                        value={note}
+                        placeholder="memo"
+                    />
+                </View>
+            </Modal>
+            {selected.length ?
 
-            {selected.length ? 
-     
-     <Pressable
-     onPress={() => deleteForGood()}
-     style={styles.menuBtn}
- >
-     <MaterialCommunityIcons name="timer" size={30} color="#b804d1de" />
-     <Text style={styles.menuBtnText}>Delete for good</Text>
-     <FontAwesome5 name="chevron-circle-right" size={30} color="#fff" style={{ marginLeft: 'auto', marginTop: 5 }} />
- 
- </Pressable>
- : ""
-     }
+                <Pressable
+                    onPress={() => deleteForGood()}
+                    style={styles.menuBtn}
+                >
+                    <MaterialCommunityIcons name="timer" size={30} color="#b804d1de" />
+                    <Text style={styles.menuBtnText}>Delete for good</Text>
+                    <FontAwesome5 name="chevron-circle-right" size={30} color="#fff" style={{ marginLeft: 'auto', marginTop: 5 }} />
+
+                </Pressable>
+                : ""
+            }
 
             <Pressable
                 onPress={() => setShowDeleted(!showDeleted)}
@@ -156,9 +186,9 @@ export default function Header({
                     })}
                 </ScrollView>
             }
-           
-    
-    
+
+
+
         </View>
     );
 
@@ -237,9 +267,9 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         backgroundColor: '#00030ae0',
-        marginLeft:20,
-        marginRight:20,
-        borderRadius:20
+        marginLeft: 20,
+        marginRight: 20,
+        borderRadius: 20
     },
     drawerHeader: {
         flexDirection: 'row',
@@ -288,8 +318,6 @@ const styles = StyleSheet.create({
     drawerHeaderIcon: {
         position: 'absolute'
     },
-
-
     item: {
         backgroundColor: '#121212',
         borderRadius: 6,
@@ -321,5 +349,13 @@ const styles = StyleSheet.create({
     deleteBtn: {
         position: "fixed",
         top: 99
-    }
+    },
+    input: {
+        fontSize: 19,
+        width: '100%',
+        color: '#fff',
+        backgroundColor: '#121212',
+        borderRadius: 10,
+        margin: 5
+      },
 });
