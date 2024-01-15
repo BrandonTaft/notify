@@ -126,6 +126,7 @@ export default function App() {
       {isLoading ? <Loader /> :
         <Header
           reminders={reminders}
+          onSucess={() => setRefresh(!refresh)}
         >
           <List
             reminders={reminders}

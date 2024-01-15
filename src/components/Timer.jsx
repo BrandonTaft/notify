@@ -5,7 +5,7 @@ import { FontAwesome } from '@expo/vector-icons';
 
 function Timer({ setShowTimer, stopTime }) {
     const [started, setStarted] = useState(false);
-    const [isTimeUp, setisTimeUp] = useState(false)
+    const [timeIsUp, setTimeIsUp] = useState(false)
     const [difference, setDifference] = useState()
     const [sound, setSound] = useState();
     const [timeUnits, setTimeUnits] = useState({
@@ -45,7 +45,7 @@ function Timer({ setShowTimer, stopTime }) {
     useEffect(() => {
         if (difference < 0) {
             const timerAudio = setInterval(() => {
-                setisTimeUp(true)
+                setTimeIsUp(true)
                 playSound()
             }, 15000);
 
@@ -73,7 +73,7 @@ function Timer({ setShowTimer, stopTime }) {
             <Modal
                 animationType="slide"
                 transparent={true}
-                visible={isTimeUp}
+                visible={timeIsUp}
                 onRequestClose={() => {
                     setShowAlarm(!showAlarm);
                 }}>
@@ -91,7 +91,7 @@ function Timer({ setShowTimer, stopTime }) {
                     onPress={() => {
                         setSound()
                         setStarted(false)
-                        setisTimeUp(false)
+                        setTimeIsUp(false)
                         setShowTimer(false)
                     }}
                 >
@@ -99,6 +99,8 @@ function Timer({ setShowTimer, stopTime }) {
                 </Pressable>
                 </View>
             </Modal>
+            {!timeIsUp && 
+            <>
             <View style={styles.timer}>
                 <View>
                     <Text style={styles.subtitle}>
@@ -163,13 +165,15 @@ function Timer({ setShowTimer, stopTime }) {
                     onPress={() => {
                         setSound()
                         setStarted(false)
-                        setisTimeUp(false)
+                        setTimeIsUp(false)
                         setShowTimer(false)
                     }}
                 >
                     <Text style={{ fontSize: 19, fontWeight: "bold", color: "#fff" }}>End</Text>
                 </Pressable>
             </View>
+            </>
+}
         </View>
     )
 }
@@ -242,7 +246,6 @@ const styles = StyleSheet.create({
         elevation: 2,
     },
     timeIsUp: {
-        height: '40%',
         width: '90%',
         backgroundColor: '#b804d1de',
         borderRadius: 18,
@@ -251,13 +254,12 @@ const styles = StyleSheet.create({
         bottom:'33%',
         alignItems: 'center',
         justifyContent: 'center',
-       
         marginLeft:20,
         marginRight:20,
     },
     timeIsUpText: {
         color:'#fff',
-        fontSize:35,
+        fontSize:30,
         fontWeight:'bold',    
     },
     timeIsUpBtn: {
@@ -266,12 +268,12 @@ const styles = StyleSheet.create({
         backgroundColor: 'red',
         borderRadius: 20,
         width: '50%',
-        padding:20,
+        padding:10,
         marginTop:20,
         elevation: 2,
     },
     timeIsUpBtnText: {
-        fontSize:25,
+        fontSize:22,
         fontWeight:'bold',
         color:'#fff'
     }

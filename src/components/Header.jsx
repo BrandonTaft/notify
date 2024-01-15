@@ -11,6 +11,7 @@ import config from "../../config";
 
 export default function Header({
     reminders,
+    onSucess,
     children
 }) {
     const [showTimer, setShowTimer] = useState(false);
@@ -47,8 +48,9 @@ export default function Header({
             }
             return item;
         });
+        setSelected(temp.filter((item) => item.priority).map((item) => item["_id"]))
         setItems(temp);
-        setSelected(items.filter((item) => item.priority).map((item) => item["_id"]))
+        
         console.log(selected)
     };
 
@@ -65,8 +67,7 @@ export default function Header({
         }).then(response => response.json())
             .then(result => {
                 if (result.success) {
-                    console.log("DONE")
-                    drawer.current.closeDrawer()
+                    onSucess()
                 }
             })
     }
@@ -127,16 +128,14 @@ export default function Header({
                     />
                 </View>
             </Modal>
-            {selected.length ?
+            {selected.length > 0?
 
                 <Pressable
                     onPress={() => deleteForGood()}
-                    style={styles.menuBtn}
+                    style={styles.wipeBtn}
                 >
-                    <MaterialCommunityIcons name="timer" size={30} color="#b804d1de" />
-                    <Text style={styles.menuBtnText}>Delete for good</Text>
-                    <FontAwesome5 name="chevron-circle-right" size={30} color="#fff" style={{ marginLeft: 'auto', marginTop: 5 }} />
-
+                    <FontAwesome5 name="trash" size={28} color="#fff" />
+                    <Text style={styles.wipeBtnText}>Delete for good</Text>
                 </Pressable>
                 : ""
             }
@@ -154,7 +153,7 @@ export default function Header({
                 }
             </Pressable>
             {showDeleted &&
-                <ScrollView>
+                <ScrollView style={{flex:1}}>
                     {items.map((reminder) => {
                         return (
                             <View key={reminder._id} style={styles.item}>
@@ -252,10 +251,14 @@ export default function Header({
 };
 
 const styles = StyleSheet.create({
+    drawer: {
+        flex:1
+    },
     container: {
-        height: '100%',
+       
         backgroundColor: '#000',
         position: 'relative',
+       flex:1
     },
     header: {
         flex: 1,
@@ -295,7 +298,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingLeft: 20,
         paddingRight: 20,
-        marginTop: 30
+        marginTop: 10
     },
     menuBtnText: {
         fontFamily: 'Rubik-Medium',
@@ -346,9 +349,23 @@ const styles = StyleSheet.create({
         color: 'grey',
         fontSize: 17
     },
-    deleteBtn: {
-        position: "fixed",
-        top: 99
+    wipeBtn: {
+        flexDirection:'row',
+        justifyContent:'space-evenly',
+        width:'90%',
+        backgroundColor:'red',
+        padding:20,
+        borderRadius:50,
+        position: "absolute",
+        zIndex: 99,
+        marginLeft:'5%',
+        marginRight:'5%',
+       bottom:0
+    },
+    wipeBtnText: {
+        color:"#fff",
+        fontWeight:'bold',
+        fontSize:20
     },
     input: {
         fontSize: 19,
