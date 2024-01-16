@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import config from '../../config';
+import { fetchReminders } from '../api';
 
 const useFetch = () => {
     const [reminders, setReminders] = useState([]);
@@ -8,13 +8,9 @@ const useFetch = () => {
 
     useEffect(() => {
         setIsLoading(true);
-        fetch(config.BASE_URL)
-            .then((res) => res.json())
+        fetchReminders()
             .then((data) => {
                 setReminders(data)
-            })
-            .catch((err) => {
-                console.log(err);
             })
             .finally(() => {
                 setIsLoading(false);

@@ -7,7 +7,7 @@ import { CheckBox } from '@rneui/themed';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import Timer from "./Timer";
-import config from "../../config";
+import { wipeAll } from "../api";
 
 export default function Header({
     reminders,
@@ -55,16 +55,7 @@ export default function Header({
     };
 
     const deleteForGood = () => {
-        fetch(config.BASE_URL + "/wipe", {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                selected: selected
-            })
-        }).then(response => response.json())
+        wipeAll(selected)
             .then(result => {
                 if (result.success) {
                     onSucess()

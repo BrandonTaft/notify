@@ -8,7 +8,7 @@ import { Audio } from 'expo-av';
 
 import Loader from './src/components/Loader';
 import List from './src/components/List';
-import useFetch from './src/components/useFetch';
+import useFetch from './src/hooks/useFetch';
 import Header from './src/components/Header';
 
 Notifications.setNotificationHandler({
@@ -54,7 +54,7 @@ async function registerForPushNotificationsAsync() {
 
 export default function App() {
   const [expoPushToken, setExpoPushToken] = useState('');
-  const [notification, setNotification] = useState(false);
+  const [notification, setNotification] = useState("") 
   const [sound, setSound] = useState();
   const [showAlarm, setShowAlarm] = useState(false);
   const notificationListener = useRef();
@@ -142,7 +142,7 @@ export default function App() {
               setShowAlarm(!showAlarm);
             }}>
             <View style={styles.alarm}>
-              <Text style={{ color: 'white', fontSize: 19 }}>{notification}</Text>
+              <Text  numberOfLines={3} style={styles.alarmText}>{notification}</Text>
               <Pressable android_ripple={
                 RippleConfig = {
                   color: '#121212',
@@ -156,7 +156,7 @@ export default function App() {
                   setShowAlarm(false)
                 }}
               >
-                <Text style={{ color: 'white', fontSize: 19 }}>complete</Text>
+                <Text style={styles.alarmBtnText}>COMPLETE</Text>
               </Pressable>
             </View>
           </Modal>
@@ -178,13 +178,28 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginTop: 'auto',
     marginBottom: 'auto',
-    justifyContent: 'center',
+    justifyContent:'space-evenly',
+    padding:10,
     alignItems: 'center',
   },
+  alarmText: {
+    fontSize:24,
+    fontWeight:'500',
+    color: '#fff',
+  },
   alarmBtn: {
-    width: 200,
-    height: 60,
-    backgroundColor: 'blue'
+    paddingHorizontal:15,
+    paddingVertical:10,
+    backgroundColor: '#b804d1de',
+    borderRadius:30,
+    alignItems:'center',
+    justifyContent:'center',
+    marginVertical:14
+  },
+  alarmBtnText: { 
+    color: 'white',
+    fontSize: 16,
+    fontWeight:'bold'
   },
   horizontal: {
     flexDirection: 'row'

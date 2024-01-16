@@ -3,9 +3,9 @@ import { StyleSheet, Text, View, Pressable, ScrollView } from 'react-native';
 import Create from './Create';
 import Item from './Item';
 import { Icon } from "@rneui/base";
-import config from '../../config';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
+import { completeMany, deleteMany } from '../api';
 
 export default function List({ reminders, expoPushToken, onSucess }) {
     const [editable, setEditable] = useState({});
@@ -84,16 +84,7 @@ export default function List({ reminders, expoPushToken, onSucess }) {
     //Sends all selected reminders to server to be marked as done
     const handleCompleted = () => {
         dispatch({ type: 'COMPLETE', payload: selected });
-        fetch(config.BASE_URL + '/complete', {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                selected: selected
-            })
-        }).then(response => response.json())
+        completeMany(selected)
             .then(result => {
                 if (result.success) {
                     onSucess()
@@ -103,16 +94,7 @@ export default function List({ reminders, expoPushToken, onSucess }) {
 
     //Sends all selected reminders to server to be deleted
     const deleteChecked = () => {
-        fetch(config.BASE_URL + "/delete", {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                selected: selected
-            })
-        }).then(response => response.json())
+        deleteMany(selected)
             .then(result => {
                 if (result.success) {
                     onSucess()
@@ -185,7 +167,7 @@ export default function List({ reminders, expoPushToken, onSucess }) {
                             foreground: false
                         }
                     }
-                 disabled={selected.length ? false : true}
+                    disabled={selected.length ? false : true}
                 >
                     <Icon name="check" color="#b804d1de" size={34} />
                     <Text style={styles.btn}>Done</Text>
@@ -214,7 +196,7 @@ export default function List({ reminders, expoPushToken, onSucess }) {
                             foreground: false
                         }
                     }
-                disabled={selected.length ? false : true}
+                    disabled={selected.length ? false : true}
                 >
                     <Icon name="delete" color="#b804d1de" size={34} />
                     <Text style={styles.btn}>Delete</Text>

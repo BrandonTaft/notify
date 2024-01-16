@@ -3,7 +3,7 @@ import { StyleSheet, TextInput, View, Modal, Text, Pressable } from 'react-nativ
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import Icon from 'react-native-vector-icons/AntDesign';
 import IonIcon from 'react-native-vector-icons/Ionicons';
-import config from '../../config';
+import { addReminders, deleteReminder } from '../api';
 
 
 export default function Create({
@@ -43,36 +43,19 @@ export default function Create({
 
   const postReminder = () => {
     if (name) {
-      try {
-        fetch(config.BASE_URL, {
-          method: action,
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            id: editable._id,
-            name: name,
-            notification: selectedDate,
-            expoPushToken: expoPushToken
-          })
-        }).then(response => response.json())
-          .then(result => {
-            if (result.success) {
-              resetState()
-            }
-          })
-      } catch (e) {
-        console.error(e);
-      }
+      addReminders(name, action, selectedDate, editable._id, expoPushToken)
+      .then(result => {
+        if (result.success) {
+          resetState()
+        }
+      })
+     
     }
   }
 
   const handleDeleteReminder = () => {
     if (editable._id) {
-      fetch(config.BASE_URL + '/' + editable._id, {
-        method: 'DELETE'
-      }).then(response => response.json())
+      deleteReminder(editable._id)
         .then(result => {
           if (result.success) {
             resetState()

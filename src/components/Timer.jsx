@@ -79,101 +79,101 @@ function Timer({ setShowTimer, stopTime }) {
                 }}>
                 <View style={styles.timeIsUp}>
                     <Text style={styles.timeIsUpText}>TIME IS UP</Text>
-                
-                <Pressable android_ripple={
-                    RippleConfig = {
-                        color: '#121212',
-                        foreground: true,
-                        borderLess: true
+
+                    <Pressable android_ripple={
+                        RippleConfig = {
+                            color: '#121212',
+                            foreground: true,
+                            borderLess: true
+                        }
                     }
-                }
-                    style={styles.timeIsUpBtn}
-                    onPress={() => {
-                        setSound()
-                        setStarted(false)
-                        setTimeIsUp(false)
-                        setShowTimer(false)
-                    }}
-                >
-                    <Text style={styles.timeIsUpBtnText}>End</Text>
-                </Pressable>
+                        style={styles.timeIsUpBtn}
+                        onPress={() => {
+                            setSound()
+                            setStarted(false)
+                            setTimeIsUp(false)
+                            setShowTimer(false)
+                        }}
+                    >
+                        <Text style={styles.timeIsUpBtnText}>End</Text>
+                    </Pressable>
                 </View>
             </Modal>
-            {!timeIsUp && 
-            <>
-            <View style={styles.timer}>
-                <View>
-                    <Text style={styles.subtitle}>
-                        H
-                    </Text>
-                    <Text style={styles.timeUnit}>
-                        {timeUnits.hours.toString().padStart(2, "0")}
-                    </Text>
-                </View>
-                <Text style={styles.timeSeparator} >
-                    :
-                </Text>
-                <View>
-                    <Text style={styles.subtitle}>
-                        M
-                    </Text>
-                    <Text style={styles.timeUnit} >
-                        {timeUnits.minutes.toString().padStart(2, "0")}
-                    </Text>
-                </View>
-                <Text style={styles.timeSeparator}>
-                    :
-                </Text>
-                <View>
-                    <Text style={styles.subtitle}>
-                        S
-                    </Text>
-                    <Text style={styles.timeUnit}>
-                        {timeUnits.seconds.toString().padStart(2, "0")}
-                    </Text>
-                </View>
-                <Text style={styles.timeSeparator}></Text>
-            </View>
-            <View style={styles.buttonContainer}>
+            {!timeIsUp &&
+                <>
+                    <View style={styles.timer}>
+                        <View>
+                            <Text style={styles.subtitle}>
+                                H
+                            </Text>
+                            <Text style={styles.timeUnit}>
+                                {timeUnits.hours.toString().padStart(2, "0")}
+                            </Text>
+                        </View>
+                        <Text style={styles.timeSeparator} >
+                            :
+                        </Text>
+                        <View>
+                            <Text style={styles.subtitle}>
+                                M
+                            </Text>
+                            <Text style={styles.timeUnit} >
+                                {timeUnits.minutes.toString().padStart(2, "0")}
+                            </Text>
+                        </View>
+                        <Text style={styles.timeSeparator}>
+                            :
+                        </Text>
+                        <View>
+                            <Text style={styles.subtitle}>
+                                S
+                            </Text>
+                            <Text style={styles.timeUnit}>
+                                {timeUnits.seconds.toString().padStart(2, "0")}
+                            </Text>
+                        </View>
+                        <Text style={styles.timeSeparator}></Text>
+                    </View>
+                    <View style={styles.buttonContainer}>
 
-                <Pressable android_ripple={
-                    RippleConfig = {
-                        color: '#121212',
-                        foreground: true,
-                        borderLess: true
-                    }
-                }
-                    style={styles.alarmBtn}
-                    onPress={() => {
-                        setStarted(!started)
-                    }}
-                >
-                    {!started ?
-                        <FontAwesome name="play" size={24} color="#fff" />
-                        :
-                        <FontAwesome name="pause" size={24} color="#fff" />
-                    }
-                </Pressable>
-                <Pressable android_ripple={
-                    RippleConfig = {
-                        color: '#121212',
-                        foreground: true,
-                        borderLess: true
-                    }
-                }
-                    style={styles.alarmBtn}
-                    onPress={() => {
-                        setSound()
-                        setStarted(false)
-                        setTimeIsUp(false)
-                        setShowTimer(false)
-                    }}
-                >
-                    <Text style={{ fontSize: 19, fontWeight: "bold", color: "#fff" }}>End</Text>
-                </Pressable>
-            </View>
-            </>
-}
+                        <Pressable android_ripple={
+                            RippleConfig = {
+                                color: '#121212',
+                                foreground: true,
+                                borderLess: true
+                            }
+                        }
+                            style={styles.alarmBtn}
+                            onPress={() => {
+                                setStarted(!started)
+                            }}
+                        >
+                            {!started ?
+                                <FontAwesome name="play" size={24} color="#fff" />
+                                :
+                                <FontAwesome name="pause" size={24} color="#fff" />
+                            }
+                        </Pressable>
+                        <Pressable android_ripple={
+                            RippleConfig = {
+                                color: '#121212',
+                                foreground: true,
+                                borderLess: true
+                            }
+                        }
+                            style={styles.alarmBtn}
+                            onPress={() => {
+                                setSound()
+                                setStarted(false)
+                                setTimeIsUp(false)
+                                setShowTimer(false)
+                            }}
+                        >
+                            <Text style={{ fontSize: 19, fontWeight: "bold", color: "#fff" }}>End</Text>
+                        </Pressable>
+                    </View>
+                </>
+            }
         </View>
     )
 }
@@ -246,35 +246,33 @@ const styles = StyleSheet.create({
         elevation: 2,
     },
     timeIsUp: {
-        width: '90%',
-        backgroundColor: '#b804d1de',
-        borderRadius: 18,
-        position: 'absolute',
-        top:'33%',
-        bottom:'33%',
+        backgroundColor: '#00030ae0',
+        flex: .25,
+        margin: 20,
+        borderRadius: 20,
+        marginTop: 'auto',
+        marginBottom: 'auto',
+        justifyContent: 'space-evenly',
+        padding: 10,
         alignItems: 'center',
-        justifyContent: 'center',
-        marginLeft:20,
-        marginRight:20,
     },
     timeIsUpText: {
-        color:'#fff',
-        fontSize:30,
-        fontWeight:'bold',    
+        color: '#fff',
+        fontSize: 30,
+        fontWeight: 'bold',
     },
     timeIsUpBtn: {
-        justifyContent: 'center',
+        paddingHorizontal: 25,
+        paddingVertical: 10,
+        backgroundColor: '#b804d1de',
+        borderRadius: 30,
         alignItems: 'center',
-        backgroundColor: 'red',
-        borderRadius: 20,
-        width: '50%',
-        padding:10,
-        marginTop:20,
-        elevation: 2,
+        justifyContent: 'center',
+        marginVertical: 14
     },
     timeIsUpBtnText: {
-        fontSize:22,
-        fontWeight:'bold',
-        color:'#fff'
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: '#fff'
     }
 }); 
