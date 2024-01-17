@@ -6,10 +6,12 @@ import { Icon } from "@rneui/base";
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { completeMany, deleteMany } from '../api';
+import usePushNotification from '../hooks/usePushNotification';
 
-export default function List({ reminders, expoPushToken, onSucess }) {
+export default function List({ reminders, onSucess }) {
     const [editable, setEditable] = useState({});
     const [modalVisible, setModalVisible] = useState(false);
+    const { expoPushToken } = usePushNotification();
     const [fontsLoaded] = useFonts({
         'Rubik-Medium': require('../../assets/fonts/Rubik-Medium.ttf'),
         'Rubik-Regular': require('../../assets/fonts/Rubik-Regular.ttf'),

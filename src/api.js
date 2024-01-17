@@ -1,7 +1,7 @@
-import config from '../config';
+const BASE_URL = "https://07d2-2600-6c5a-4a7f-463a-58e4-6673-de0c-e659.ngrok-free.app";
 
 export const fetchReminders = async () => {
-    return await fetch(config.BASE_URL)
+    return await fetch(BASE_URL)
         .catch((err) => {
             console.log(err);
         })
@@ -9,7 +9,7 @@ export const fetchReminders = async () => {
 };
 
 export const completeMany = async (selected) => {
-    return fetch(config.BASE_URL + '/complete', {
+    return fetch(BASE_URL + '/complete', {
         method: 'POST',
         headers: {
             Accept: 'application/json',
@@ -22,7 +22,7 @@ export const completeMany = async (selected) => {
 };
 
 export const deleteMany = async (selected) => {
-    return fetch(config.BASE_URL + "/delete", {
+    return fetch(BASE_URL + "/delete", {
         method: 'POST',
         headers: {
             Accept: 'application/json',
@@ -35,7 +35,7 @@ export const deleteMany = async (selected) => {
 };
 
 export const addReminders = async (name, action, selectedDate, editable, expoPushToken) => {
-    return await fetch(config.BASE_URL, {
+    return await fetch(BASE_URL, {
         method: action,
         headers: {
           Accept: 'application/json',
@@ -53,13 +53,13 @@ export const addReminders = async (name, action, selectedDate, editable, expoPus
 };
 
 export const deleteReminder = async (reminder) => {
-    return  fetch(config.BASE_URL + '/' + reminder, {
+    return  fetch(BASE_URL + '/' + reminder, {
         method: 'DELETE'
       }).then(response => response.json())
 };
 
 export const wipeAll = async (selected) => {
-    return  fetch(config.BASE_URL + "/wipe", {
+    return  fetch(BASE_URL + "/wipe", {
         method: 'POST',
         headers: {
             Accept: 'application/json',
