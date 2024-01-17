@@ -1,24 +1,25 @@
 import { useRef, useState, useCallback } from "react";
-import { Pressable, View, Text, StyleSheet, DrawerLayoutAndroid, ScrollView, Modal, TextInput } from "react-native";
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { Icon } from "@rneui/base";
+import { Pressable, View, Text, StyleSheet, DrawerLayoutAndroid, ScrollView } from "react-native";
+
 import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
 import { CheckBox } from '@rneui/themed';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import Timer from "./Timer";
+import Notes from "./Notes";
 import { wipeAll } from "../api";
+import TimePicker from "./TimePicker";
 
 export default function Header({
     reminders,
     onSucess,
     children
 }) {
-    const [showTimer, setShowTimer] = useState(false);
-    const [stopTime, setStopTime] = useState()
+    
+    
     const [showDeleted, setShowDeleted] = useState(false);
-    const [showNotes, setShowNotes] = useState(false);
-    const [note, onChangeNote] = useState("");
+
+
     const [selected, setSelected] = useState([]);
     const [items, setItems] = useState(reminders.deleted);
     const [showPicker, setShowPicker] = useState(false);
@@ -38,8 +39,7 @@ export default function Header({
         return null;
     }
 
-    let initialValue = new Date()
-    initialValue.setHours(0, 1, 0, 0)
+    
 
     const handleCheck = (reminder) => {
         let temp = items.map((item) => {
@@ -50,7 +50,7 @@ export default function Header({
         });
         setSelected(temp.filter((item) => item.priority).map((item) => item["_id"]))
         setItems(temp);
-        
+
         console.log(selected)
     };
 
@@ -77,7 +77,7 @@ export default function Header({
                     style={styles.drawerHeaderIcon}
                     onPress={() => drawer.current.closeDrawer()}
                 >
-                    <Icon name="close" color="#b804d1de" size={40} />
+                    <MaterialCommunityIcons name="close-circle" color="#b804d1de" size={40} />
                 </Pressable >
                 <Text style={styles.drawerHeaderText}>NOTIFY</Text>
             </View>
@@ -90,36 +90,10 @@ export default function Header({
                 <Text style={styles.menuBtnText}>Timer</Text>
                 <FontAwesome5 name="chevron-circle-right" size={30} color="#fff" style={{ marginLeft: 'auto', marginTop: 5 }} />
             </Pressable>
-            <Pressable
-                onPress={() => setShowNotes(true)}
-                style={styles.menuBtn}
-            >
-                <MaterialCommunityIcons name="timer" size={30} color="#b804d1de" />
-                <Text style={styles.menuBtnText}>Notes</Text>
-                <FontAwesome5 name="chevron-circle-right" size={30} color="#fff" style={{ marginLeft: 'auto', marginTop: 5 }} />
 
-            </Pressable>
-            <Modal
-                animationType="slide"
-                transparent={true}
-                visible={showNotes}
-                onRequestClose={() => {
-                    setShowNotes(!showNotes);
-                }}>
-                <View style={styles.timeIsUp}>
-                    <TextInput
-                        autoFocus={true}
-                        multiline={true}
-                        numberOfLines={6}
-                        placeholderTextColor="#fff"
-                        style={styles.input}
-                        onChangeText={onChangeNote}
-                        value={note}
-                        placeholder="memo"
-                    />
-                </View>
-            </Modal>
-            {selected.length > 0?
+            <Notes />
+
+            {selected.length > 0 ?
 
                 <Pressable
                     onPress={() => deleteForGood()}
@@ -144,7 +118,7 @@ export default function Header({
                 }
             </Pressable>
             {showDeleted &&
-                <ScrollView style={{flex:1}}>
+                <ScrollView style={{ flex: 1 }}>
                     {items.map((reminder) => {
                         return (
                             <View key={reminder._id} style={styles.item}>
@@ -203,53 +177,36 @@ export default function Header({
                         style={{ marginRight: 'auto' }}
                         onPress={() => drawer.current.openDrawer()}
                     >
-                        <Icon name="menu" color="white" size={40} />
+                        <MaterialCommunityIcons name="menu" color="white" size={40} />
                     </Pressable >
                     <Text style={styles.headerTitle}>NOTIFY</Text>
                 </View>
                 <View style={styles.listContainer}>
                     {children}
-                    {showTimer &&
-                        <View style={styles.alarm}>
-                            <Timer setShowTimer={setShowTimer} stopTime={stopTime} />
-                        </View>
-                    }
+                    
+                <TimePicker
+                    setShowPicker={setShowPicker}
+                   showPicker={showPicker}
+                  
+                    close={() => drawer.current.closeDrawer()}
+                />
+            
                 </View>
             </View>
-            {showPicker &&
-                <DateTimePicker
-                    value={initialValue}
-                    is24Hour={true}
-                    mode="time"
-                    display='spinner'
-                    onChange={(selectedTime) => {
-                        console.log(selectedTime)
-                        let t = new Date(selectedTime.nativeEvent.timestamp)
-                        t.setSeconds(0)
-                        setShowPicker(false)
-                        setStopTime(t)
-                        setShowTimer(true)
-                        drawer.current.closeDrawer()
-                    }}
-                    onCancel={() => {
-                        console.log("STOP")
-                        setShowPicker(false)
-                    }}
-                />
-            }
+            
         </DrawerLayoutAndroid>
     );
 };
 
 const styles = StyleSheet.create({
     drawer: {
-        flex:1
+        flex: 1
     },
     container: {
-       
+
         backgroundColor: '#000',
         position: 'relative',
-       flex:1
+        flex: 1
     },
     header: {
         flex: 1,
@@ -270,8 +227,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         backgroundColor: "#000",
         marginTop: 16,
-        borderBottomWidth: 1,
-        borderBottomColor: 'grey'
+        paddingLeft: 20
     },
     drawerHeaderText: {
         fontFamily: "Rubik-Black",
@@ -279,6 +235,10 @@ const styles = StyleSheet.create({
         fontSize: 28,
         marginLeft: 'auto',
         marginRight: 'auto',
+    },
+    drawerHeaderIcon: {
+        position: 'absolute',
+        left: 15
     },
     menuBtn: {
         backgroundColor: '#121212',
@@ -309,9 +269,7 @@ const styles = StyleSheet.create({
         fontSize: 28,
         marginRight: 'auto',
     },
-    drawerHeaderIcon: {
-        position: 'absolute'
-    },
+
     item: {
         backgroundColor: '#121212',
         borderRadius: 6,
@@ -341,29 +299,22 @@ const styles = StyleSheet.create({
         fontSize: 17
     },
     wipeBtn: {
-        flexDirection:'row',
-        justifyContent:'space-evenly',
-        width:'90%',
-        backgroundColor:'red',
-        padding:20,
-        borderRadius:50,
+        flexDirection: 'row',
+        justifyContent: 'space-evenly',
+        width: '90%',
+        backgroundColor: 'red',
+        padding: 20,
+        borderRadius: 50,
         position: "absolute",
         zIndex: 99,
-        marginLeft:'5%',
-        marginRight:'5%',
-       bottom:0
+        marginLeft: '5%',
+        marginRight: '5%',
+        bottom: 0
     },
     wipeBtnText: {
-        color:"#fff",
-        fontWeight:'bold',
-        fontSize:20
+        color: "#fff",
+        fontWeight: 'bold',
+        fontSize: 20
     },
-    input: {
-        fontSize: 19,
-        width: '100%',
-        color: '#fff',
-        backgroundColor: '#121212',
-        borderRadius: 10,
-        margin: 5
-      },
+
 });
