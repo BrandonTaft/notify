@@ -8,6 +8,13 @@ function Notes () {
     return (
         <>
         <Pressable
+         android_ripple={
+            RippleConfig = {
+                color: '#121212',
+                foreground: true,
+                borderLess: true
+            }
+        }
                 onPress={() => setShowNotes(!showNotes)}
                 style={styles.menuBtn}
             >
