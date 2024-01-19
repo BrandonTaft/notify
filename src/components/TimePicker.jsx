@@ -5,24 +5,23 @@ import { Pressable, View, Text, StyleSheet, DrawerLayoutAndroid, ScrollView } fr
 
 function TimePicker({
     setShowPicker,
-   showPicker,
+    showPicker,
     
-    close
 }) {
     const [showTimer, setShowTimer] = useState(false);
     const [stopTime, setStopTime] = useState();
 
     let initialValue = new Date()
     initialValue.setHours(0, 1, 0, 0)
-    return(
+    return (
         <View style={styles.container}>
-         {showTimer &&
-                        <View style={styles.alarm}>
-                            <Timer setShowTimer={setShowTimer} stopTime={stopTime} />
-                        </View>
-                    }
-                    {showPicker &&
-        <DateTimePicker
+            {showTimer &&
+                <View style={styles.alarm}>
+                    <Timer setShowTimer={setShowTimer} stopTime={stopTime} />
+                </View>
+            }
+            {showPicker &&
+                <DateTimePicker
                     value={initialValue}
                     is24Hour={true}
                     mode="time"
@@ -33,15 +32,15 @@ function TimePicker({
                         setShowPicker(false)
                         setStopTime(t)
                         setShowTimer(true)
-                        close()
+                       
                     }}
                     onCancel={() => {
                         console.log("STOP")
                         setShowPicker(false)
                     }}
                 />
-}
-                </View>
+            }
+        </View>
     )
 }
 
@@ -63,7 +62,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     alarm: {
-        
+
         left: 0,
         right: 0,
         backgroundColor: '#00030ae0',

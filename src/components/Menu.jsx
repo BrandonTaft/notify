@@ -3,7 +3,7 @@ import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
 import DeletedItems from "./DeletedItems";
 import Notes from "./Notes";
 
-export default function Menu({ reminders, onSucess, showPicker, setShowPicker }) {
+export default function Menu({ reminders, onSucess, setShowPicker, close }) {
     return (
         <View style={styles.drawer}>
             <View style={styles.drawerHeader}>
@@ -16,7 +16,7 @@ export default function Menu({ reminders, onSucess, showPicker, setShowPicker })
                         }
                     }
                     style={styles.drawerHeaderIcon}
-                    onPress={() => drawer.current.closeDrawer()}
+                    onPress={() => close()}
                 >
                     <MaterialCommunityIcons name="close-circle" color="#b804d1de" size={40} />
                 </Pressable >
@@ -31,8 +31,11 @@ export default function Menu({ reminders, onSucess, showPicker, setShowPicker })
                         borderLess: true
                     }
                 }
-                onPress={() => setShowPicker(!showPicker)}
-                style={styles.menuBtn}
+                onPress={() => {
+                   setShowPicker(prev => !prev)
+                    close()
+                }}
+                    style={styles.menuBtn}
             >
                 <MaterialCommunityIcons name="timer" size={30} color="#b804d1de" />
                 <Text style={styles.menuBtnText}>Timer</Text>
