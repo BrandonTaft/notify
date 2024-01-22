@@ -1,7 +1,15 @@
-const BASE_URL = "https://07d2-2600-6c5a-4a7f-463a-58e4-6673-de0c-e659.ngrok-free.app";
+const BASE_URL = "https://73d7-2600-6c5a-4a7f-463a-6ca3-54f9-9f56-dcd4.ngrok-free.app";
 
 export const fetchReminders = async () => {
     return await fetch(BASE_URL)
+        .catch((err) => {
+            console.log(err);
+        })
+        .then((res) => res.json())
+};
+
+export const fetchNotes = async () => {
+    return await fetch(BASE_URL + '/notes')
         .catch((err) => {
             console.log(err);
         })
@@ -70,3 +78,37 @@ export const wipeAll = async (selected) => {
         })
     }).then(response => response.json())
 };
+
+export const addNote = async (note) => {
+    return await fetch(BASE_URL  + "/notes", {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: note,
+          note: true
+        })
+      }).catch((err) => {
+        console.log(err);
+    }).then(response => response.json())
+};
+
+export const updateNote = async (note) => {
+    return await fetch(BASE_URL  + "/notes", {
+        method: 'PUT',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: note,
+          note: true,
+          id:_id
+        })
+      }).catch((err) => {
+        console.log(err);
+    }).then(response => response.json())
+};
+

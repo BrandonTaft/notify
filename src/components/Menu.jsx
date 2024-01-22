@@ -10,7 +10,7 @@ export default function Menu({ reminders, onSucess, setShowPicker, close }) {
                 <Pressable
                     android_ripple={
                         RippleConfig = {
-                            color: '#121212',
+                            color: '#2e2e2f',
                             foreground: true,
                             borderLess: true
                         }
@@ -26,7 +26,7 @@ export default function Menu({ reminders, onSucess, setShowPicker, close }) {
             <Pressable
                 android_ripple={
                     RippleConfig = {
-                        color: '#121212',
+                        color: '#2e2e2f',
                         foreground: true,
                         borderLess: true
                     }
@@ -56,7 +56,7 @@ export default function Menu({ reminders, onSucess, setShowPicker, close }) {
 const styles = StyleSheet.create({
     drawer: {
         flex: 1,
-        paddingLeft:5
+        paddingLeft:5,
     },
     drawerHeader: {
         flexDirection: 'row',
@@ -77,10 +77,9 @@ const styles = StyleSheet.create({
         left: 15
     },
     menuBtn: {
-        backgroundColor: '#121212',
-        borderRadius: 0,
-        borderBottomLeftRadius: 0,
-        borderBottomRightRadius: 0,
+        backgroundColor: '#2e2e2f',
+        borderRadius: 16,
+        borderWidth:5,
         flexDirection: 'row',
         alignItems: 'center',
         paddingLeft: 20,

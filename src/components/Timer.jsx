@@ -15,19 +15,15 @@ function Timer({ setShowTimer, stopTime }) {
     });
 
     async function playSound() {
-        console.log('Loading Sound');
         const { sound } = await Audio.Sound.createAsync(require('../../assets/alarm.wav')
         );
         setSound(sound);
-
-        console.log('Playing Sound');
         await sound.playAsync();
     }
 
     useEffect(() => {
         return sound
             ? () => {
-                console.log('Unloading Sound');
                 sound.unloadAsync();
             }
             : undefined;
@@ -44,6 +40,8 @@ function Timer({ setShowTimer, stopTime }) {
 
     useEffect(() => {
         if (difference < 0) {
+            setTimeIsUp(true)
+            playSound()
             const timerAudio = setInterval(() => {
                 setTimeIsUp(true)
                 playSound()
@@ -66,6 +64,7 @@ function Timer({ setShowTimer, stopTime }) {
 
             return () => clearInterval(timer);
         }
+
     }, [difference, started]);
 
     return (
@@ -182,8 +181,8 @@ export default Timer
 
 const styles = StyleSheet.create({
     container: {
-        padding: 20,
-        margin: 10,
+        paddingTop: 10,
+        paddingBottom: 20,
         justifyContent: "center",
         alignItems: "center",
     },

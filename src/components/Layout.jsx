@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: '#000',
         position: 'relative',
-        flex: 1
+        flex: 1,
     },
     listContainer: {
         flex: 10,

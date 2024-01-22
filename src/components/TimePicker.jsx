@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Timer from './Timer';
-import { Pressable, View, Text, StyleSheet, DrawerLayoutAndroid, ScrollView } from "react-native";
+import { View } from "react-native";
 
 function TimePicker({
     setShowPicker,
@@ -14,11 +14,11 @@ function TimePicker({
     let initialValue = new Date()
     initialValue.setHours(0, 1, 0, 0)
     return (
-        <View style={styles.container}>
+        <View style={{ backgroundColor: '#00030ae0', position: 'absolute', borderRadius:33, margin:25}}>
             {showTimer &&
-                <View style={styles.alarm}>
+                
                     <Timer setShowTimer={setShowTimer} stopTime={stopTime} />
-                </View>
+              
             }
             {showPicker &&
                 <DateTimePicker
@@ -27,16 +27,17 @@ function TimePicker({
                     mode="time"
                     display='spinner'
                     onChange={(selectedTime) => {
+                        if(selectedTime.type === "set"){
                         let t = new Date(selectedTime.nativeEvent.timestamp)
                         t.setSeconds(0)
                         setShowPicker(false)
                         setStopTime(t)
                         setShowTimer(true)
-                       
-                    }}
-                    onCancel={() => {
-                        console.log("STOP")
+                        } else{
                         setShowPicker(false)
+                        setShowTimer(false)
+                        }
+                       
                     }}
                 />
             }
@@ -45,29 +46,3 @@ function TimePicker({
 }
 
 export default TimePicker
-
-const styles = StyleSheet.create({
-    drawer: {
-        flex: 1
-    },
-    container: {
-
-        backgroundColor: '#000',
-        position: 'absolute',
-        flex: 1
-    },
-    header: {
-        flex: 1,
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    alarm: {
-
-        left: 0,
-        right: 0,
-        backgroundColor: '#00030ae0',
-        marginLeft: 20,
-        marginRight: 20,
-        borderRadius: 20
-    }
-})

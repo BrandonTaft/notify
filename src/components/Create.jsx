@@ -125,7 +125,7 @@ export default function Create({
                             foreground: true,
                             borderLess: true
                         }
-                    } style={styles.round} onPress={postReminder}>
+                    } style={styles.round} onPress={() => postReminder()}>
               <Text style={{ fontSize: 18, color: 'white', fontWeight: 'bold' }}>Save</Text>
             </Pressable>
             <Pressable android_ripple={

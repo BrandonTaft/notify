@@ -39,8 +39,19 @@ function DeletedItems({ reminders, onSucess }) {
                         borderLess: true
                     }
                 }
-                onPress={() => setShowDeleted(!showDeleted)}
-                style={styles.menuBtn}
+                onPress={() => {
+                    let cleared = items.map((item) => {
+                        if(item.priority === true) {
+                            item.priority = false
+                        }
+                        return item
+                    })
+                    setItems(cleared)
+                    setShowDeleted(!showDeleted)
+                    setSelected([])
+                    
+                }}
+                style={[styles.menuBtn, showDeleted && styles.active]}
             >
                 <FontAwesome5 name="trash" size={28} color="#b804d1de" />
                 <Text style={styles.menuBtnText}>Deleted</Text>
@@ -100,15 +111,18 @@ function DeletedItems({ reminders, onSucess }) {
 
 const styles = StyleSheet.create({
     menuBtn: {
-        backgroundColor: '#121212',
-        borderRadius: 0,
-        borderBottomLeftRadius: 0,
-        borderBottomRightRadius: 0,
+        backgroundColor: '#2e2e2f',
+        borderRadius: 16,
+        borderWidth:5,
         flexDirection: 'row',
         alignItems: 'center',
         paddingLeft: 20,
         paddingRight: 20,
-        marginTop: 10
+        marginTop: 10,
+        marginBottom:3
+    },
+    active: {
+        borderColor:'#b804d1de',
     },
     menuBtnText: {
         fontFamily: 'Rubik-Medium',
@@ -118,17 +132,17 @@ const styles = StyleSheet.create({
         marginBottom: 8
     },
     item: {
-        backgroundColor: '#121212',
-        borderRadius: 6,
+        backgroundColor: '#2e2e2f',
+        borderRadius: 16,
         flexDirection: 'row',
-        margin: 1,
+        margin: 3,
         marginLeft: 0,
         marginRight: 0,
         paddingTop: 16,
         paddingBottom: 16
     },
     checkBox: {
-        backgroundColor: '#121212',
+        backgroundColor: '#2e2e2f',
         padding: 0,
     },
     horizontal: {
@@ -154,7 +168,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         position: "absolute",
         zIndex: 99,
-       
+       marginLeft:5,
         bottom: 0
     },
     wipeBtnText: {
