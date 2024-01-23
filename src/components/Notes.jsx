@@ -7,11 +7,12 @@ import { addNote, updateNote, fetchNotes, wipeAll } from '../api';
 function Notes() {
     const [showList, setShowList] = useState(false);
     const [showNotes, setShowNotes] = useState(false);
-    const [note, setNote] = useState({});
+    const [note, setNote] = useState();
     const [items, setItems] = useState([]);
     const [selected, setSelected] = useState([]);
     const [refresh, setRefresh] = useState(false);
-    const [action, setAction] = useState("POST");
+    const [isUpdate, setIsUpdate] = useState(false);
+
     useEffect(() => {
         fetchNotes()
             .then(result => {
@@ -20,8 +21,7 @@ function Notes() {
                     setSelected([])
                 }
             })
-
-    }, [refresh])
+    }, [refresh, showList])
 
     const handleNote = () => {
         if (note) {
@@ -33,7 +33,6 @@ function Notes() {
                         setRefresh(!refresh)
                     }
                 })
-
         }
     };
 
@@ -42,15 +41,14 @@ function Notes() {
             updateNote(note)
                 .then(result => {
                     if (result.success) {
+                        setIsUpdate(false)
                         setShowNotes(false)
                         setNote()
                         setRefresh(!refresh)
                     }
                 })
-
         }
     };
-
 
     const handleCheck = (reminder) => {
         let temp = items.map((item) => {
@@ -72,7 +70,6 @@ function Notes() {
             .then(result => {
                 if (result.success) {
                     setRefresh(!refresh)
-                    setSelected([])
                 }
             })
     }
@@ -87,13 +84,27 @@ function Notes() {
                         borderLess: true
                     }
                 }
-                onPress={() => setShowList(!showList)}
+                onPress={() => {
+                    setShowList(!showList)
+                }}
                 style={[styles.menuBtn, showList && styles.active]}
             >
-                <MaterialIcons name="event-note" size={30} color="#b804d1de" />
-                <Text style={styles.menuBtnText}>Notes</Text>
-                <FontAwesome5 name="chevron-circle-right" size={30} color="#fff" style={{ marginLeft: 'auto', marginTop: 5 }} />
-
+                <MaterialIcons
+                    name="event-note"
+                    size={30}
+                    color="#b804d1de"
+                />
+                <Text style={styles.menuBtnText}>
+                    Notes
+                </Text>
+                <FontAwesome5
+                    name="chevron-circle-right"
+                    size={30} color="#fff"
+                    style={{
+                        marginLeft: 'auto',
+                        marginTop: 5
+                    }}
+                />
             </Pressable>
             {showList &&
                 <>
@@ -110,14 +121,14 @@ function Notes() {
                                     key={reminder._id}
                                     style={styles.item}
                                     onPress={() => {
-                                        setAction("PUT")
+                                        setIsUpdate(true)
                                         setShowNotes(true)
                                         setNote(reminder)
                                     }}
                                 >
                                     <CheckBox
                                         checked={reminder.priority}
-                                        onPress={() => { handleCheck(reminder) }}
+                                        onPress={() => handleCheck(reminder)}
                                         size={25}
                                         containerStyle={styles.checkBox}
                                         right={true}
@@ -127,7 +138,9 @@ function Notes() {
                                         uncheckedColor='#b804d1de'
                                     />
                                     <View style={styles.vertical}>
-                                        <Text style={styles.itemText}>{reminder.name.split('\n')[0] + '...'}</Text>
+                                        <Text style={styles.itemText}>
+                                            {reminder.name.split('\n')[0] + '...'}
+                                        </Text>
                                     </View>
                                 </Pressable>
                             );
@@ -144,26 +157,23 @@ function Notes() {
                             style={styles.round}
                             onPress={() => setShowNotes(true)}
                         >
-                            <MaterialIcons name="add" size={35} color="#b804d1de" />
-                        </Pressable>
-                        <Pressable android_ripple={
-                            RippleConfig = {
-                                color: '#2e2e2f',
-                                foreground: true,
-                                borderLess: true
-                            }
-                        }
-                            style={styles.round}
-                            onPress={() => setShowNotes(false)}
-                        >
-                            <MaterialIcons name="cancel" size={35} color="#b804d1de" />
+                            <MaterialIcons
+                                name="note-add"
+                                size={40}
+                                color="#b804d1de"
+                            />
+
                         </Pressable>
                         <Pressable
                             onPress={() => deleteChecked()}
                             style={styles.round}
                             disabled={selected.length === 0}
                         >
-                            <FontAwesome5 name="trash" size={25} color="#b804d1de" />
+                            <MaterialIcons
+                                name="delete"
+                                size={40}
+                                color="#b804d1de"
+                            />
                         </Pressable>
                     </View>
                 </>
@@ -182,9 +192,8 @@ function Notes() {
                         numberOfLines={6}
                         placeholderTextColor="#fff"
                         style={styles.input}
-                        onChangeText={setNote}
-                        value={note.name}
-                        placeholder=""
+                        onChangeText={(value) => setNote({ ...note, "name": value })}
+                        value={note ? note.name : ""}
                     />
                     <View style={[styles.topHorizontal, styles.inputPanel]}>
                         <Pressable android_ripple={
@@ -194,16 +203,19 @@ function Notes() {
                                 borderLess: true
                             }
                         }
+                            disabled={!note}
                             style={[styles.round, styles.pink]}
                             onPress={() => {
-                                if(action === "POST") {
-                                handleNote()
-                                } else if(action === "PUT") {
-                                handleUpdate(note)
+                                if (isUpdate) {
+                                    handleUpdate(note)
+                                } else {
+                                    handleNote(note.name)
                                 }
                             }}
                         >
-                            <Text style={{ fontSize: 18, color: "#fff", fontWeight: 'bold' }}>Save</Text>
+                            <Text style={{ fontSize: 18, color: "#fff", fontWeight: 'bold' }}>
+                                Save
+                            </Text>
                         </Pressable>
                         <Pressable android_ripple={
                             RippleConfig = {
@@ -213,9 +225,15 @@ function Notes() {
                             }
                         }
                             style={[styles.round, styles.pink]}
-                            onPress={() => setShowNotes(false)}
+                            onPress={() => {
+                                setShowNotes(false)
+                                setNote()
+                                setIsUpdate(false)
+                            }}
                         >
-                            <Text style={{ fontSize: 18, color: "#fff", fontWeight: 'bold' }}>Cancel</Text>
+                            <Text style={{ fontSize: 18, color: "#fff", fontWeight: 'bold' }}>
+                                Cancel
+                            </Text>
                         </Pressable>
                     </View>
                 </View>
@@ -256,7 +274,6 @@ const styles = StyleSheet.create({
         color: '#b804d1de',
         fontSize: 40,
         textAlign: "center",
-
     },
     input: {
         fontSize: 19,
@@ -325,25 +342,6 @@ const styles = StyleSheet.create({
         fontFamily: "Rubik-Regular",
         color: 'white',
         fontSize: 19,
-
         marginRight: 15
-    },
-    wipeBtn: {
-        flexDirection: 'row',
-        justifyContent: 'space-evenly',
-        width: "100%",
-        backgroundColor: 'red',
-        padding: 20,
-        borderRadius: 5,
-        position: "absolute",
-        zIndex: 99,
-
-        bottom: 0
-    },
-    wipeBtnText: {
-        color: "#fff",
-        fontWeight: 'bold',
-        fontSize: 20
-    },
-
+    }
 })

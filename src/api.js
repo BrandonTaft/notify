@@ -87,7 +87,7 @@ export const addNote = async (note) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          name: note,
+          name: note.name,
           note: true
         })
       }).catch((err) => {
@@ -103,9 +103,9 @@ export const updateNote = async (note) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          name: note,
+          name: note.name,
           note: true,
-          id:_id
+          id:note._id
         })
       }).catch((err) => {
         console.log(err);
