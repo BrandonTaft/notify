@@ -74,6 +74,17 @@ function Notes() {
             })
     }
 
+    const deleteNote = () => {
+        wipeAll([note._id])
+            .then(result => {
+                if (result.success) {
+                    setRefresh(!refresh)
+                    setShowNotes(false)
+                    setNote()
+                }
+            })
+    }
+
     return (
         <>
             <Pressable
@@ -141,12 +152,17 @@ function Notes() {
                                         <Text style={styles.itemText}>
                                             {reminder.name.split('\n')[0] + '...'}
                                         </Text>
+                                        <Text style={styles.time}>
+                                            {new Date(reminder.time).toLocaleDateString([], {
+                                                weekday: 'short', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit'
+                                            })}
+                                        </Text>
                                     </View>
                                 </Pressable>
                             );
                         })}
                     </ScrollView>
-                    <View style={styles.topHorizontal}>
+                    <View style={styles.horizontal}>
                         <Pressable android_ripple={
                             RippleConfig = {
                                 color: '#2e2e2f',
@@ -164,7 +180,13 @@ function Notes() {
                             />
 
                         </Pressable>
-                        <Pressable
+                        <Pressable android_ripple={
+                            RippleConfig = {
+                                color: '#2e2e2f',
+                                foreground: true,
+                                borderLess: true
+                            }
+                        }
                             onPress={() => deleteChecked()}
                             style={styles.round}
                             disabled={selected.length === 0}
@@ -187,7 +209,7 @@ function Notes() {
                 <View style={styles.notes}>
                     <Text style={styles.title}>Notes</Text>
                     <TextInput
-                        autoFocus={true}
+                        autoFocus={!note}
                         multiline={true}
                         numberOfLines={6}
                         placeholderTextColor="#fff"
@@ -195,7 +217,7 @@ function Notes() {
                         onChangeText={(value) => setNote({ ...note, "name": value })}
                         value={note ? note.name : ""}
                     />
-                    <View style={[styles.topHorizontal, styles.inputPanel]}>
+                    <View style={[styles.horizontal, styles.inputPanel]}>
                         <Pressable android_ripple={
                             RippleConfig = {
                                 color: '#2e2e2f',
@@ -213,9 +235,26 @@ function Notes() {
                                 }
                             }}
                         >
-                            <Text style={{ fontSize: 18, color: "#fff", fontWeight: 'bold' }}>
+                            <Text style={styles.btnText}>
                                 Save
                             </Text>
+                        </Pressable>
+                        <Pressable android_ripple={
+                            RippleConfig = {
+                                color: '#2e2e2f',
+                                foreground: true,
+                                borderLess: true
+                            }
+                        }
+                            onPress={() => deleteNote()}
+                            style={[styles.round, styles.pink]}
+                           disabled={!note}
+                        >
+                            <MaterialIcons
+                                name="delete"
+                                size={40}
+                                color="#fff"
+                            />
                         </Pressable>
                         <Pressable android_ripple={
                             RippleConfig = {
@@ -231,8 +270,8 @@ function Notes() {
                                 setIsUpdate(false)
                             }}
                         >
-                            <Text style={{ fontSize: 18, color: "#fff", fontWeight: 'bold' }}>
-                                Cancel
+                            <Text style={[styles.btnText, styles.x]}>
+                                x
                             </Text>
                         </Pressable>
                     </View>
@@ -263,20 +302,25 @@ const styles = StyleSheet.create({
         borderColor: '#b804d1de',
     },
     menuBtnText: {
-        fontFamily: 'Rubik-Medium',
+        fontFamily: 'Rubik-Bold',
         color: '#b804d1de',
         fontSize: 24,
         margin: 16,
         marginBottom: 8
     },
+    time: {
+        fontFamily: "Rubik-Regular",
+        color: 'grey',
+        fontSize: 17
+    },
     title: {
-        fontFamily: 'Rubik-Medium',
+        fontFamily: 'Rubik-Black',
         color: '#b804d1de',
         fontSize: 40,
         textAlign: "center",
     },
     input: {
-        fontSize: 19,
+        fontSize: 20,
         flex: 4,
         color: '#fff',
         backgroundColor: '#2e2e2f',
@@ -287,19 +331,22 @@ const styles = StyleSheet.create({
         paddingVertical: 22,
         paddingHorizontal: 10
     },
-    topHorizontal: {
+    horizontal: {
         backgroundColor: '#b804d1de',
         paddingVertical: 6,
         flexDirection: 'row',
         justifyContent: 'space-evenly',
         alignItems: 'center',
-        borderWidth: 5,
+        
         borderRadius: 10,
         borderBottomWidth: 0,
     },
     inputPanel: {
-        marginLeft: 10,
-        marginRight: 10,
+        marginLeft: 15,
+        marginRight: 15,
+        marginBottom:50,
+        marginTop:20,
+        paddingVertical: 12,
         backgroundColor: '#2e2e2f',
     },
     round: {
@@ -315,6 +362,15 @@ const styles = StyleSheet.create({
         backgroundColor: '#b804d1de',
         width: 80,
         height: 80,
+    },
+    btnText: {
+        fontSize: 18,
+        color: "#fff",
+        fontFamily: 'Rubik-Bold',
+    },
+    x: {
+        fontSize: 32,
+        fontFamily: 'Rubik-Regular',
     },
     item: {
         backgroundColor: '#2e2e2f',

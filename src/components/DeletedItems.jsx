@@ -1,13 +1,25 @@
-import { useRef, useState, useCallback } from "react";
+import { useRef, useState, useCallback, useEffect } from "react";
 import { Pressable, View, Text, StyleSheet, DrawerLayoutAndroid, ScrollView } from "react-native";
 import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
 import { CheckBox } from '@rneui/themed';
-import { wipeAll } from "../api";
+import { fetchReminders, wipeAll } from "../api";
 
-function DeletedItems({ reminders, onSucess }) {
+function DeletedItems() {
     const [showDeleted, setShowDeleted] = useState(false);
-    const [items, setItems] = useState(reminders.deleted);
+    const [items, setItems] = useState([]);
     const [selected, setSelected] = useState([]);
+    const [refresh, setRefresh] = useState(false);
+
+    useEffect(() => {
+        fetchReminders()
+            .then(result => {
+                
+                if (result.success) {
+                    setItems(result.deleted)
+                    setSelected([])
+                }
+            })
+    }, [refresh, showDeleted])
 
     const handleCheck = (reminder) => {
         let temp = items.map((item) => {
@@ -24,11 +36,11 @@ function DeletedItems({ reminders, onSucess }) {
         wipeAll(selected)
             .then(result => {
                 if (result.success) {
-                    onSucess()
+                    setRefresh(!refresh)
                 }
             })
     }
-
+    
     return (
         <>
             <Pressable
@@ -125,7 +137,7 @@ const styles = StyleSheet.create({
         borderColor:'#b804d1de',
     },
     menuBtnText: {
-        fontFamily: 'Rubik-Medium',
+        fontFamily: 'Rubik-Bold',
         color: '#b804d1de',
         fontSize: 24,
         margin: 16,

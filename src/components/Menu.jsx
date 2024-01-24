@@ -4,6 +4,7 @@ import DeletedItems from "./DeletedItems";
 import Notes from "./Notes";
 
 export default function Menu({ reminders, onSucess, setShowPicker, close }) {
+    
     return (
         <View style={styles.drawer}>
             <View style={styles.drawerHeader}>
@@ -87,7 +88,7 @@ const styles = StyleSheet.create({
         marginTop: 10
     },
     menuBtnText: {
-        fontFamily: 'Rubik-Medium',
+        fontFamily: 'Rubik-Bold',
         color: '#b804d1de',
         fontSize: 24,
         margin: 16,
