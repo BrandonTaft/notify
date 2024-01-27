@@ -1,8 +1,6 @@
 import { StatusBar, Modal, StyleSheet, View, Pressable, Text } from 'react-native';
-import usePushNotification from '../hooks/usePushNotification';
 
-function Alarm() {
-    const { notification, setSound, showAlarm, setShowAlarm } = usePushNotification();
+function Alarm({ notification, setSound, showAlarm, setShowAlarm }) {
 return (
     <Modal
             animationType="slide"

@@ -1,11 +1,10 @@
-import { useRef, useState, useCallback, useEffect } from "react";
-import { Pressable, View, Text, StyleSheet, DrawerLayoutAndroid, ScrollView } from "react-native";
+import { useState, useEffect } from "react";
+import { Pressable, View, Text, StyleSheet, ScrollView } from "react-native";
 import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
 import { CheckBox } from '@rneui/themed';
-import { fetchReminders, wipeAll } from "../api";
+import { fetchReminders, wipeAll, restoreMany } from "../api";
 
-function DeletedItems() {
-    const [showDeleted, setShowDeleted] = useState(false);
+function DeletedItems({ showDeleted, setShowDeleted, showList }) {
     const [items, setItems] = useState([]);
     const [selected, setSelected] = useState([]);
     const [refresh, setRefresh] = useState(false);
@@ -13,13 +12,16 @@ function DeletedItems() {
     useEffect(() => {
         fetchReminders()
             .then(result => {
-                
                 if (result.success) {
                     setItems(result.deleted)
                     setSelected([])
                 }
             })
-    }, [refresh, showDeleted])
+
+        if (showList) setShowDeleted(false)
+    }, [refresh, showList])
+
+
 
     const handleCheck = (reminder) => {
         let temp = items.map((item) => {
@@ -40,7 +42,16 @@ function DeletedItems() {
                 }
             })
     }
-    
+
+    const restoreDeleted = () => {
+        restoreMany(selected)
+            .then(result => {
+                if (result.success) {
+                    setRefresh(!refresh)
+                }
+            })
+    }
+
     return (
         <>
             <Pressable
@@ -53,7 +64,7 @@ function DeletedItems() {
                 }
                 onPress={() => {
                     let cleared = items.map((item) => {
-                        if(item.priority === true) {
+                        if (item.priority === true) {
                             item.priority = false
                         }
                         return item
@@ -61,61 +72,97 @@ function DeletedItems() {
                     setItems(cleared)
                     setShowDeleted(!showDeleted)
                     setSelected([])
-                    
+
                 }}
                 style={[styles.menuBtn, showDeleted && styles.active]}
             >
                 <FontAwesome5 name="trash" size={28} color="#b804d1de" />
                 <Text style={styles.menuBtnText}>Deleted</Text>
                 {showDeleted ?
-                    <FontAwesome5 name="chevron-circle-down" size={30} color="#fff" style={{ marginLeft: 'auto', marginTop: 5 }} />
+                    <FontAwesome5
+                        name="chevron-circle-down"
+                        size={30} color="#fff"
+                        style={{
+                            marginLeft: 'auto',
+                            marginTop: "auto",
+                            marginBottom: 'auto'
+                        }}
+                    />
                     :
-                    <FontAwesome5 name="chevron-circle-right" size={30} color="#fff" style={{ marginLeft: 'auto', marginTop: 5 }} />
+                    <FontAwesome5
+                        name="chevron-circle-right"
+                        size={30} color="#fff"
+                        style={{
+                            marginLeft: 'auto',
+                            marginTop: "auto",
+                            marginBottom: 'auto'
+                        }}
+                    />
                 }
             </Pressable>
             {showDeleted &&
-                <ScrollView style={{ flex: 1 }}>
-                    {items.map((reminder) => {
-                        return (
-                            <View key={reminder._id} style={styles.item}>
-                                <CheckBox
-                                    checked={reminder.priority}
-                                    onPress={() => { handleCheck(reminder) }}
-                                    size={25}
-                                    containerStyle={styles.checkBox}
-                                    right={true}
-                                    checkedIcon='check'
-                                    checkedColor='#b804d1de'
-                                    uncheckedIcon='circle-o'
-                                    uncheckedColor='#b804d1de'
-                                />
-                                <View style={styles.horizontal}>
-                                    <Text style={styles.itemText}>{reminder.name}</Text>
+                <>
+                    <ScrollView style={{ flex: 1 }}>
+                        {items.map((reminder) => {
+                            return (
 
-                                    {reminder.notification &&
 
-                                        <Text style={styles.time}>
-                                            {new Date(reminder.notification).toLocaleDateString([], {
-                                                weekday: 'short', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit'
-                                            })}
-                                        </Text>
-                                    }
+                                <View key={reminder._id} style={styles.item}>
+                                    <CheckBox
+                                        checked={reminder.priority}
+                                        onPress={() => { handleCheck(reminder) }}
+                                        size={25}
+                                        containerStyle={styles.checkBox}
+                                        right={true}
+                                        checkedIcon='check'
+                                        checkedColor='#b804d1de'
+                                        uncheckedIcon='circle-o'
+                                        uncheckedColor='#b804d1de'
+                                    />
+                                    <View style={styles.vertical}>
+                                        <Text style={styles.itemText}>{reminder.name}</Text>
+                                        {reminder.notification &&
+                                            <Text style={styles.time}>
+                                                {new Date(reminder.notification).toLocaleDateString([], {
+                                                    weekday: 'short', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit'
+                                                })}
+                                            </Text>
+                                        }
+                                    </View>
                                 </View>
-                            </View>
-                        );
-                    })}
-                </ScrollView>
-            }
-            {selected.length > 0 ?
 
-                <Pressable
-                    onPress={() => deleteForGood()}
-                    style={styles.wipeBtn}
-                >
-                    <FontAwesome5 name="trash" size={28} color="#fff" />
-                    <Text style={styles.wipeBtnText}>Delete for good</Text>
-                </Pressable>
-                : ""
+                            );
+                        })}
+                    </ScrollView>
+                    <View style={styles.horizontal}>
+                        <Pressable
+                            android_ripple={
+                                RippleConfig = {
+                                    color: '#2e2e2f',
+                                    foreground: true,
+                                    borderLess: true
+                                }
+                            }
+                            onPress={() => restoreDeleted()}
+                            style={styles.wipeBtn}
+                        >
+                            <Text style={styles.wipeBtnText}>Restore</Text>
+                        </Pressable>
+                        <Pressable
+                            android_ripple={
+                                RippleConfig = {
+                                    color: '#2e2e2f',
+                                    foreground: true,
+                                    borderLess: true
+                                }
+                            }
+                            onPress={() => deleteForGood()}
+                            style={styles.wipeBtn}
+                        >
+                            <Text style={styles.wipeBtnText}>Delete</Text>
+                        </Pressable>
+                    </View>
+                </>
             }
         </>
     )
@@ -125,23 +172,24 @@ const styles = StyleSheet.create({
     menuBtn: {
         backgroundColor: '#2e2e2f',
         borderRadius: 16,
-        borderWidth:5,
+        borderWidth: 5,
         flexDirection: 'row',
         alignItems: 'center',
-        paddingLeft: 20,
+        paddingLeft: 25,
         paddingRight: 20,
         marginTop: 10,
-        marginBottom:3
+        marginBottom: 3
     },
     active: {
-        borderColor:'#b804d1de',
+        borderColor: '#b804d1de',
     },
     menuBtnText: {
         fontFamily: 'Rubik-Bold',
         color: '#b804d1de',
-        fontSize: 24,
-        margin: 16,
-        marginBottom: 8
+        fontSize: 22,
+        margin: 8,
+        marginLeft: 28,
+        marginBottom: 4
     },
     item: {
         backgroundColor: '#2e2e2f',
@@ -150,21 +198,32 @@ const styles = StyleSheet.create({
         margin: 3,
         marginLeft: 0,
         marginRight: 0,
-        paddingTop: 16,
-        paddingBottom: 16
+        padding: 5,
+        paddingLeft: 0
     },
     checkBox: {
         backgroundColor: '#2e2e2f',
         padding: 0,
     },
-    horizontal: {
+    vertical: {
         flexDirection: 'column',
-        alignItems: 'stat',
+        alignItems: 'start',
+        width: 240
+    },
+    horizontal: {
+        flexDirection: 'row',
+        justifyContent: 'space-evenly',
+        alignItems: 'center',
+        borderRadius: 16,
+
+        paddingVertical: 8,
+        marginTop: 5
     },
     itemText: {
         fontFamily: "Rubik-Regular",
         color: 'white',
-        fontSize: 19,
+        fontSize: 18,
+        paddingRight: 6,
     },
     time: {
         fontFamily: "Rubik-Regular",
@@ -174,19 +233,16 @@ const styles = StyleSheet.create({
     wipeBtn: {
         flexDirection: 'row',
         justifyContent: 'space-evenly',
-       width:"100%",
-        backgroundColor: 'red',
-        padding: 20,
-        borderRadius: 5,
-        position: "absolute",
-        zIndex: 99,
-       marginLeft:5,
+        width: "40%",
+        backgroundColor: '#b804d1de',
+        padding: 6,
+        borderRadius: 16,
         bottom: 0
     },
     wipeBtnText: {
         color: "#fff",
         fontWeight: 'bold',
-        fontSize: 20
+        fontSize: 18
     },
 
 });

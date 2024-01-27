@@ -1,10 +1,12 @@
+import { useState } from "react";
 import { Pressable, View, Text, StyleSheet, DrawerLayoutAndroid, ScrollView } from "react-native";
 import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
 import DeletedItems from "./DeletedItems";
 import Notes from "./Notes";
 
 export default function Menu({ reminders, onSucess, setShowPicker, close }) {
-    
+    const [showDeleted, setShowDeleted] = useState(false);
+    const [showList, setShowList] = useState(false);
     return (
         <View style={styles.drawer}>
             <View style={styles.drawerHeader}>
@@ -33,21 +35,26 @@ export default function Menu({ reminders, onSucess, setShowPicker, close }) {
                     }
                 }
                 onPress={() => {
-                   setShowPicker(prev => !prev)
+                    setShowPicker(prev => !prev)
                     close()
                 }}
-                    style={styles.menuBtn}
+                style={styles.menuBtn}
             >
-                <MaterialCommunityIcons name="timer" size={30} color="#b804d1de" />
+                <MaterialCommunityIcons name="timer" size={34} color="#b804d1de" />
                 <Text style={styles.menuBtnText}>Timer</Text>
-                <FontAwesome5 name="chevron-circle-right" size={30} color="#fff" style={{ marginLeft: 'auto', marginTop: 5 }} />
+                <FontAwesome5 name="chevron-circle-right" size={30} color="#fff" style={{ marginLeft: 'auto', marginTop: "auto", marginBottom:'auto' }} />
             </Pressable>
 
-            <Notes />
+            <Notes
+                showList={showList}
+                setShowList={setShowList}
+                showDeleted={showDeleted}
+            />
 
             <DeletedItems
-                reminders={reminders}
-                onSucess={onSucess}
+                showDeleted={showDeleted}
+                setShowDeleted={setShowDeleted}
+                showList={showList}
             />
 
         </View>
@@ -57,7 +64,7 @@ export default function Menu({ reminders, onSucess, setShowPicker, close }) {
 const styles = StyleSheet.create({
     drawer: {
         flex: 1,
-        paddingLeft:5,
+        paddingLeft: 5,
     },
     drawerHeader: {
         flexDirection: 'row',
@@ -80,18 +87,23 @@ const styles = StyleSheet.create({
     menuBtn: {
         backgroundColor: '#2e2e2f',
         borderRadius: 16,
-        borderWidth:5,
+        borderWidth: 5,
         flexDirection: 'row',
         alignItems: 'center',
-        paddingLeft: 20,
+        paddingLeft: 25,
         paddingRight: 20,
-        marginTop: 10
+        marginTop: 10,
+        marginBottom: 3
+    },
+    active: {
+        borderColor: '#b804d1de',
     },
     menuBtnText: {
         fontFamily: 'Rubik-Bold',
         color: '#b804d1de',
-        fontSize: 24,
-        margin: 16,
-        marginBottom: 8
-    }
+        fontSize: 22,
+        margin: 8,
+        marginLeft:20,
+        marginBottom: 4
+    },
 });

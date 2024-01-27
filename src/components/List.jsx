@@ -7,11 +7,13 @@ import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { completeMany, deleteMany } from '../api';
 import usePushNotification from '../hooks/usePushNotification';
+import Alarm from './Alarm';
 
 export default function List({ reminders, onSucess }) {
+    const { notification, setSound, showAlarm, setShowAlarm, expoPushToken } = usePushNotification();
     const [editable, setEditable] = useState({});
     const [modalVisible, setModalVisible] = useState(false);
-    const { expoPushToken } = usePushNotification();
+    
     const [fontsLoaded] = useFonts({
         'Rubik-Medium': require('../../assets/fonts/Rubik-Medium.ttf'),
         'Rubik-Regular': require('../../assets/fonts/Rubik-Regular.ttf'),
@@ -106,6 +108,12 @@ export default function List({ reminders, onSucess }) {
 
     return (
         <View style={styles.container}>
+            <Alarm
+                notification={notification}
+                setSound={setSound}
+                showAlarm={showAlarm}
+                setShowAlarm={setShowAlarm}
+            />
             <View style={styles.listContainer}>
                 <ScrollView>
                     <Text style={styles.title} >SCHEDULED</Text>
@@ -216,25 +224,26 @@ const styles = StyleSheet.create({
     },
     listContainer: {
         flex: 10,
-        padding: 4,
+        padding: 10,
         paddingTop: 0,
         width: '100%'
     },
     title: {
         fontFamily: "Rubik-Medium",
         color: 'grey',
-        fontSize: 19,
+        fontSize: 15,
         margin: 0,
     },
     btnContainer: {
         flex: 1,
         padding: 12,
+        marginHorizontal:10,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-evenly',
         borderRadius: 20,
         backgroundColor: '#2e2e2f',
-        width: '100%',
+        
     },
     btn: {
         color: '#fff',

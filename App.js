@@ -47,7 +47,6 @@ export default function App() {
             reminders={reminders}
             onSucess={() => setRefresh(!refresh)}
           />
-          <Alarm />
           <TimePicker
             setShowPicker={setShowPicker}
             showPicker={showPicker}

@@ -73,8 +73,7 @@ const styles = StyleSheet.create({
         margin: 4,
         marginLeft: 0,
         marginRight: 0,
-        paddingTop: 6,
-        paddingBottom: 6
+       
     },
     empty: {
         minHeight: 200,
@@ -88,8 +87,8 @@ const styles = StyleSheet.create({
         fontSize: 18
     },
     unscheduledItem: {
-        paddingTop: 16,
-        paddingBottom: 16
+        paddingTop: 8,
+        paddingBottom: 8
     },
     horizontal: {
         flexDirection: 'column',
@@ -102,12 +101,12 @@ const styles = StyleSheet.create({
     itemText: {
         fontFamily: "Rubik-Medium",
         color: 'white',
-        fontSize: 19
+        fontSize: 18
     },
     time: {
         fontFamily: "Rubik-Regular",
         color: 'grey',
-        fontSize: 17
+        fontSize: 15
     }
 });
 

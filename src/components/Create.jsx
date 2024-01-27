@@ -3,7 +3,7 @@ import { StyleSheet, TextInput, View, Modal, Text, Pressable } from 'react-nativ
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import Icon from 'react-native-vector-icons/AntDesign';
 import IonIcon from 'react-native-vector-icons/Ionicons';
-import { addReminders, deleteReminder } from '../api';
+import { addReminders, deleteMany } from '../api';
 
 
 export default function Create({
@@ -55,7 +55,7 @@ export default function Create({
 
   const handleDeleteReminder = () => {
     if (editable._id) {
-      deleteReminder(editable._id)
+      deleteMany(editable._id)
         .then(result => {
           if (result.success) {
             resetState()

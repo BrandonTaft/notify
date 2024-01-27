@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import { Pressable, View, Text, StyleSheet, Modal, TextInput, ScrollView } from "react-native";
 import { FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 import { CheckBox } from '@rneui/themed';
-import { addNote, updateNote, fetchNotes, wipeAll } from '../api';
+import { addNote, updateNote, fetchNotes, deleteMany } from '../api';
 
-function Notes() {
-    const [showList, setShowList] = useState(false);
+function Notes({ showList, setShowList, showDeleted }) {
     const [showNotes, setShowNotes] = useState(false);
     const [note, setNote] = useState();
+    const [edit, setEdit] = useState(false);
     const [items, setItems] = useState([]);
     const [selected, setSelected] = useState([]);
     const [refresh, setRefresh] = useState(false);
@@ -21,7 +21,10 @@ function Notes() {
                     setSelected([])
                 }
             })
-    }, [refresh, showList])
+            if(showDeleted) setShowList(false)        
+    }, [refresh, showDeleted])
+    
+    
 
     const handleNote = () => {
         if (note) {
@@ -66,7 +69,7 @@ function Notes() {
     };
 
     const deleteChecked = () => {
-        wipeAll(selected)
+        deleteMany(selected)
             .then(result => {
                 if (result.success) {
                     setRefresh(!refresh)
@@ -74,8 +77,8 @@ function Notes() {
             })
     }
 
-    const deleteNote = () => {
-        wipeAll([note._id])
+    const handleDelete = () => {
+        deleteMany([note._id])
             .then(result => {
                 if (result.success) {
                     setRefresh(!refresh)
@@ -102,22 +105,35 @@ function Notes() {
             >
                 <MaterialIcons
                     name="event-note"
-                    size={30}
+                    size={28}
                     color="#b804d1de"
                 />
                 <Text style={styles.menuBtnText}>
                     Notes
                 </Text>
-                <FontAwesome5
-                    name="chevron-circle-right"
-                    size={30} color="#fff"
-                    style={{
-                        marginLeft: 'auto',
-                        marginTop: 5
-                    }}
-                />
+                {showList ?
+                    <FontAwesome5
+                        name="chevron-circle-down"
+                        size={30} color="#fff"
+                        style={{
+                            marginLeft: 'auto',
+                            marginTop: "auto",
+                            marginBottom: 'auto'
+                        }}
+                    />
+                    :
+                    <FontAwesome5
+                        name="chevron-circle-right"
+                        size={30} color="#fff"
+                        style={{
+                            marginLeft: 'auto',
+                            marginTop: "auto",
+                            marginBottom: 'auto'
+                        }}
+                    />
+                }
             </Pressable>
-            {showList &&
+            {showList && 
                 <>
                     <ScrollView style={{ flex: 1 }}>
                         {items.map((reminder) => {
@@ -132,6 +148,7 @@ function Notes() {
                                     key={reminder._id}
                                     style={styles.item}
                                     onPress={() => {
+                                        setEdit(true)
                                         setIsUpdate(true)
                                         setShowNotes(true)
                                         setNote(reminder)
@@ -162,7 +179,7 @@ function Notes() {
                             );
                         })}
                     </ScrollView>
-                    <View style={styles.horizontal}>
+                    <View style={styles.topHorizontal}>
                         <Pressable android_ripple={
                             RippleConfig = {
                                 color: '#2e2e2f',
@@ -170,13 +187,13 @@ function Notes() {
                                 borderLess: true
                             }
                         }
-                            style={styles.round}
+                            style={styles.btn}
                             onPress={() => setShowNotes(true)}
                         >
                             <MaterialIcons
                                 name="note-add"
-                                size={40}
-                                color="#b804d1de"
+                                size={34}
+                                color="#fff"
                             />
 
                         </Pressable>
@@ -188,13 +205,13 @@ function Notes() {
                             }
                         }
                             onPress={() => deleteChecked()}
-                            style={styles.round}
+                            style={styles.btn}
                             disabled={selected.length === 0}
                         >
                             <MaterialIcons
                                 name="delete"
-                                size={40}
-                                color="#b804d1de"
+                                size={34}
+                                color="#fff"
                             />
                         </Pressable>
                     </View>
@@ -218,6 +235,40 @@ function Notes() {
                         value={note ? note.name : ""}
                     />
                     <View style={[styles.horizontal, styles.inputPanel]}>
+                    {edit ?
+                    <>
+                        <Pressable android_ripple={
+                            RippleConfig = {
+                                color: '#2e2e2f',
+                                foreground: true,
+                                borderLess: true
+                            }
+                        }
+                            style={styles.editBtn}
+                            onPress={() => setEdit(false)}
+                        >
+                            <Text style={[styles.editBtnText]}>
+                                Edit
+                            </Text>
+                        </Pressable>
+
+                        <Pressable android_ripple={
+                            RippleConfig = {
+                                color: '#2e2e2f',
+                                foreground: true,
+                                borderLess: true
+                            }
+                        }
+                            style={styles.editBtn}
+                            onPress={() => setEdit(false)}
+                        >
+                            <Text style={[styles.editBtnText]}>
+                                Cancel
+                            </Text>
+                        </Pressable>
+                        </>
+                        :
+                        <>
                         <Pressable android_ripple={
                             RippleConfig = {
                                 color: '#2e2e2f',
@@ -246,7 +297,7 @@ function Notes() {
                                 borderLess: true
                             }
                         }
-                            onPress={() => deleteNote()}
+                            onPress={() => handleDelete()}
                             style={[styles.round, styles.pink]}
                            disabled={!note}
                         >
@@ -274,6 +325,8 @@ function Notes() {
                                 x
                             </Text>
                         </Pressable>
+                        </>
+}
                     </View>
                 </View>
             </Modal>
@@ -294,9 +347,10 @@ const styles = StyleSheet.create({
         borderWidth: 5,
         flexDirection: 'row',
         alignItems: 'center',
-        paddingLeft: 20,
+        paddingLeft: 25,
         paddingRight: 20,
         marginTop: 10,
+        marginBottom: 3
     },
     active: {
         borderColor: '#b804d1de',
@@ -304,14 +358,15 @@ const styles = StyleSheet.create({
     menuBtnText: {
         fontFamily: 'Rubik-Bold',
         color: '#b804d1de',
-        fontSize: 24,
-        margin: 16,
-        marginBottom: 8
+        fontSize: 22,
+        margin: 8,
+        marginLeft:25,
+        marginBottom: 4
     },
     time: {
         fontFamily: "Rubik-Regular",
         color: 'grey',
-        fontSize: 17
+        fontSize: 15
     },
     title: {
         fontFamily: 'Rubik-Black',
@@ -331,15 +386,34 @@ const styles = StyleSheet.create({
         paddingVertical: 22,
         paddingHorizontal: 10
     },
+    topHorizontal: {
+        paddingVertical: 6,
+        flexDirection: 'row',
+        justifyContent: 'space-evenly',
+        alignItems: 'center',
+        borderRadius: 16,
+    },
+    btn: {
+        flexDirection: 'row',
+        justifyContent: 'space-evenly',
+        width: "40%",
+        backgroundColor: '#b804d1de',
+        padding: 6,
+        borderRadius: 16,
+        bottom: 0
+    },
+    wipeBtnText: {
+        color: "#fff",
+        fontWeight: 'bold',
+        fontSize: 18
+    },
     horizontal: {
         backgroundColor: '#b804d1de',
         paddingVertical: 6,
         flexDirection: 'row',
         justifyContent: 'space-evenly',
         alignItems: 'center',
-        
-        borderRadius: 10,
-        borderBottomWidth: 0,
+        borderRadius: 16,
     },
     inputPanel: {
         marginLeft: 15,
@@ -349,13 +423,27 @@ const styles = StyleSheet.create({
         paddingVertical: 12,
         backgroundColor: '#2e2e2f',
     },
+    editBtn: {
+        backgroundColor: '#b804d1de',
+        flexDirection: 'row',
+        width: '45%',
+        justifyContent:'center',
+        borderRadius: 16,
+        padding:4
+    },
+    editBtnText: {
+        fontFamily: 'Rubik-Regular',
+        color: '#fff',
+        fontSize: 20,
+        marginHorizontal:32,
+    },
     round: {
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#fff',
         borderRadius: 50,
-        width: 60,
-        height: 60,
+        width: 50,
+        height: 50,
         elevation: 2,
     },
     pink: {
@@ -379,14 +467,14 @@ const styles = StyleSheet.create({
         marginTop: 5,
         marginLeft: 5,
         marginRight: 5,
-        paddingTop: 8,
-        paddingBottom: 8,
+        paddingTop: 3,
+        paddingBottom: 3,
         overflow: 'hidden',
     },
     checkBox: {
         backgroundColor: '#2e2e2f',
         padding: 0,
-        marginRight: 2,
+        marginRight: 6,
         marginLeft: 10
     },
     vertical: {
@@ -397,7 +485,7 @@ const styles = StyleSheet.create({
     itemText: {
         fontFamily: "Rubik-Regular",
         color: 'white',
-        fontSize: 19,
+        fontSize: 18,
         marginRight: 15
     }
 })

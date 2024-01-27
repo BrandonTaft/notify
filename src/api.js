@@ -1,4 +1,4 @@
-const BASE_URL = "https://73d7-2600-6c5a-4a7f-463a-6ca3-54f9-9f56-dcd4.ngrok-free.app";
+const BASE_URL = "https://8785-2600-6c5a-4a7f-463a-354b-dbc4-168c-58e8.ngrok-free.app";
 
 export const fetchReminders = async () => {
     return await fetch(BASE_URL)
@@ -6,40 +6,6 @@ export const fetchReminders = async () => {
             console.log(err);
         })
         .then((res) => res.json())
-};
-
-export const fetchNotes = async () => {
-    return await fetch(BASE_URL + '/notes')
-        .catch((err) => {
-            console.log(err);
-        })
-        .then((res) => res.json())
-};
-
-export const completeMany = async (selected) => {
-    return fetch(BASE_URL + '/complete', {
-        method: 'POST',
-        headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            selected: selected
-        })
-    }).then(response => response.json())
-};
-
-export const deleteMany = async (selected) => {
-    return fetch(BASE_URL + "/delete", {
-        method: 'POST',
-        headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            selected: selected
-        })
-    }).then(response => response.json())
 };
 
 export const addReminders = async (name, action, selectedDate, editable, expoPushToken) => {
@@ -60,23 +26,12 @@ export const addReminders = async (name, action, selectedDate, editable, expoPus
     }).then(response => response.json())
 };
 
-export const deleteReminder = async (reminder) => {
-    return  fetch(BASE_URL + '/' + reminder, {
-        method: 'DELETE'
-      }).then(response => response.json())
-};
-
-export const wipeAll = async (selected) => {
-    return  fetch(BASE_URL + "/wipe", {
-        method: 'POST',
-        headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            selected: selected
+export const fetchNotes = async () => {
+    return await fetch(BASE_URL + '/notes')
+        .catch((err) => {
+            console.log(err);
         })
-    }).then(response => response.json())
+        .then((res) => res.json())
 };
 
 export const addNote = async (note) => {
@@ -105,10 +60,67 @@ export const updateNote = async (note) => {
         body: JSON.stringify({
           name: note.name,
           note: true,
-          id:note._id
+          id:note._id,
+          priority:note.priority
         })
       }).catch((err) => {
         console.log(err);
     }).then(response => response.json())
 };
+
+export const completeMany = async (selected) => {
+    return fetch(BASE_URL + '/complete', {
+        method: 'POST',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            selected: selected
+        })
+    }).then(response => response.json())
+};
+
+export const deleteMany = async (selected) => {
+    return fetch(BASE_URL + "/delete", {
+        method: 'POST',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            selected: selected
+        })
+    }).then(response => response.json())
+};
+
+export const restoreMany = async (selected) => {
+    return fetch(BASE_URL + '/restore', {
+        method: 'POST',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            selected: selected
+        })
+    }).then(response => response.json())
+};
+
+
+
+export const wipeAll = async (selected) => {
+    return  fetch(BASE_URL + "/wipe", {
+        method: 'POST',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            selected: selected
+        })
+    }).then(response => response.json())
+};
+
+
 
