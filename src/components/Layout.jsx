@@ -3,19 +3,10 @@ import { View, StyleSheet, DrawerLayoutAndroid } from "react-native";
 import Header from "./Header";
 import Menu from "./Menu";
 
-export default function Layout({
-    reminders,
-    onSucess,
-    setShowPicker,
-    children
-}) {
-
+export default function Layout({ setShowPicker, children }) {
     const drawer = useRef(null);
-    
     const navigationView = () => (
         <Menu
-            reminders={reminders}
-            onSucess={onSucess}
             setShowPicker={setShowPicker}
             close={() => drawer.current.closeDrawer()}
         />

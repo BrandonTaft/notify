@@ -159,7 +159,7 @@ export default function List({ reminders, onSucess }) {
                     onPress={() => setModalVisible(true)}
                     android_ripple={
                         RippleConfig = {
-                            color: 'purple',
+                            color: "#b804d1de",
                             borderless: true,
                             foreground: false
                         }
@@ -172,7 +172,7 @@ export default function List({ reminders, onSucess }) {
                     onPress={() => handleCompleted()}
                     android_ripple={
                         RippleConfig = {
-                            color: 'purple',
+                            color: "#b804d1de",
                             borderless: true,
                             foreground: false
                         }
@@ -187,7 +187,7 @@ export default function List({ reminders, onSucess }) {
                     onPress={() => setModalVisible(true)}
                     android_ripple={
                         RippleConfig = {
-                            color: 'purple',
+                            color: "#b804d1de",
                             borderless: true,
                             foreground: false
                         }
@@ -201,7 +201,7 @@ export default function List({ reminders, onSucess }) {
                     onPress={() => deleteChecked()}
                     android_ripple={
                         RippleConfig = {
-                            color: 'purple',
+                            color: "#b804d1de",
                             borderless: true,
                             foreground: false
                         }

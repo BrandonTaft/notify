@@ -4,7 +4,7 @@ import { FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 import { CheckBox } from '@rneui/themed';
 import { addNote, updateNote, fetchNotes, deleteMany } from '../api';
 
-function Notes({ showList, setShowList, showDeleted }) {
+export default function Notes({ showList, setShowList, showDeleted }) {
     const [showNotes, setShowNotes] = useState(false);
     const [note, setNote] = useState();
     const [edit, setEdit] = useState(false);
@@ -21,10 +21,8 @@ function Notes({ showList, setShowList, showDeleted }) {
                     setSelected([])
                 }
             })
-            if(showDeleted) setShowList(false)        
-    }, [refresh, showDeleted])
-    
-    
+        if (showDeleted) setShowList(false);
+    }, [refresh, showDeleted]);
 
     const handleNote = () => {
         if (note) {
@@ -34,6 +32,7 @@ function Notes({ showList, setShowList, showDeleted }) {
                         setShowNotes(false)
                         setNote()
                         setRefresh(!refresh)
+                        setEdit(false)
                     }
                 })
         }
@@ -48,6 +47,7 @@ function Notes({ showList, setShowList, showDeleted }) {
                         setShowNotes(false)
                         setNote()
                         setRefresh(!refresh)
+                        setEdit(false)
                     }
                 })
         }
@@ -84,6 +84,7 @@ function Notes({ showList, setShowList, showDeleted }) {
                     setRefresh(!refresh)
                     setShowNotes(false)
                     setNote()
+                    setEdit(false)
                 }
             })
     }
@@ -93,15 +94,15 @@ function Notes({ showList, setShowList, showDeleted }) {
             <Pressable
                 android_ripple={
                     RippleConfig = {
-                        color: '#2e2e2f',
-                        foreground: true,
-                        borderLess: true
+                        color: "#b804d1de",
+                        borderless: false,
+                        foreground: false
                     }
                 }
+                style={[styles.menuBtn, showList && styles.active]}
                 onPress={() => {
                     setShowList(!showList)
                 }}
-                style={[styles.menuBtn, showList && styles.active]}
             >
                 <MaterialIcons
                     name="event-note"
@@ -133,22 +134,22 @@ function Notes({ showList, setShowList, showDeleted }) {
                     />
                 }
             </Pressable>
-            {showList && 
+            {showList &&
                 <>
                     <ScrollView style={{ flex: 1 }}>
                         {items.map((reminder) => {
                             return (
-                                <Pressable android_ripple={
-                                    RippleConfig = {
-                                        color: '#2e2e2f',
-                                        foreground: true,
-                                        borderLess: true
+                                <Pressable
+                                    android_ripple={
+                                        RippleConfig = {
+                                            color: "#b804d1de",
+                                            borderless: false,
+                                            foreground: false
+                                        }
                                     }
-                                }
                                     key={reminder._id}
                                     style={styles.item}
                                     onPress={() => {
-                                        setEdit(true)
                                         setIsUpdate(true)
                                         setShowNotes(true)
                                         setNote(reminder)
@@ -167,7 +168,7 @@ function Notes({ showList, setShowList, showDeleted }) {
                                     />
                                     <View style={styles.vertical}>
                                         <Text style={styles.itemText}>
-                                            {reminder.name.split('\n')[0] + '...'}
+                                            {reminder.name}
                                         </Text>
                                         <Text style={styles.time}>
                                             {new Date(reminder.time).toLocaleDateString([], {
@@ -180,13 +181,14 @@ function Notes({ showList, setShowList, showDeleted }) {
                         })}
                     </ScrollView>
                     <View style={styles.topHorizontal}>
-                        <Pressable android_ripple={
-                            RippleConfig = {
-                                color: '#2e2e2f',
-                                foreground: true,
-                                borderLess: true
+                        <Pressable
+                            android_ripple={
+                                RippleConfig = {
+                                    color: "#b804d1de",
+                                    borderless: false,
+                                    foreground: false
+                                }
                             }
-                        }
                             style={styles.btn}
                             onPress={() => setShowNotes(true)}
                         >
@@ -195,18 +197,18 @@ function Notes({ showList, setShowList, showDeleted }) {
                                 size={34}
                                 color="#fff"
                             />
-
                         </Pressable>
-                        <Pressable android_ripple={
-                            RippleConfig = {
-                                color: '#2e2e2f',
-                                foreground: true,
-                                borderLess: true
+                        <Pressable
+                            android_ripple={
+                                RippleConfig = {
+                                    color: "#b804d1de",
+                                    borderless: false,
+                                    foreground: false
+                                }
                             }
-                        }
-                            onPress={() => deleteChecked()}
                             style={styles.btn}
                             disabled={selected.length === 0}
+                            onPress={() => deleteChecked()}
                         >
                             <MaterialIcons
                                 name="delete"
@@ -224,7 +226,9 @@ function Notes({ showList, setShowList, showDeleted }) {
                 onRequestClose={() => {
                 }}>
                 <View style={styles.notes}>
-                    <Text style={styles.title}>Notes</Text>
+                    <Text style={styles.title}>
+                        Notes
+                    </Text>
                     <TextInput
                         autoFocus={!note}
                         multiline={true}
@@ -232,109 +236,116 @@ function Notes({ showList, setShowList, showDeleted }) {
                         placeholderTextColor="#fff"
                         style={styles.input}
                         onChangeText={(value) => setNote({ ...note, "name": value })}
+                        onFocus={() => setEdit(true)}
                         value={note ? note.name : ""}
                     />
                     <View style={[styles.horizontal, styles.inputPanel]}>
-                    {edit ?
-                    <>
-                        <Pressable android_ripple={
-                            RippleConfig = {
-                                color: '#2e2e2f',
-                                foreground: true,
-                                borderLess: true
-                            }
+                        {!edit ?
+                            <>
+                                <Pressable
+                                    android_ripple={
+                                        RippleConfig = {
+                                            color: "#b804d1de",
+                                            borderless: false,
+                                            foreground: false
+                                        }
+                                    }
+                                    style={styles.editBtn}
+                                    onPress={() => setEdit(true)}
+                                >
+                                    <Text style={[styles.editBtnText]}>
+                                        Edit
+                                    </Text>
+                                </Pressable>
+                                <Pressable
+                                    android_ripple={
+                                        RippleConfig = {
+                                            color: "#b804d1de",
+                                            borderless: false,
+                                            foreground: false
+                                        }
+                                    }
+                                    style={styles.editBtn}
+                                    onPress={() => {
+                                        setShowNotes(false)
+                                        setNote()
+                                    }}
+                                >
+                                    <Text style={[styles.editBtnText]}>
+                                        Cancel
+                                    </Text>
+                                </Pressable>
+                            </>
+                            :
+                            <>
+                                <Pressable
+                                    android_ripple={
+                                        RippleConfig = {
+                                            color: "#b804d1de",
+                                            borderless: false,
+                                            foreground: false
+                                        }
+                                    }
+                                    disabled={!note}
+                                    style={[styles.round, styles.pink]}
+                                    onPress={() => {
+                                        if (isUpdate) {
+                                            handleUpdate(note)
+                                        } else {
+                                            handleNote(note.name)
+                                        }
+                                    }}
+                                >
+                                    <Text style={styles.btnText}>
+                                        Save
+                                    </Text>
+                                </Pressable>
+                                <Pressable
+                                    android_ripple={
+                                        RippleConfig = {
+                                            color: "#b804d1de",
+                                            borderless: false,
+                                            foreground: false
+                                        }
+                                    }
+                                    style={[styles.round, styles.pink]}
+                                    disabled={!note}
+                                    onPress={() => handleDelete()}
+                                >
+                                    <MaterialIcons
+                                        name="delete"
+                                        size={40}
+                                        color="#fff"
+                                    />
+                                </Pressable>
+                                <Pressable
+                                    android_ripple={
+                                        RippleConfig = {
+                                            color: "#b804d1de",
+                                            borderless: false,
+                                            foreground: false
+                                        }
+                                    }
+                                    style={[styles.round, styles.pink]}
+                                    onPress={() => {
+                                        setEdit(false)
+                                        setShowNotes(false)
+                                        setNote()
+                                        setIsUpdate(false)
+                                    }}
+                                >
+                                    <Text style={[styles.btnText, styles.x]}>
+                                        x
+                                    </Text>
+                                </Pressable>
+                            </>
                         }
-                            style={styles.editBtn}
-                            onPress={() => setEdit(false)}
-                        >
-                            <Text style={[styles.editBtnText]}>
-                                Edit
-                            </Text>
-                        </Pressable>
-
-                        <Pressable android_ripple={
-                            RippleConfig = {
-                                color: '#2e2e2f',
-                                foreground: true,
-                                borderLess: true
-                            }
-                        }
-                            style={styles.editBtn}
-                            onPress={() => setEdit(false)}
-                        >
-                            <Text style={[styles.editBtnText]}>
-                                Cancel
-                            </Text>
-                        </Pressable>
-                        </>
-                        :
-                        <>
-                        <Pressable android_ripple={
-                            RippleConfig = {
-                                color: '#2e2e2f',
-                                foreground: true,
-                                borderLess: true
-                            }
-                        }
-                            disabled={!note}
-                            style={[styles.round, styles.pink]}
-                            onPress={() => {
-                                if (isUpdate) {
-                                    handleUpdate(note)
-                                } else {
-                                    handleNote(note.name)
-                                }
-                            }}
-                        >
-                            <Text style={styles.btnText}>
-                                Save
-                            </Text>
-                        </Pressable>
-                        <Pressable android_ripple={
-                            RippleConfig = {
-                                color: '#2e2e2f',
-                                foreground: true,
-                                borderLess: true
-                            }
-                        }
-                            onPress={() => handleDelete()}
-                            style={[styles.round, styles.pink]}
-                           disabled={!note}
-                        >
-                            <MaterialIcons
-                                name="delete"
-                                size={40}
-                                color="#fff"
-                            />
-                        </Pressable>
-                        <Pressable android_ripple={
-                            RippleConfig = {
-                                color: '#2e2e2f',
-                                foreground: true,
-                                borderLess: true
-                            }
-                        }
-                            style={[styles.round, styles.pink]}
-                            onPress={() => {
-                                setShowNotes(false)
-                                setNote()
-                                setIsUpdate(false)
-                            }}
-                        >
-                            <Text style={[styles.btnText, styles.x]}>
-                                x
-                            </Text>
-                        </Pressable>
-                        </>
-}
                     </View>
                 </View>
             </Modal>
         </>
     )
 }
-
-export default Notes
 
 const styles = StyleSheet.create({
     notes: {
@@ -360,7 +371,7 @@ const styles = StyleSheet.create({
         color: '#b804d1de',
         fontSize: 22,
         margin: 8,
-        marginLeft:25,
+        marginLeft: 25,
         marginBottom: 4
     },
     time: {
@@ -418,8 +429,8 @@ const styles = StyleSheet.create({
     inputPanel: {
         marginLeft: 15,
         marginRight: 15,
-        marginBottom:50,
-        marginTop:20,
+        marginBottom: 50,
+        marginTop: 20,
         paddingVertical: 12,
         backgroundColor: '#2e2e2f',
     },
@@ -427,15 +438,15 @@ const styles = StyleSheet.create({
         backgroundColor: '#b804d1de',
         flexDirection: 'row',
         width: '45%',
-        justifyContent:'center',
+        justifyContent: 'center',
         borderRadius: 16,
-        padding:4
+        padding: 4
     },
     editBtnText: {
         fontFamily: 'Rubik-Regular',
         color: '#fff',
         fontSize: 20,
-        marginHorizontal:32,
+        marginHorizontal: 32,
     },
     round: {
         justifyContent: 'center',
@@ -448,8 +459,8 @@ const styles = StyleSheet.create({
     },
     pink: {
         backgroundColor: '#b804d1de',
-        width: 80,
-        height: 80,
+        width: 70,
+        height: 70,
     },
     btnText: {
         fontSize: 18,

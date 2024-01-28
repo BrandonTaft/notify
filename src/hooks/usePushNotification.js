@@ -51,11 +51,10 @@ const usePushNotification = () => {
     const responseListener = useRef();
 
     useEffect(() => {
-        
+
         registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
         notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
             setNotification(notification.request.content.body)
-            console.log("sound")
             playSound()
             setShowAlarm(true)
         });
@@ -69,18 +68,15 @@ const usePushNotification = () => {
     }, []);
 
     async function playSound() {
-        console.log('Loading Sound');
         const { sound } = await Audio.Sound.createAsync(require('../../assets/alarm.wav')
         );
         setSound(sound);
-        console.log('Playing Sound');
         await sound.playAsync();
     }
 
     useEffect(() => {
         return sound
             ? () => {
-                console.log('Unloading Sound');
                 sound.unloadAsync();
             }
             : undefined;

@@ -5,20 +5,18 @@ import { View } from "react-native";
 
 function TimePicker({
     setShowPicker,
-    showPicker,
-    
+    showPicker
 }) {
     const [showTimer, setShowTimer] = useState(false);
-    const [stopTime, setStopTime] = useState();
+    const [stopTime, setStopTime] = useState(0);
 
-    let initialValue = new Date()
-    initialValue.setHours(0, 1, 0, 0)
+    let initialValue = new Date();
+    initialValue.setHours(0, 1, 0, 0);
+
     return (
-        <View style={{ backgroundColor: '#00030ae0', position: 'absolute', borderRadius:33, margin:25}}>
+        <View style={{ backgroundColor: '#00030ae0', position: 'absolute', borderRadius: 33, margin: 25 }}>
             {showTimer &&
-                
-                    <Timer setShowTimer={setShowTimer} stopTime={stopTime} />
-              
+                <Timer setShowTimer={setShowTimer} stopTime={stopTime} />
             }
             {showPicker &&
                 <DateTimePicker
@@ -27,17 +25,16 @@ function TimePicker({
                     mode="time"
                     display='spinner'
                     onChange={(selectedTime) => {
-                        if(selectedTime.type === "set"){
-                        let t = new Date(selectedTime.nativeEvent.timestamp)
-                        t.setSeconds(0)
-                        setShowPicker(false)
-                        setStopTime(t)
-                        setShowTimer(true)
-                        } else{
-                        setShowPicker(false)
-                        setShowTimer(false)
+                        if (selectedTime.type === "set") {
+                            let t = new Date(selectedTime.nativeEvent.timestamp)
+                            t.setSeconds(0)
+                            setShowPicker(false)
+                            setStopTime(t)
+                            setShowTimer(true)
+                        } else {
+                            setShowPicker(false)
+                            setShowTimer(false)
                         }
-                       
                     }}
                 />
             }

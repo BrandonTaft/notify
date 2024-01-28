@@ -61,7 +61,7 @@ export const updateNote = async (note) => {
           name: note.name,
           note: true,
           id:note._id,
-          priority:note.priority
+          priority:note.false
         })
       }).catch((err) => {
         console.log(err);

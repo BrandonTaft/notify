@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { Pressable, View, Text, StyleSheet, ScrollView } from "react-native";
-import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
+import { FontAwesome5 } from '@expo/vector-icons';
 import { CheckBox } from '@rneui/themed';
 import { fetchReminders, wipeAll, restoreMany } from "../api";
 
-function DeletedItems({ showDeleted, setShowDeleted, showList }) {
+export default function DeletedItems({ showDeleted, setShowDeleted, showList }) {
     const [items, setItems] = useState([]);
     const [selected, setSelected] = useState([]);
     const [refresh, setRefresh] = useState(false);
@@ -17,11 +17,8 @@ function DeletedItems({ showDeleted, setShowDeleted, showList }) {
                     setSelected([])
                 }
             })
-
         if (showList) setShowDeleted(false)
     }, [refresh, showList])
-
-
 
     const handleCheck = (reminder) => {
         let temp = items.map((item) => {
@@ -57,11 +54,12 @@ function DeletedItems({ showDeleted, setShowDeleted, showList }) {
             <Pressable
                 android_ripple={
                     RippleConfig = {
-                        color: '#121212',
-                        foreground: true,
-                        borderLess: true
+                        color: "#b804d1de",
+                        borderless: false,
+                        foreground: false
                     }
                 }
+                style={[styles.menuBtn, showDeleted && styles.active]}
                 onPress={() => {
                     let cleared = items.map((item) => {
                         if (item.priority === true) {
@@ -74,10 +72,11 @@ function DeletedItems({ showDeleted, setShowDeleted, showList }) {
                     setSelected([])
 
                 }}
-                style={[styles.menuBtn, showDeleted && styles.active]}
             >
                 <FontAwesome5 name="trash" size={28} color="#b804d1de" />
-                <Text style={styles.menuBtnText}>Deleted</Text>
+                <Text style={styles.menuBtnText}>
+                    Deleted
+                </Text>
                 {showDeleted ?
                     <FontAwesome5
                         name="chevron-circle-down"
@@ -105,8 +104,6 @@ function DeletedItems({ showDeleted, setShowDeleted, showList }) {
                     <ScrollView style={{ flex: 1 }}>
                         {items.map((reminder) => {
                             return (
-
-
                                 <View key={reminder._id} style={styles.item}>
                                     <CheckBox
                                         checked={reminder.priority}
@@ -120,7 +117,9 @@ function DeletedItems({ showDeleted, setShowDeleted, showList }) {
                                         uncheckedColor='#b804d1de'
                                     />
                                     <View style={styles.vertical}>
-                                        <Text style={styles.itemText}>{reminder.name}</Text>
+                                        <Text style={styles.itemText}>
+                                            {reminder.name}
+                                        </Text>
                                         {reminder.notification &&
                                             <Text style={styles.time}>
                                                 {new Date(reminder.notification).toLocaleDateString([], {
@@ -130,7 +129,6 @@ function DeletedItems({ showDeleted, setShowDeleted, showList }) {
                                         }
                                     </View>
                                 </View>
-
                             );
                         })}
                     </ScrollView>
@@ -138,28 +136,32 @@ function DeletedItems({ showDeleted, setShowDeleted, showList }) {
                         <Pressable
                             android_ripple={
                                 RippleConfig = {
-                                    color: '#2e2e2f',
-                                    foreground: true,
-                                    borderLess: true
+                                    color: "#b804d1de",
+                                    borderless: false,
+                                    foreground: false
                                 }
                             }
-                            onPress={() => restoreDeleted()}
                             style={styles.wipeBtn}
+                            onPress={() => restoreDeleted()}
                         >
-                            <Text style={styles.wipeBtnText}>Restore</Text>
+                            <Text style={styles.wipeBtnText}>
+                                Restore
+                            </Text>
                         </Pressable>
                         <Pressable
                             android_ripple={
                                 RippleConfig = {
-                                    color: '#2e2e2f',
-                                    foreground: true,
-                                    borderLess: true
+                                    color: "#b804d1de",
+                                    borderless: false,
+                                    foreground: false
                                 }
                             }
-                            onPress={() => deleteForGood()}
                             style={styles.wipeBtn}
+                            onPress={() => deleteForGood()}
                         >
-                            <Text style={styles.wipeBtnText}>Delete</Text>
+                            <Text style={styles.wipeBtnText}>
+                                Delete
+                            </Text>
                         </Pressable>
                     </View>
                 </>
@@ -215,7 +217,6 @@ const styles = StyleSheet.create({
         justifyContent: 'space-evenly',
         alignItems: 'center',
         borderRadius: 16,
-
         paddingVertical: 8,
         marginTop: 5
     },
@@ -244,7 +245,4 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 18
     },
-
 });
-
-export default DeletedItems

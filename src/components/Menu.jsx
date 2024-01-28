@@ -1,21 +1,23 @@
 import { useState } from "react";
-import { Pressable, View, Text, StyleSheet, DrawerLayoutAndroid, ScrollView } from "react-native";
+import { Pressable, View, Text, StyleSheet } from "react-native";
 import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
 import DeletedItems from "./DeletedItems";
 import Notes from "./Notes";
 
-export default function Menu({ reminders, onSucess, setShowPicker, close }) {
+export default function Menu({ setShowPicker, close }) {
+
     const [showDeleted, setShowDeleted] = useState(false);
     const [showList, setShowList] = useState(false);
+
     return (
         <View style={styles.drawer}>
             <View style={styles.drawerHeader}>
                 <Pressable
                     android_ripple={
                         RippleConfig = {
-                            color: '#2e2e2f',
-                            foreground: true,
-                            borderLess: true
+                            color: "#b804d1de",
+                            borderless: false,
+                            foreground: false
                         }
                     }
                     style={styles.drawerHeaderIcon}
@@ -23,40 +25,41 @@ export default function Menu({ reminders, onSucess, setShowPicker, close }) {
                 >
                     <MaterialCommunityIcons name="close-circle" color="#b804d1de" size={40} />
                 </Pressable >
-                <Text style={styles.drawerHeaderText}>NOTIFY</Text>
+                <Text style={styles.drawerHeaderText}>
+                    NOTIFY
+                </Text>
             </View>
-
+            <View style={styles.spacer}></View>
             <Pressable
                 android_ripple={
                     RippleConfig = {
-                        color: '#2e2e2f',
-                        foreground: true,
-                        borderLess: true
+                        color: "#b804d1de",
+                        borderless: false,
+                        foreground: false
                     }
                 }
+                style={styles.menuBtn}
                 onPress={() => {
                     setShowPicker(prev => !prev)
                     close()
                 }}
-                style={styles.menuBtn}
             >
                 <MaterialCommunityIcons name="timer" size={34} color="#b804d1de" />
-                <Text style={styles.menuBtnText}>Timer</Text>
-                <FontAwesome5 name="chevron-circle-right" size={30} color="#fff" style={{ marginLeft: 'auto', marginTop: "auto", marginBottom:'auto' }} />
+                <Text style={styles.menuBtnText}>
+                    Timer
+                </Text>
+                <FontAwesome5 name="chevron-circle-right" size={30} color="#fff" style={{ marginLeft: 'auto', marginTop: "auto", marginBottom: 'auto' }} />
             </Pressable>
-
             <Notes
                 showList={showList}
                 setShowList={setShowList}
                 showDeleted={showDeleted}
             />
-
             <DeletedItems
                 showDeleted={showDeleted}
                 setShowDeleted={setShowDeleted}
                 showList={showList}
             />
-
         </View>
     )
 }
@@ -70,8 +73,18 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: "center",
         backgroundColor: "#000",
-        marginTop: 16,
+        marginTop: 24,
+        marginBottom: 12,
         paddingLeft: 20
+    },
+    spacer: {
+        width: '90%',
+        height: 6,
+        borderRadius: 22,
+        backgroundColor: '#b804d1de',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        marginBottom: 24
     },
     drawerHeaderText: {
         fontFamily: "Rubik-Black",
@@ -103,7 +116,7 @@ const styles = StyleSheet.create({
         color: '#b804d1de',
         fontSize: 22,
         margin: 8,
-        marginLeft:20,
+        marginLeft: 20,
         marginBottom: 4
     },
 });

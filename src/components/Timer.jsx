@@ -3,11 +3,11 @@ import { Text, StyleSheet, View, Pressable, Modal } from "react-native";
 import { Audio } from 'expo-av';
 import { FontAwesome } from '@expo/vector-icons';
 
-function Timer({ setShowTimer, stopTime }) {
+export default function Timer({ setShowTimer, stopTime }) {
     const [started, setStarted] = useState(false);
     const [timeIsUp, setTimeIsUp] = useState(false)
-    const [difference, setDifference] = useState()
-    const [sound, setSound] = useState();
+    const [difference, setDifference] = useState(0);
+    const [sound, setSound] = useState(null);
     const [timeUnits, setTimeUnits] = useState({
         hours: 0,
         minutes: 0,
@@ -19,7 +19,7 @@ function Timer({ setShowTimer, stopTime }) {
         );
         setSound(sound);
         await sound.playAsync();
-    }
+    };
 
     useEffect(() => {
         return sound
@@ -35,8 +35,8 @@ function Timer({ setShowTimer, stopTime }) {
             setDifference((stopTime.getTime() - d.setHours(0, 0, 0, 0)) / 10)
         } else {
             setDifference(1)
-        }
-    }, [stopTime])
+        };
+    }, [stopTime]);
 
     useEffect(() => {
         if (difference < 0) {
@@ -56,7 +56,6 @@ function Timer({ setShowTimer, stopTime }) {
             hours: Math.floor((difference % 21600000) / 360000)
         });
 
-
         if (started) {
             const timer = setInterval(() => {
                 setDifference((prevDifference) => prevDifference - 100);
@@ -64,7 +63,6 @@ function Timer({ setShowTimer, stopTime }) {
 
             return () => clearInterval(timer);
         }
-
     }, [difference, started]);
 
     return (
@@ -77,15 +75,17 @@ function Timer({ setShowTimer, stopTime }) {
                     setShowAlarm(!showAlarm);
                 }}>
                 <View style={styles.timeIsUp}>
-                    <Text style={styles.timeIsUpText}>TIME IS UP</Text>
-
-                    <Pressable android_ripple={
-                        RippleConfig = {
-                            color: '#121212',
-                            foreground: true,
-                            borderLess: true
+                    <Text style={styles.timeIsUpText}>
+                        TIME IS UP
+                    </Text>
+                    <Pressable
+                        android_ripple={
+                            RippleConfig = {
+                                color: "#b804d1de",
+                                borderless: false,
+                                foreground: false
+                            }
                         }
-                    }
                         style={styles.timeIsUpBtn}
                         onPress={() => {
                             setSound()
@@ -94,7 +94,9 @@ function Timer({ setShowTimer, stopTime }) {
                             setShowTimer(false)
                         }}
                     >
-                        <Text style={styles.timeIsUpBtnText}>End</Text>
+                        <Text style={styles.timeIsUpBtnText}>
+                            End
+                        </Text>
                     </Pressable>
                 </View>
             </Modal>
@@ -134,14 +136,14 @@ function Timer({ setShowTimer, stopTime }) {
                         <Text style={styles.timeSeparator}></Text>
                     </View>
                     <View style={styles.buttonContainer}>
-
-                        <Pressable android_ripple={
-                            RippleConfig = {
-                                color: '#121212',
-                                foreground: true,
-                                borderLess: true
+                        <Pressable
+                            android_ripple={
+                                RippleConfig = {
+                                    color: "#b804d1de",
+                                    borderless: false,
+                                    foreground: false
+                                }
                             }
-                        }
                             style={styles.alarmBtn}
                             onPress={() => {
                                 setStarted(!started)
@@ -153,13 +155,14 @@ function Timer({ setShowTimer, stopTime }) {
                                 <FontAwesome name="pause" size={24} color="#fff" />
                             }
                         </Pressable>
-                        <Pressable android_ripple={
-                            RippleConfig = {
-                                color: '#121212',
-                                foreground: true,
-                                borderLess: true
+                        <Pressable
+                            android_ripple={
+                                RippleConfig = {
+                                    color: "#b804d1de",
+                                    borderless: false,
+                                    foreground: false
+                                }
                             }
-                        }
                             style={styles.alarmBtn}
                             onPress={() => {
                                 setSound()
@@ -168,16 +171,16 @@ function Timer({ setShowTimer, stopTime }) {
                                 setShowTimer(false)
                             }}
                         >
-                            <Text style={{ fontSize: 19, fontWeight: "bold", color: "#fff" }}>End</Text>
+                            <Text style={{ fontSize: 19, fontWeight: "bold", color: "#fff" }}>
+                                End
+                            </Text>
                         </Pressable>
                     </View>
                 </>
             }
         </View>
     )
-}
-
-export default Timer
+};
 
 const styles = StyleSheet.create({
     container: {
