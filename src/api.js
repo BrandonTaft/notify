@@ -1,4 +1,4 @@
-const BASE_URL = "https://8785-2600-6c5a-4a7f-463a-354b-dbc4-168c-58e8.ngrok-free.app";
+const BASE_URL = "https://6c14-2600-6c5a-4a7f-463a-81f3-37d4-1497-e095.ngrok-free.app";
 
 export const fetchReminders = async () => {
     return await fetch(BASE_URL)

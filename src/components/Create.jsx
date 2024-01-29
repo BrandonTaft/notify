@@ -149,7 +149,7 @@ export default function Create({
             style={styles.input}
             onChangeText={onChangeName}
             value={name}
-            placeholder="memo"
+            placeholder=""
           />
           <Pressable
             android_ripple={
@@ -294,7 +294,9 @@ const styles = StyleSheet.create({
     color: '#fff',
     backgroundColor: '#121212',
     borderRadius: 10,
-    margin: 5
+    margin: 5,
+    textAlignVertical: 'top',
+    padding:10
   },
   addTime: {
     width: '100%',
