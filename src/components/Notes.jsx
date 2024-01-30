@@ -166,7 +166,7 @@ export default function Notes({ showList, setShowList, showDeleted }) {
                                         uncheckedIcon='circle-o'
                                         uncheckedColor='#b804d1de'
                                     />
-                                    <View style={styles.vertical}>
+                                    <View>
                                         <Text style={styles.itemText}>
                                             {reminder.name}
                                         </Text>
@@ -287,7 +287,7 @@ export default function Notes({ showList, setShowList, showDeleted }) {
                                         }
                                     }
                                     disabled={!note}
-                                    style={[styles.round, styles.pink]}
+                                    style={[styles.round]}
                                     onPress={() => {
                                         if (isUpdate) {
                                             handleUpdate(note)
@@ -308,13 +308,13 @@ export default function Notes({ showList, setShowList, showDeleted }) {
                                             foreground: false
                                         }
                                     }
-                                    style={[styles.round, styles.pink]}
+                                    style={[styles.round]}
                                     disabled={!note}
                                     onPress={() => handleDelete()}
                                 >
                                     <MaterialIcons
                                         name="delete"
-                                        size={40}
+                                        size={36}
                                         color="#fff"
                                     />
                                 </Pressable>
@@ -326,7 +326,7 @@ export default function Notes({ showList, setShowList, showDeleted }) {
                                             foreground: false
                                         }
                                     }
-                                    style={[styles.round, styles.pink]}
+                                    style={[styles.round]}
                                     onPress={() => {
                                         setEdit(false)
                                         setShowNotes(false)
@@ -348,10 +348,7 @@ export default function Notes({ showList, setShowList, showDeleted }) {
 }
 
 const styles = StyleSheet.create({
-    notes: {
-        flex: 1,
-        backgroundColor: '#121212'
-    },
+    
     menuBtn: {
         backgroundColor: '#2e2e2f',
         borderRadius: 16,
@@ -360,6 +357,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingLeft: 25,
         paddingRight: 20,
+        paddingVertical:4,
         marginTop: 10,
         marginBottom: 3
     },
@@ -367,36 +365,14 @@ const styles = StyleSheet.create({
         borderColor: '#b804d1de',
     },
     menuBtnText: {
-        fontFamily: 'Rubik-Bold',
+        fontFamily: 'Rubik-Medium',
         color: '#b804d1de',
-        fontSize: 22,
-        margin: 8,
-        marginLeft: 25,
-        marginBottom: 4
+        fontSize: 24,
+        marginLeft: 22,
     },
-    time: {
-        fontFamily: "Rubik-Regular",
-        color: 'grey',
-        fontSize: 15
-    },
-    title: {
-        fontFamily: 'Rubik-Black',
-        color: '#b804d1de',
-        fontSize: 40,
-        textAlign: "center",
-    },
-    input: {
-        fontSize: 20,
-        flex: 4,
-        color: '#fff',
-        backgroundColor: '#2e2e2f',
-        borderRadius: 10,
-        margin: 15,
-        marginTop: 0,
-        textAlignVertical: 'top',
-        paddingVertical: 22,
-        paddingHorizontal: 10
-    },
+    
+    
+    
     topHorizontal: {
         paddingVertical: 6,
         flexDirection: 'row',
@@ -426,12 +402,63 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderRadius: 16,
     },
+    
+    
+    
+   
+    
+    item: {
+        backgroundColor: '#2e2e2f',
+        borderRadius: 16,
+        flexDirection: 'row',
+        margin: 5,
+        marginBottom:1,
+        paddingVertical: 3,
+        overflow: 'hidden',
+    },
+    checkBox: {
+        backgroundColor: '#2e2e2f',
+        padding: 0,
+        marginRight: 5,
+        marginLeft: 10
+    },
+    itemText: {
+        fontFamily: "Rubik-Regular",
+        color: 'white',
+        fontSize: 18,
+        marginRight: 15
+    },
+    time: {
+        fontFamily: "Rubik-Regular",
+        color: 'grey',
+        fontSize: 15
+    },
+    notes: {
+        flex: 1,
+        backgroundColor: '#121212'
+    },
+    title: {
+        fontFamily: 'Rubik-Bold',
+        color: '#b804d1de',
+        fontSize: 40,
+        textAlign: "center",
+    },
+    input: {
+        fontSize: 18,
+        fontFamily: 'Rubik-Light',
+        flex: 4,
+        color: '#fff',
+        backgroundColor: '#2e2e2f',
+        borderRadius: 10,
+        margin: 12,
+        marginVertical: 0,
+        textAlignVertical: 'top',
+        padding:10
+    },
     inputPanel: {
-        marginLeft: 15,
-        marginRight: 15,
-        marginBottom: 50,
-        marginTop: 20,
-        paddingVertical: 12,
+        marginHorizontal: 15,
+        marginVertical: 20,
+        paddingVertical: 10,
         backgroundColor: '#2e2e2f',
     },
     editBtn: {
@@ -440,10 +467,10 @@ const styles = StyleSheet.create({
         width: '45%',
         justifyContent: 'center',
         borderRadius: 16,
-        padding: 4
+        paddingVertical: 4
     },
     editBtnText: {
-        fontFamily: 'Rubik-Regular',
+        fontFamily: 'Rubik-Medium',
         color: '#fff',
         fontSize: 20,
         marginHorizontal: 32,
@@ -451,52 +478,18 @@ const styles = StyleSheet.create({
     round: {
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#fff',
-        borderRadius: 50,
-        width: 50,
-        height: 50,
-        elevation: 2,
-    },
-    pink: {
         backgroundColor: '#b804d1de',
+        borderRadius: 50,
         width: 70,
         height: 70,
+        elevation: 2,
+    },
+    x: {
+        fontSize: 32,
     },
     btnText: {
         fontSize: 18,
         color: "#fff",
-        fontFamily: 'Rubik-Bold',
-    },
-    x: {
-        fontSize: 32,
-        fontFamily: 'Rubik-Regular',
-    },
-    item: {
-        backgroundColor: '#2e2e2f',
-        borderRadius: 12,
-        flexDirection: 'row',
-        marginTop: 5,
-        marginLeft: 5,
-        marginRight: 5,
-        paddingTop: 3,
-        paddingBottom: 3,
-        overflow: 'hidden',
-    },
-    checkBox: {
-        backgroundColor: '#2e2e2f',
-        padding: 0,
-        marginRight: 6,
-        marginLeft: 10
-    },
-    vertical: {
-        flexDirection: 'column',
-        alignItems: 'stat',
-        paddingRight: 30
-    },
-    itemText: {
-        fontFamily: "Rubik-Regular",
-        color: 'white',
-        fontSize: 18,
-        marginRight: 15
+        fontFamily: 'Rubik-Medium',
     }
 })

@@ -232,7 +232,7 @@ const styles = StyleSheet.create({
         fontFamily: "Rubik-Medium",
         color: 'grey',
         fontSize: 15,
-        margin: 0,
+        marginTop: 10,
     },
     btnContainer: {
         flex: 1,

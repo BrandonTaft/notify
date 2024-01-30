@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
        
     },
     empty: {
-        minHeight: 200,
+        paddingVertical:44,
         textAlign: 'center',
         justifyContent: 'center',
         alignItems: 'center'
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
         padding: 0,
     },
     itemText: {
-        fontFamily: "Rubik-Medium",
+        fontFamily: "Rubik-Regular",
         color: 'white',
         fontSize: 18
     },

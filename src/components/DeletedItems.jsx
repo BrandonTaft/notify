@@ -179,6 +179,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingLeft: 25,
         paddingRight: 20,
+        paddingVertical:4,
         marginTop: 10,
         marginBottom: 3
     },
@@ -186,12 +187,10 @@ const styles = StyleSheet.create({
         borderColor: '#b804d1de',
     },
     menuBtnText: {
-        fontFamily: 'Rubik-Bold',
+        fontFamily: 'Rubik-Medium',
         color: '#b804d1de',
-        fontSize: 22,
-        margin: 8,
-        marginLeft: 28,
-        marginBottom: 4
+        fontSize: 24,
+        marginLeft: 24,
     },
     item: {
         backgroundColor: '#2e2e2f',

@@ -17,6 +17,7 @@ export default function App() {
     'Rubik-Black': require('./assets/fonts/Rubik-Black.ttf'),
     'Rubik-Bold': require('./assets/fonts/Rubik-ExtraBold.ttf'),
     'Rubik-Medium': require('./assets/fonts/Rubik-Medium.ttf'),
+    'Rubik-Light': require('./assets/fonts/Rubik-Light.ttf'),
   });
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded) {

@@ -76,11 +76,9 @@ export default function Create({
       animationType="slide"
       transparent={true}
       visible={modalVisible}
-      
       onRequestClose={() => {
         setModalVisible(!modalVisible);
       }}>
-        
       <Modal
         animationType="slide"
         transparent={true}
@@ -88,14 +86,7 @@ export default function Create({
         onRequestClose={() => {
           sendMessage(false);
         }}>
-          <View style={{backgroundColor:'red', flex: .35,
-    margin: 20,
-    borderRadius: 20,
-    marginTop: 'auto',
-    marginBottom: 'auto',
-    justifyContent: 'space-evenly',
-    padding: 10,
-    alignItems: 'center',}}>
+        <View style={styles.messageModal}>
           <TextInput
             autoFocus={true}
             multiline={true}
@@ -118,8 +109,8 @@ export default function Create({
             onPress={() => sendText()}
           >
             <Text style={{ fontSize: 18, color: 'white', fontWeight: 'bold' }}>
-                Send
-              </Text>
+              Send
+            </Text>
           </Pressable>
           <Pressable
             android_ripple={
@@ -133,12 +124,11 @@ export default function Create({
             onPress={() => setSendMessage(false)}
           >
             <Text style={{ fontSize: 18, color: 'white', fontWeight: 'bold' }}>
-                Cancel
-              </Text>
+              Cancel
+            </Text>
           </Pressable>
-          </View>
-        </Modal>
-       
+        </View>
+      </Modal>
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
           <TextInput
@@ -162,7 +152,7 @@ export default function Create({
             style={styles.addTime}
             onPress={() => setDatePickerVisible(true)}
           >
-            <Text style={{ color: 'white', fontSize: 19 }}>
+            <Text style={styles.mainText}>
               {
                 (selectedDate || editable.notification)
                   ?
@@ -288,15 +278,21 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     textAlign: 'center',
   },
+  mainText: {
+    fontSize: 18,
+    fontFamily: 'Rubik-Regular',
+    color:'#fff'
+  },
   input: {
-    fontSize: 19,
+    fontSize: 18,
+    fontFamily: 'Rubik-Regular',
     width: '100%',
     color: '#fff',
     backgroundColor: '#121212',
     borderRadius: 10,
     margin: 5,
     textAlignVertical: 'top',
-    padding:10
+    padding: 20
   },
   addTime: {
     width: '100%',
@@ -321,6 +317,17 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 6,
     justifyContent: 'center',
+    alignItems: 'center',
+  },
+  messageModal: {
+    backgroundColor: 'red', 
+    flex: .35,
+    margin: 20,
+    borderRadius: 20,
+    marginTop: 'auto',
+    marginBottom: 'auto',
+    justifyContent: 'space-evenly',
+    padding: 10,
     alignItems: 'center',
   }
 });
