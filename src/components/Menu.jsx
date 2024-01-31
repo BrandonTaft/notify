@@ -7,7 +7,7 @@ import Notes from "./Notes";
 export default function Menu({ setShowPicker, close }) {
 
     const [showDeleted, setShowDeleted] = useState(false);
-    const [showList, setShowList] = useState(false);
+    const [showNotes, setShowNotes] = useState(false);
 
     return (
         <View style={styles.drawer}>
@@ -51,15 +51,17 @@ export default function Menu({ setShowPicker, close }) {
                 <FontAwesome5 name="chevron-circle-right" size={30} color="#fff" style={{ marginLeft: 'auto', marginTop: "auto", marginBottom: 'auto' }} />
             </Pressable>
             <Notes
-                showList={showList}
-                setShowList={setShowList}
+                showNotes={showNotes}
+                setShowNotes={setShowNotes}
                 showDeleted={showDeleted}
             />
+            {!showNotes &&
             <DeletedItems
                 showDeleted={showDeleted}
                 setShowDeleted={setShowDeleted}
-                showList={showList}
+                showNotes={showNotes}
             />
+}
         </View>
     )
 }

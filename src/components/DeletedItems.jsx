@@ -4,7 +4,7 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { CheckBox } from '@rneui/themed';
 import { fetchReminders, wipeAll, restoreMany } from "../api";
 
-export default function DeletedItems({ showDeleted, setShowDeleted, showList }) {
+export default function DeletedItems({ showDeleted, setShowDeleted, showNotes }) {
     const [items, setItems] = useState([]);
     const [selected, setSelected] = useState([]);
     const [refresh, setRefresh] = useState(false);
@@ -17,8 +17,8 @@ export default function DeletedItems({ showDeleted, setShowDeleted, showList }) 
                     setSelected([])
                 }
             })
-        if (showList) setShowDeleted(false)
-    }, [refresh, showList])
+        if (showNotes) setShowDeleted(false)
+    }, [refresh, showNotes])
 
     const handleCheck = (reminder) => {
         let temp = items.map((item) => {

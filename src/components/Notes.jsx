@@ -4,8 +4,8 @@ import { FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 import { CheckBox } from '@rneui/themed';
 import { addNote, updateNote, fetchNotes, deleteMany } from '../api';
 
-export default function Notes({ showList, setShowList, showDeleted }) {
-    const [showNotes, setShowNotes] = useState(false);
+export default function Notes({ showNotes, setShowNotes, showDeleted }) {
+    const [showInput, setShowInput] = useState(false);
     const [note, setNote] = useState();
     const [edit, setEdit] = useState(false);
     const [items, setItems] = useState([]);
@@ -21,7 +21,7 @@ export default function Notes({ showList, setShowList, showDeleted }) {
                     setSelected([])
                 }
             })
-        if (showDeleted) setShowList(false);
+        if (showDeleted) setShowNotes(false);
     }, [refresh, showDeleted]);
 
     const handleNote = () => {
@@ -29,7 +29,7 @@ export default function Notes({ showList, setShowList, showDeleted }) {
             addNote(note)
                 .then(result => {
                     if (result.success) {
-                        setShowNotes(false)
+                        setShowInput(false)
                         setNote()
                         setRefresh(!refresh)
                         setEdit(false)
@@ -44,7 +44,7 @@ export default function Notes({ showList, setShowList, showDeleted }) {
                 .then(result => {
                     if (result.success) {
                         setIsUpdate(false)
-                        setShowNotes(false)
+                        setShowInput(false)
                         setNote()
                         setRefresh(!refresh)
                         setEdit(false)
@@ -82,7 +82,7 @@ export default function Notes({ showList, setShowList, showDeleted }) {
             .then(result => {
                 if (result.success) {
                     setRefresh(!refresh)
-                    setShowNotes(false)
+                    setShowInput(false)
                     setNote()
                     setEdit(false)
                 }
@@ -99,9 +99,9 @@ export default function Notes({ showList, setShowList, showDeleted }) {
                         foreground: false
                     }
                 }
-                style={[styles.menuBtn, showList && styles.active]}
+                style={[styles.menuBtn, showNotes && styles.active]}
                 onPress={() => {
-                    setShowList(!showList)
+                    setShowNotes(!showNotes)
                 }}
             >
                 <MaterialIcons
@@ -112,7 +112,7 @@ export default function Notes({ showList, setShowList, showDeleted }) {
                 <Text style={styles.menuBtnText}>
                     Notes
                 </Text>
-                {showList ?
+                {showNotes ?
                     <FontAwesome5
                         name="chevron-circle-down"
                         size={30} color="#fff"
@@ -134,9 +134,9 @@ export default function Notes({ showList, setShowList, showDeleted }) {
                     />
                 }
             </Pressable>
-            {showList &&
+            {showNotes &&
                 <>
-                    <ScrollView style={{ flex: 1 }}>
+                    <ScrollView>
                         {items.map((reminder) => {
                             return (
                                 <Pressable
@@ -151,7 +151,7 @@ export default function Notes({ showList, setShowList, showDeleted }) {
                                     style={styles.item}
                                     onPress={() => {
                                         setIsUpdate(true)
-                                        setShowNotes(true)
+                                        setShowInput(true)
                                         setNote(reminder)
                                     }}
                                 >
@@ -190,7 +190,7 @@ export default function Notes({ showList, setShowList, showDeleted }) {
                                 }
                             }
                             style={styles.btn}
-                            onPress={() => setShowNotes(true)}
+                            onPress={() => setShowInput(true)}
                         >
                             <MaterialIcons
                                 name="note-add"
@@ -222,7 +222,7 @@ export default function Notes({ showList, setShowList, showDeleted }) {
             <Modal
                 animationType="slide"
                 transparent={true}
-                visible={showNotes}
+                visible={showInput}
                 onRequestClose={() => {
                 }}>
                 <View style={styles.notes}>
@@ -239,7 +239,7 @@ export default function Notes({ showList, setShowList, showDeleted }) {
                         onFocus={() => setEdit(true)}
                         value={note ? note.name : ""}
                     />
-                    <View style={[styles.horizontal, styles.inputPanel]}>
+                    <View style={ styles.inputPanel }>
                         {!edit ?
                             <>
                                 <Pressable
@@ -267,7 +267,7 @@ export default function Notes({ showList, setShowList, showDeleted }) {
                                     }
                                     style={styles.editBtn}
                                     onPress={() => {
-                                        setShowNotes(false)
+                                        setShowInput(false)
                                         setNote()
                                     }}
                                 >
@@ -329,7 +329,7 @@ export default function Notes({ showList, setShowList, showDeleted }) {
                                     style={[styles.round]}
                                     onPress={() => {
                                         setEdit(false)
-                                        setShowNotes(false)
+                                        setShowInput(false)
                                         setNote()
                                         setIsUpdate(false)
                                     }}
@@ -382,26 +382,14 @@ const styles = StyleSheet.create({
     },
     btn: {
         flexDirection: 'row',
-        justifyContent: 'space-evenly',
-        width: "40%",
+        justifyContent: 'center',
+        width: "35%",
         backgroundColor: '#b804d1de',
         padding: 6,
         borderRadius: 16,
-        bottom: 0
     },
-    wipeBtnText: {
-        color: "#fff",
-        fontWeight: 'bold',
-        fontSize: 18
-    },
-    horizontal: {
-        backgroundColor: '#b804d1de',
-        paddingVertical: 6,
-        flexDirection: 'row',
-        justifyContent: 'space-evenly',
-        alignItems: 'center',
-        borderRadius: 16,
-    },
+    
+    
     
     
     
@@ -456,6 +444,9 @@ const styles = StyleSheet.create({
         padding:10
     },
     inputPanel: {
+        flexDirection: 'row',
+        justifyContent: 'space-evenly',
+        borderRadius: 16,
         marginHorizontal: 15,
         marginVertical: 20,
         paddingVertical: 10,
