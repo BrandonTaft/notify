@@ -4,10 +4,10 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { CheckBox } from '@rneui/themed';
 import { fetchReminders, wipeAll, restoreMany } from "../api";
 
-export default function DeletedItems({ showDeleted, setShowDeleted, showNotes }) {
+export default function DeletedItems({ showDeleted, setShowDeleted, showNotes, refresh, setRefresh }) {
     const [items, setItems] = useState([]);
     const [selected, setSelected] = useState([]);
-    const [refresh, setRefresh] = useState(false);
+    // const [refresh, setRefresh] = useState(false);
 
     useEffect(() => {
         fetchReminders()
@@ -54,7 +54,7 @@ export default function DeletedItems({ showDeleted, setShowDeleted, showNotes })
             <Pressable
                 android_ripple={
                     RippleConfig = {
-                        color: "#b804d1de",
+                        color: "#8789f7",
                         borderless: false,
                         foreground: false
                     }
@@ -73,7 +73,7 @@ export default function DeletedItems({ showDeleted, setShowDeleted, showNotes })
 
                 }}
             >
-                <FontAwesome5 name="trash" size={28} color="#b804d1de" />
+                <FontAwesome5 name="trash" size={26} color="#8789f7" />
                 <Text style={styles.menuBtnText}>
                     Deleted
                 </Text>
@@ -101,10 +101,10 @@ export default function DeletedItems({ showDeleted, setShowDeleted, showNotes })
             </Pressable>
             {showDeleted &&
                 <>
-                    <ScrollView style={{ flex: 1 }}>
+                    <ScrollView >
                         {items.map((reminder) => {
                             return (
-                                <View key={reminder._id} style={styles.item}>
+                                <View key={reminder._id} style={reminder.notification ? styles.item : styles.altItem}>
                                     <CheckBox
                                         checked={reminder.priority}
                                         onPress={() => { handleCheck(reminder) }}
@@ -112,12 +112,12 @@ export default function DeletedItems({ showDeleted, setShowDeleted, showNotes })
                                         containerStyle={styles.checkBox}
                                         right={true}
                                         checkedIcon='check'
-                                        checkedColor='#b804d1de'
+                                        checkedColor='#8789f7'
                                         uncheckedIcon='circle-o'
-                                        uncheckedColor='#b804d1de'
+                                        uncheckedColor='#8789f7'
                                     />
-                                    <View style={styles.vertical}>
-                                        <Text style={styles.itemText}>
+                                    <View>
+                                        <Text style={styles.itemText} numberOfLines={1}>
                                             {reminder.name}
                                         </Text>
                                         {reminder.notification &&
@@ -136,30 +136,32 @@ export default function DeletedItems({ showDeleted, setShowDeleted, showNotes })
                         <Pressable
                             android_ripple={
                                 RippleConfig = {
-                                    color: "#b804d1de",
-                                    borderless: false,
+                                    color: "#15131d",
+                                    borderless: true,
                                     foreground: false
                                 }
                             }
-                            style={styles.wipeBtn}
+                            style={styles.btn}
+                            disabled={!selected.length}
                             onPress={() => restoreDeleted()}
                         >
-                            <Text style={styles.wipeBtnText}>
+                            <Text style={styles.btnText}>
                                 Restore
                             </Text>
                         </Pressable>
                         <Pressable
                             android_ripple={
                                 RippleConfig = {
-                                    color: "#b804d1de",
-                                    borderless: false,
+                                    color: "#15131d",
+                                    borderless: true,
                                     foreground: false
                                 }
                             }
-                            style={styles.wipeBtn}
+                            style={styles.btn}
+                            disabled={!selected.length}
                             onPress={() => deleteForGood()}
                         >
-                            <Text style={styles.wipeBtnText}>
+                            <Text style={styles.btnText}>
                                 Delete
                             </Text>
                         </Pressable>
@@ -172,39 +174,66 @@ export default function DeletedItems({ showDeleted, setShowDeleted, showNotes })
 
 const styles = StyleSheet.create({
     menuBtn: {
-        backgroundColor: '#2e2e2f',
+        backgroundColor: '#312e3f',
         borderRadius: 16,
-        borderWidth: 5,
+        borderWidth: 3,
+        borderColor: '#312e3f',
         flexDirection: 'row',
         alignItems: 'center',
-        paddingLeft: 25,
+        paddingLeft: 22,
         paddingRight: 20,
         paddingVertical:4,
+        marginHorizontal:4,
         marginTop: 10,
-        marginBottom: 3
     },
     active: {
-        borderColor: '#b804d1de',
+        borderColor: '#8789f7',
+        borderBottomLeftRadius: 0,
+        borderBottomRightRadius: 0,
+        marginBottom:4
     },
     menuBtnText: {
         fontFamily: 'Rubik-Medium',
-        color: '#b804d1de',
+        color: '#8789f7',
         fontSize: 24,
-        marginLeft: 24,
+        marginLeft: 25,
+        marginTop:2
     },
     item: {
-        backgroundColor: '#2e2e2f',
-        borderRadius: 16,
+        backgroundColor: '#312e3f',
         flexDirection: 'row',
-        margin: 3,
-        marginLeft: 0,
-        marginRight: 0,
-        padding: 5,
-        paddingLeft: 0
+        marginHorizontal:4,
+        marginBottom:5,
+        paddingVertical: 3,
+        overflow: 'hidden',
+        paddingRight:'15%'
+    },
+    altItem: {
+        backgroundColor: '#312e3f',
+        flexDirection: 'row',
+        marginHorizontal:4,
+        marginBottom:5,
+        paddingTop: 12,
+        paddingBottom:16,
+        overflow: 'hidden',
+        paddingRight:'15%'
+    },
+    itemText: {
+        fontFamily: "Rubik-Regular",
+        color: 'white',
+        fontSize: 18,
+        marginRight: 15,
+    },
+    time: {
+        fontFamily: "Rubik-Regular",
+        color: 'grey',
+        fontSize: 16
     },
     checkBox: {
         backgroundColor: '#2e2e2f',
         padding: 0,
+        marginRight: 5,
+        marginLeft: 10
     },
     vertical: {
         flexDirection: 'column',
@@ -215,33 +244,24 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-evenly',
         alignItems: 'center',
-        borderRadius: 16,
         paddingVertical: 8,
-        marginTop: 5
+        backgroundColor: '#15131d',
+        borderBottomLeftRadius: 16,
+        borderBottomRightRadius: 16,
+        marginHorizontal:4,
     },
-    itemText: {
-        fontFamily: "Rubik-Regular",
-        color: 'white',
-        fontSize: 18,
-        paddingRight: 6,
-    },
-    time: {
-        fontFamily: "Rubik-Regular",
-        color: 'grey',
-        fontSize: 17
-    },
-    wipeBtn: {
-        flexDirection: 'row',
-        justifyContent: 'space-evenly',
-        width: "40%",
-        backgroundColor: '#b804d1de',
-        padding: 6,
-        borderRadius: 16,
-        bottom: 0
-    },
-    wipeBtnText: {
+    btnText: {
         color: "#fff",
         fontWeight: 'bold',
         fontSize: 18
+    },
+    btn: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        width: "40%",
+        backgroundColor: "#8789f7",
+        padding: 7,
+        borderRadius: 50,
+        elevation:4
     },
 });

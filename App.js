@@ -46,7 +46,7 @@ export default function App() {
             setShowPicker={setShowPicker}
             showPicker={showPicker}
           />
-          <StatusBar backgroundColor='#b804d1de' />
+          <StatusBar  />
         </Layout>
       }
     </SafeAreaProvider>

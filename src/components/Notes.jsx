@@ -4,13 +4,19 @@ import { FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 import { CheckBox } from '@rneui/themed';
 import { addNote, updateNote, fetchNotes, deleteMany } from '../api';
 
-export default function Notes({ showNotes, setShowNotes, showDeleted }) {
+export default function Notes({
+    showNotes,
+    setShowNotes,
+    showDeleted,
+    setShowDeleted,
+    refresh, setRefresh
+}) {
     const [showInput, setShowInput] = useState(false);
     const [note, setNote] = useState();
     const [edit, setEdit] = useState(false);
     const [items, setItems] = useState([]);
     const [selected, setSelected] = useState([]);
-    const [refresh, setRefresh] = useState(false);
+    // const [refresh, setRefresh] = useState(false);
     const [isUpdate, setIsUpdate] = useState(false);
 
     useEffect(() => {
@@ -94,7 +100,7 @@ export default function Notes({ showNotes, setShowNotes, showDeleted }) {
             <Pressable
                 android_ripple={
                     RippleConfig = {
-                        color: "#b804d1de",
+                        color: "#8789f7",
                         borderless: false,
                         foreground: false
                     }
@@ -102,12 +108,15 @@ export default function Notes({ showNotes, setShowNotes, showDeleted }) {
                 style={[styles.menuBtn, showNotes && styles.active]}
                 onPress={() => {
                     setShowNotes(!showNotes)
+                    if(showNotes) {
+                        setShowDeleted(false)
+                    }
                 }}
             >
                 <MaterialIcons
                     name="event-note"
                     size={28}
-                    color="#b804d1de"
+                    color="#8789f7"
                 />
                 <Text style={styles.menuBtnText}>
                     Notes
@@ -142,9 +151,9 @@ export default function Notes({ showNotes, setShowNotes, showDeleted }) {
                                 <Pressable
                                     android_ripple={
                                         RippleConfig = {
-                                            color: "#b804d1de",
+                                            color: "#8789f7",
                                             borderless: false,
-                                            foreground: false
+                                            foreground: true
                                         }
                                     }
                                     key={reminder._id}
@@ -162,12 +171,12 @@ export default function Notes({ showNotes, setShowNotes, showDeleted }) {
                                         containerStyle={styles.checkBox}
                                         right={true}
                                         checkedIcon='check'
-                                        checkedColor='#b804d1de'
+                                        checkedColor='#8789f7'
                                         uncheckedIcon='circle-o'
-                                        uncheckedColor='#b804d1de'
+                                        uncheckedColor='#8789f7'
                                     />
                                     <View>
-                                        <Text style={styles.itemText}>
+                                        <Text style={styles.itemText} numberOfLines={1}>
                                             {reminder.name}
                                         </Text>
                                         <Text style={styles.time}>
@@ -184,8 +193,8 @@ export default function Notes({ showNotes, setShowNotes, showDeleted }) {
                         <Pressable
                             android_ripple={
                                 RippleConfig = {
-                                    color: "#b804d1de",
-                                    borderless: false,
+                                    color: "#15131d",
+                                    borderless: true,
                                     foreground: false
                                 }
                             }
@@ -194,25 +203,25 @@ export default function Notes({ showNotes, setShowNotes, showDeleted }) {
                         >
                             <MaterialIcons
                                 name="note-add"
-                                size={34}
+                                size={32}
                                 color="#fff"
                             />
                         </Pressable>
                         <Pressable
                             android_ripple={
                                 RippleConfig = {
-                                    color: "#b804d1de",
-                                    borderless: false,
+                                    color: "#15131d",
+                                    borderless: true,
                                     foreground: false
                                 }
                             }
-                            style={styles.btn}
-                            disabled={selected.length === 0}
+                            style={[styles.btn]}
+                            disabled={!selected.length}
                             onPress={() => deleteChecked()}
                         >
                             <MaterialIcons
                                 name="delete"
-                                size={34}
+                                size={32}
                                 color="#fff"
                             />
                         </Pressable>
@@ -245,8 +254,8 @@ export default function Notes({ showNotes, setShowNotes, showDeleted }) {
                                 <Pressable
                                     android_ripple={
                                         RippleConfig = {
-                                            color: "#b804d1de",
-                                            borderless: false,
+                                            color: "#15131d",
+                                            borderless: true,
                                             foreground: false
                                         }
                                     }
@@ -260,9 +269,9 @@ export default function Notes({ showNotes, setShowNotes, showDeleted }) {
                                 <Pressable
                                     android_ripple={
                                         RippleConfig = {
-                                            color: "#b804d1de",
-                                            borderless: false,
-                                            foreground: false
+                                            color: "#15131d",
+                                            borderless: true,
+                                            foreground: false,
                                         }
                                     }
                                     style={styles.editBtn}
@@ -281,8 +290,8 @@ export default function Notes({ showNotes, setShowNotes, showDeleted }) {
                                 <Pressable
                                     android_ripple={
                                         RippleConfig = {
-                                            color: "#b804d1de",
-                                            borderless: false,
+                                            color: "#15131d",
+                                            borderless: true,
                                             foreground: false
                                         }
                                     }
@@ -303,8 +312,8 @@ export default function Notes({ showNotes, setShowNotes, showDeleted }) {
                                 <Pressable
                                     android_ripple={
                                         RippleConfig = {
-                                            color: "#b804d1de",
-                                            borderless: false,
+                                            color: "#15131d",
+                                            borderless: true,
                                             foreground: false
                                         }
                                     }
@@ -321,8 +330,8 @@ export default function Notes({ showNotes, setShowNotes, showDeleted }) {
                                 <Pressable
                                     android_ripple={
                                         RippleConfig = {
-                                            color: "#b804d1de",
-                                            borderless: false,
+                                            color: "#15131d",
+                                            borderless: true,
                                             foreground: false
                                         }
                                     }
@@ -348,64 +357,62 @@ export default function Notes({ showNotes, setShowNotes, showDeleted }) {
 }
 
 const styles = StyleSheet.create({
-    
     menuBtn: {
-        backgroundColor: '#2e2e2f',
+        backgroundColor: '#312e3f',
         borderRadius: 16,
-        borderWidth: 5,
+        borderWidth: 3,
+        borderColor: '#312e3f',
         flexDirection: 'row',
         alignItems: 'center',
-        paddingLeft: 25,
+        paddingLeft: 22,
         paddingRight: 20,
         paddingVertical:4,
+        marginHorizontal:4,
         marginTop: 10,
-        marginBottom: 3
     },
     active: {
-        borderColor: '#b804d1de',
+        borderColor: '#8789f7',
+        borderBottomLeftRadius: 0,
+        borderBottomRightRadius: 0,
+        marginBottom:4
     },
     menuBtnText: {
         fontFamily: 'Rubik-Medium',
-        color: '#b804d1de',
+        color: '#8789f7',
         fontSize: 24,
-        marginLeft: 22,
+        marginLeft: 25,
+        marginTop:2
     },
-    
-    
-    
     topHorizontal: {
-        paddingVertical: 6,
         flexDirection: 'row',
         justifyContent: 'space-evenly',
         alignItems: 'center',
-        borderRadius: 16,
+        paddingVertical: 8,
+        backgroundColor: '#15131d',
+        borderBottomLeftRadius: 16,
+        borderBottomRightRadius: 16,
+        marginHorizontal:4,
     },
     btn: {
         flexDirection: 'row',
         justifyContent: 'center',
-        width: "35%",
-        backgroundColor: '#b804d1de',
-        padding: 6,
-        borderRadius: 16,
+        width: "30%",
+        backgroundColor: "#8789f7",
+        padding: 5,
+        borderRadius: 50,
+        elevation:3
     },
-    
-    
-    
-    
-    
-   
-    
     item: {
-        backgroundColor: '#2e2e2f',
-        borderRadius: 16,
+        backgroundColor: '#312e3f',
         flexDirection: 'row',
-        margin: 5,
-        marginBottom:1,
+        marginHorizontal:4,
+        marginBottom:5,
         paddingVertical: 3,
         overflow: 'hidden',
+        paddingRight:'15%'
     },
     checkBox: {
-        backgroundColor: '#2e2e2f',
+        backgroundColor: '#312e3f',
         padding: 0,
         marginRight: 5,
         marginLeft: 10
@@ -419,7 +426,7 @@ const styles = StyleSheet.create({
     time: {
         fontFamily: "Rubik-Regular",
         color: 'grey',
-        fontSize: 15
+        fontSize: 16
     },
     notes: {
         flex: 1,
@@ -427,16 +434,16 @@ const styles = StyleSheet.create({
     },
     title: {
         fontFamily: 'Rubik-Bold',
-        color: '#b804d1de',
+        color: '#8789f7',
         fontSize: 40,
         textAlign: "center",
     },
     input: {
-        fontSize: 18,
+        fontSize: 19,
         fontFamily: 'Rubik-Light',
         flex: 4,
         color: '#fff',
-        backgroundColor: '#2e2e2f',
+        backgroundColor: '#312e3f',
         borderRadius: 10,
         margin: 12,
         marginVertical: 0,
@@ -450,30 +457,30 @@ const styles = StyleSheet.create({
         marginHorizontal: 15,
         marginVertical: 20,
         paddingVertical: 10,
-        backgroundColor: '#2e2e2f',
+        backgroundColor: '#312e3f',
     },
     editBtn: {
-        backgroundColor: '#b804d1de',
+        backgroundColor: '#8789f7',
         flexDirection: 'row',
-        width: '45%',
+        width: '35%',
         justifyContent: 'center',
-        borderRadius: 16,
-        paddingVertical: 4
+        borderRadius: 50,
+        paddingVertical: 6,
+        elevation:5
     },
     editBtnText: {
         fontFamily: 'Rubik-Medium',
         color: '#fff',
-        fontSize: 20,
-        marginHorizontal: 32,
+        fontSize: 18
     },
     round: {
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#b804d1de',
+        backgroundColor: '#8789f7',
         borderRadius: 50,
         width: 70,
         height: 70,
-        elevation: 2,
+        elevation: 5,
     },
     x: {
         fontSize: 32,

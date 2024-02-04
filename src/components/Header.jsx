@@ -8,15 +8,15 @@ export default function ({ open }) {
             <Pressable
                 android_ripple={
                     RippleConfig = {
-                        color: '#121212',
+                        color: '#8789f7',
                         foreground: true,
                         borderLess: true
                     }
                 }
-                style={{ marginRight: 'auto' }}
+                style={styles.menuIcon}
                 onPress={() => open()}
             >
-                <MaterialCommunityIcons name="menu" color="white" size={40} />
+                <MaterialCommunityIcons name="menu" color="white" size={42} />
             </Pressable >
             <Text style={styles.headerTitle}>NOTIFY</Text>
         </View>
@@ -28,11 +28,16 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent:'center'
     },
     headerTitle: {
         fontFamily: "Rubik-Black",
-        color: '#b804d1de',
+        color: '#8789f7',
         fontSize: 28,
-        marginRight: 'auto',
+    },
+    menuIcon : {
+        position:'absolute',
+        left:15,
+        top:15
     }
 });

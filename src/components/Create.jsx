@@ -284,15 +284,15 @@ const styles = StyleSheet.create({
     color:'#fff'
   },
   input: {
-    fontSize: 18,
-    fontFamily: 'Rubik-Regular',
-    width: '100%',
-    color: '#fff',
-    backgroundColor: '#121212',
-    borderRadius: 10,
-    margin: 5,
-    textAlignVertical: 'top',
-    padding: 20
+    fontSize: 19,
+        fontFamily: 'Rubik-Light',
+        color: '#fff',
+        backgroundColor: '#2e2e2f',
+        borderRadius: 10,
+        margin: 12,
+        marginVertical: 0,
+        textAlignVertical: 'top',
+        padding:10
   },
   addTime: {
     width: '100%',

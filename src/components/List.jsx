@@ -159,7 +159,7 @@ export default function List({ reminders, onSucess }) {
                     onPress={() => setModalVisible(true)}
                     android_ripple={
                         RippleConfig = {
-                            color: "#b804d1de",
+                            color: "#bb86fa",
                             borderless: true,
                             foreground: false
                         }
@@ -172,14 +172,14 @@ export default function List({ reminders, onSucess }) {
                     onPress={() => handleCompleted()}
                     android_ripple={
                         RippleConfig = {
-                            color: "#b804d1de",
+                            color: "#bb86fa",
                             borderless: true,
                             foreground: false
                         }
                     }
                     disabled={selected.length ? false : true}
                 >
-                    <Icon name="check" color="#b804d1de" size={34} />
+                    <Icon name="check" color="#bb86fa" size={34} />
                     <Text style={styles.btn}>Done</Text>
                 </Pressable>
 
@@ -187,13 +187,13 @@ export default function List({ reminders, onSucess }) {
                     onPress={() => setModalVisible(true)}
                     android_ripple={
                         RippleConfig = {
-                            color: "#b804d1de",
+                            color: "#bb86fa",
                             borderless: true,
                             foreground: false
                         }
                     }
                 >
-                    <Icon name="share" color="#b804d1de" size={34} />
+                    <Icon name="share" color="#bb86fa" size={34} />
                     <Text style={styles.btn}>Share</Text>
                 </Pressable>
 
@@ -201,14 +201,14 @@ export default function List({ reminders, onSucess }) {
                     onPress={() => deleteChecked()}
                     android_ripple={
                         RippleConfig = {
-                            color: "#b804d1de",
+                            color: "#bb86fa",
                             borderless: true,
                             foreground: false
                         }
                     }
                     disabled={selected.length ? false : true}
                 >
-                    <Icon name="delete" color="#b804d1de" size={34} />
+                    <Icon name="delete" color="#bb86fa" size={34} />
                     <Text style={styles.btn}>Delete</Text>
                 </Pressable>
 
@@ -220,7 +220,7 @@ export default function List({ reminders, onSucess }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#000'
+        backgroundColor: '#15131d'
     },
     listContainer: {
         flex: 10,
@@ -242,7 +242,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-evenly',
         borderRadius: 20,
-        backgroundColor: '#2e2e2f',
+        backgroundColor: '#312e3f',
         
     },
     btn: {
@@ -253,7 +253,7 @@ const styles = StyleSheet.create({
     round: {
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#b804d1de',
+        backgroundColor: '#bb86fa',
         borderRadius: 50,
         width: 60,
         height: 60

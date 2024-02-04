@@ -19,8 +19,9 @@ function Item({
                                 <Pressable
                                     android_ripple={
                                         RippleConfig = {
-                                            color: '#b804d1de',
-                                            foreground: true
+                                            color: "#bb86fa",
+                                            borderless: false,
+                                            foreground: false
                                         }
                                     }
                                     onPress={() => {
@@ -36,9 +37,9 @@ function Item({
                                         containerStyle={styles.checkBox}
                                         right={true}
                                         checkedIcon='check'
-                                        checkedColor='#b804d1de'
+                                        checkedColor='#bb86fa'
                                         uncheckedIcon='circle-o'
-                                        uncheckedColor='#b804d1de'
+                                        uncheckedColor='#e4e0eb'
                                     />
                                     <View style={styles.horizontal}>
                                         <Text style={styles.itemText}>
@@ -67,7 +68,7 @@ function Item({
 
 const styles = StyleSheet.create({
     item: {
-        backgroundColor: '#2e2e2f',
+        backgroundColor: '#312e3f',
         flexDirection: 'row',
         borderRadius: 20,
         margin: 4,
@@ -83,7 +84,7 @@ const styles = StyleSheet.create({
     },
     emptyText: {
         fontFamily: "Rubik-Medium",
-        color: '#b804d1de',
+        color: '#bb86fa',
         fontSize: 18
     },
     unscheduledItem: {
@@ -95,12 +96,12 @@ const styles = StyleSheet.create({
         alignItems: 'stat',
     },
     checkBox: {
-        backgroundColor: '#2e2e2f',
+        backgroundColor: '#312e3f',
         padding: 0,
     },
     itemText: {
         fontFamily: "Rubik-Regular",
-        color: 'white',
+        color: '#f0edf3',
         fontSize: 18
     },
     time: {

@@ -8,6 +8,7 @@ export default function Menu({ setShowPicker, close }) {
 
     const [showDeleted, setShowDeleted] = useState(false);
     const [showNotes, setShowNotes] = useState(false);
+    const [refresh, setRefresh] = useState(false);
 
     return (
         <View style={styles.drawer}>
@@ -15,15 +16,15 @@ export default function Menu({ setShowPicker, close }) {
                 <Pressable
                     android_ripple={
                         RippleConfig = {
-                            color: "#b804d1de",
-                            borderless: false,
+                            color: "#8789f7",
+                            borderless: true,
                             foreground: false
                         }
                     }
                     style={styles.drawerHeaderIcon}
                     onPress={() => close()}
                 >
-                    <MaterialCommunityIcons name="close-circle" color="#b804d1de" size={40} />
+                    <MaterialCommunityIcons name="close-circle" color="#8789f7" size={35} />
                 </Pressable >
                 <Text style={styles.drawerHeaderText}>
                     NOTIFY
@@ -33,7 +34,7 @@ export default function Menu({ setShowPicker, close }) {
             <Pressable
                 android_ripple={
                     RippleConfig = {
-                        color: "#b804d1de",
+                        color: "#8789f7",
                         borderless: false,
                         foreground: false
                     }
@@ -44,7 +45,7 @@ export default function Menu({ setShowPicker, close }) {
                     close()
                 }}
             >
-                <MaterialCommunityIcons name="timer" size={34} color="#b804d1de" />
+                <MaterialCommunityIcons name="timer" size={34} color="#8789f7" />
                 <Text style={styles.menuBtnText}>
                     Timer
                 </Text>
@@ -54,12 +55,17 @@ export default function Menu({ setShowPicker, close }) {
                 showNotes={showNotes}
                 setShowNotes={setShowNotes}
                 showDeleted={showDeleted}
+                setShowDeleted={setShowDeleted}
+                refresh={refresh}
+                setRefresh={setRefresh}
             />
             {!showNotes &&
             <DeletedItems
                 showDeleted={showDeleted}
                 setShowDeleted={setShowDeleted}
                 showNotes={showNotes}
+                refresh={refresh}
+                setRefresh={setRefresh}
             />
 }
         </View>
@@ -74,50 +80,50 @@ const styles = StyleSheet.create({
     drawerHeader: {
         flexDirection: 'row',
         alignItems: "center",
-        backgroundColor: "#000",
-        marginTop: 24,
-        marginBottom: 12,
+        backgroundColor:'#15131d',
+        paddingTop: 10,
         paddingLeft: 20
-    },
-    spacer: {
-        width: '90%',
-        height: 6,
-        borderRadius: 22,
-        backgroundColor: '#b804d1de',
-        marginLeft: 'auto',
-        marginRight: 'auto',
-        marginBottom: 24
     },
     drawerHeaderText: {
         fontFamily: "Rubik-Black",
-        color: '#b804d1de',
+        color: '#8789f7',
         fontSize: 28,
         marginLeft: 'auto',
         marginRight: 'auto',
     },
     drawerHeaderIcon: {
         position: 'absolute',
-        left: 15
+        left: 15,
+        top:20
+    },
+    spacer: {
+        width: '95%',
+        height: 4,
+        borderRadius: 22,
+        backgroundColor: '#cdcddd',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        marginBottom: 14
     },
     menuBtn: {
-        backgroundColor: '#2e2e2f',
+        backgroundColor: '#312e3f',
         borderRadius: 16,
-        borderWidth: 5,
+        borderWidth: 3,
+        borderColor: '#312e3f',
         flexDirection: 'row',
         alignItems: 'center',
-        paddingLeft: 25,
-        paddingRight: 20,
+        paddingHorizontal: 20,
         paddingVertical:4,
-        marginTop: 10,
-        marginBottom: 3
+        marginHorizontal:4,
     },
     active: {
-        borderColor: '#b804d1de',
+        borderColor: '#8789f7',
     },
     menuBtnText: {
         fontFamily: 'Rubik-Medium',
-        color: '#b804d1de',
+        color: '#8789f7',
         fontSize: 24,
         marginLeft: 20,
+        marginTop:2
     },
 });

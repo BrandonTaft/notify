@@ -18,7 +18,7 @@ export default function Layout({ setShowPicker, children }) {
             drawerWidth={300}
             drawerPosition={'left'}
             renderNavigationView={navigationView}
-            drawerBackgroundColor="rgba(0,0,0,0.75)"
+            drawerBackgroundColor="rgba(21,19,29,0.75)"
         >
             <View style={styles.container}>
                 <Header open={() => drawer.current.openDrawer()} />
@@ -33,7 +33,7 @@ export default function Layout({ setShowPicker, children }) {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#000',
+        backgroundColor: '#15131d',
         position: 'relative',
         flex: 1,
     },

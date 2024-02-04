@@ -14,7 +14,7 @@ function TimePicker({
     initialValue.setHours(0, 1, 0, 0);
 
     return (
-        <View style={{ backgroundColor: '#00030ae0', position: 'absolute', borderRadius: 33, margin: 25 }}>
+        <View style={{ backgroundColor: 'rgba(21,19,29,0.9)', height:'100%', position: 'absolute', justifyContent:'center' }}>
             {showTimer &&
                 <Timer setShowTimer={setShowTimer} stopTime={stopTime} />
             }

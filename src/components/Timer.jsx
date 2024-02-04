@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import { Text, StyleSheet, View, Pressable, Modal } from "react-native";
+import { Text, StyleSheet, View, Pressable } from "react-native";
 import { Audio } from 'expo-av';
 import { FontAwesome } from '@expo/vector-icons';
 
 export default function Timer({ setShowTimer, stopTime }) {
     const [started, setStarted] = useState(false);
-    const [timeIsUp, setTimeIsUp] = useState(false)
+    const [timeIsUp, setTimeIsUp] = useState(true)
     const [difference, setDifference] = useState(0);
     const [sound, setSound] = useState(null);
     const [timeUnits, setTimeUnits] = useState({
@@ -67,40 +67,56 @@ export default function Timer({ setShowTimer, stopTime }) {
 
     return (
         <View style={styles.container}>
-            <Modal
-                animationType="slide"
-                transparent={true}
-                visible={timeIsUp}
-                onRequestClose={() => {
-                    setShowAlarm(!showAlarm);
-                }}>
-                <View style={styles.timeIsUp}>
-                    <Text style={styles.timeIsUpText}>
-                        TIME IS UP
-                    </Text>
-                    <Pressable
-                        android_ripple={
-                            RippleConfig = {
-                                color: "#b804d1de",
-                                borderless: false,
-                                foreground: false
-                            }
-                        }
-                        style={styles.timeIsUpBtn}
-                        onPress={() => {
-                            setSound()
-                            setStarted(false)
-                            setTimeIsUp(false)
-                            setShowTimer(false)
-                        }}
-                    >
-                        <Text style={styles.timeIsUpBtnText}>
-                            End
+            {timeIsUp ?
+                <>
+                    <View style={styles.timer}>
+                        <Text style={styles.title}>
+                            TIME IS UP
                         </Text>
-                    </Pressable>
-                </View>
-            </Modal>
-            {!timeIsUp &&
+                    </View>
+                    <View style={styles.buttonContainer}>
+                        <Pressable
+                            android_ripple={
+                                RippleConfig = {
+                                    color: "#312e3f",
+                                    borderless: true,
+                                    foreground: false
+                                }
+                            }
+                            style={styles.alarmBtn}
+                            onPress={() => {
+                                setStarted(!started)
+                            }}
+                        >
+                            {!started ?
+                                <FontAwesome name="play" size={24} color="#fff" />
+                                :
+                                <FontAwesome name="pause" size={24} color="#fff" />
+                            }
+                        </Pressable>
+                        <Pressable
+                            android_ripple={
+                                RippleConfig = {
+                                    color: "#312e3f",
+                                    borderless: true,
+                                    foreground: false
+                                }
+                            }
+                            style={styles.alarmBtn}
+                            onPress={() => {
+                                setSound()
+                                setStarted(false)
+                                setTimeIsUp(false)
+                                setShowTimer(false)
+                            }}
+                        >
+                            <Text style={{ fontSize: 12, fontWeight: "bold", color: "#fff" }}>
+                                End
+                            </Text>
+                        </Pressable>
+                    </View>
+                </>
+                :
                 <>
                     <View style={styles.timer}>
                         <View>
@@ -139,8 +155,8 @@ export default function Timer({ setShowTimer, stopTime }) {
                         <Pressable
                             android_ripple={
                                 RippleConfig = {
-                                    color: "#b804d1de",
-                                    borderless: false,
+                                    color: "#312e3f",
+                                    borderless: true,
                                     foreground: false
                                 }
                             }
@@ -158,8 +174,8 @@ export default function Timer({ setShowTimer, stopTime }) {
                         <Pressable
                             android_ripple={
                                 RippleConfig = {
-                                    color: "#b804d1de",
-                                    borderless: false,
+                                    color: "#312e3f",
+                                    borderless: true,
                                     foreground: false
                                 }
                             }
@@ -188,20 +204,18 @@ const styles = StyleSheet.create({
         paddingBottom: 20,
         justifyContent: "center",
         alignItems: "center",
-    },
-    title: {
-        fontSize: 30,
-        fontWeight: "bold",
-        paddingVertical: 20,
-        color: "green",
+        backgroundColor: '#312e3f',
+        margin: 25,
+        borderRadius: 33
     },
     subtitle: {
         fontSize: 17,
         padding: 10,
         paddingRight: 19,
         fontWeight: "bold",
-        color: "rgba(128,128,128,0.75)",
-        textAlign: "center"
+        color: "grey",
+        textAlign: "center",
+        marginLeft: 10
     },
     timer: {
         flexDirection: "row",
@@ -209,13 +223,13 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     timeUnit: {
-        backgroundColor: "red",
+        backgroundColor: "#f0edf3",
         fontSize: 30,
         fontWeight: "bold",
         paddingHorizontal: 10,
         paddingVertical: 5,
         borderRadius: 15,
-        color: "white",
+        color: "#000",
     },
     timeSeparator: {
         color: '#fff',
@@ -241,40 +255,16 @@ const styles = StyleSheet.create({
     alarmBtn: {
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#b804d1de',
+        backgroundColor: '#8789f7',
         borderRadius: 50,
         width: 70,
         height: 70,
-        elevation: 2,
+        elevation: 5,
     },
-    timeIsUp: {
-        backgroundColor: '#00030ae0',
-        flex: .25,
-        margin: 20,
-        borderRadius: 20,
-        marginTop: 'auto',
-        marginBottom: 'auto',
-        justifyContent: 'space-evenly',
-        padding: 10,
-        alignItems: 'center',
-    },
-    timeIsUpText: {
+    title: {
         color: '#fff',
         fontSize: 30,
         fontWeight: 'bold',
-    },
-    timeIsUpBtn: {
-        paddingHorizontal: 25,
-        paddingVertical: 10,
-        backgroundColor: '#b804d1de',
-        borderRadius: 30,
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginVertical: 14
-    },
-    timeIsUpBtnText: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        color: '#fff'
+        marginTop:14
     }
 }); 
