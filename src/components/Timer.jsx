@@ -5,7 +5,7 @@ import { FontAwesome } from '@expo/vector-icons';
 
 export default function Timer({ setShowTimer, stopTime }) {
     const [started, setStarted] = useState(false);
-    const [timeIsUp, setTimeIsUp] = useState(true)
+    const [timeIsUp, setTimeIsUp] = useState(false)
     const [difference, setDifference] = useState(0);
     const [sound, setSound] = useState(null);
     const [timeUnits, setTimeUnits] = useState({
@@ -78,31 +78,12 @@ export default function Timer({ setShowTimer, stopTime }) {
                         <Pressable
                             android_ripple={
                                 RippleConfig = {
-                                    color: "#312e3f",
+                                    color: '#312e3f',
                                     borderless: true,
                                     foreground: false
                                 }
                             }
-                            style={styles.alarmBtn}
-                            onPress={() => {
-                                setStarted(!started)
-                            }}
-                        >
-                            {!started ?
-                                <FontAwesome name="play" size={24} color="#fff" />
-                                :
-                                <FontAwesome name="pause" size={24} color="#fff" />
-                            }
-                        </Pressable>
-                        <Pressable
-                            android_ripple={
-                                RippleConfig = {
-                                    color: "#312e3f",
-                                    borderless: true,
-                                    foreground: false
-                                }
-                            }
-                            style={styles.alarmBtn}
+                            style={[styles.alarmBtn, styles.timeIsUpBtn]}
                             onPress={() => {
                                 setSound()
                                 setStarted(false)
@@ -110,12 +91,13 @@ export default function Timer({ setShowTimer, stopTime }) {
                                 setShowTimer(false)
                             }}
                         >
-                            <Text style={{ fontSize: 12, fontWeight: "bold", color: "#fff" }}>
+                            <Text style={styles.btnText}>
                                 End
                             </Text>
                         </Pressable>
                     </View>
                 </>
+                // </Modal>
                 :
                 <>
                     <View style={styles.timer}>
@@ -187,7 +169,7 @@ export default function Timer({ setShowTimer, stopTime }) {
                                 setShowTimer(false)
                             }}
                         >
-                            <Text style={{ fontSize: 19, fontWeight: "bold", color: "#fff" }}>
+                            <Text style={styles.btnText}>
                                 End
                             </Text>
                         </Pressable>
@@ -239,12 +221,6 @@ const styles = StyleSheet.create({
         marginTop: 'auto',
         marginBottom: 15
     },
-    timetitle: {
-        fontSize: 17,
-        padding: 10,
-        paddingRight: 19,
-        fontWeight: "bold",
-    },
     buttonContainer: {
         width: '100%',
         flexDirection: 'row',
@@ -261,10 +237,18 @@ const styles = StyleSheet.create({
         height: 70,
         elevation: 5,
     },
+    timeIsUpBtn: {
+       
+    },
     title: {
         color: '#fff',
         fontSize: 30,
         fontWeight: 'bold',
-        marginTop:14
+        margin:14,
+    },
+    btnText: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: '#fff'
     }
 }); 

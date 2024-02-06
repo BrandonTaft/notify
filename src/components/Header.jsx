@@ -33,11 +33,11 @@ const styles = StyleSheet.create({
     headerTitle: {
         fontFamily: "Rubik-Black",
         color: '#8789f7',
-        fontSize: 28,
+        fontSize: 32,
     },
     menuIcon : {
         position:'absolute',
         left:15,
-        top:15
+        top:12
     }
 });

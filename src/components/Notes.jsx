@@ -203,7 +203,7 @@ export default function Notes({
                         >
                             <MaterialIcons
                                 name="note-add"
-                                size={32}
+                                size={36}
                                 color="#fff"
                             />
                         </Pressable>
@@ -221,7 +221,7 @@ export default function Notes({
                         >
                             <MaterialIcons
                                 name="delete"
-                                size={32}
+                                size={36}
                                 color="#fff"
                             />
                         </Pressable>
@@ -254,7 +254,7 @@ export default function Notes({
                                 <Pressable
                                     android_ripple={
                                         RippleConfig = {
-                                            color: "#15131d",
+                                            color: "#312e3f",
                                             borderless: true,
                                             foreground: false
                                         }
@@ -269,7 +269,7 @@ export default function Notes({
                                 <Pressable
                                     android_ripple={
                                         RippleConfig = {
-                                            color: "#15131d",
+                                            color: "#312e3f",
                                             borderless: true,
                                             foreground: false,
                                         }
@@ -290,7 +290,7 @@ export default function Notes({
                                 <Pressable
                                     android_ripple={
                                         RippleConfig = {
-                                            color: "#15131d",
+                                            color: "#312e3f",
                                             borderless: true,
                                             foreground: false
                                         }
@@ -312,7 +312,7 @@ export default function Notes({
                                 <Pressable
                                     android_ripple={
                                         RippleConfig = {
-                                            color: "#15131d",
+                                            color: "#312e3f",
                                             borderless: true,
                                             foreground: false
                                         }
@@ -330,7 +330,7 @@ export default function Notes({
                                 <Pressable
                                     android_ripple={
                                         RippleConfig = {
-                                            color: "#15131d",
+                                            color: "#312e3f",
                                             borderless: true,
                                             foreground: false
                                         }
@@ -396,9 +396,9 @@ const styles = StyleSheet.create({
     btn: {
         flexDirection: 'row',
         justifyContent: 'center',
-        width: "30%",
+        width: "35%",
         backgroundColor: "#8789f7",
-        padding: 5,
+        padding:6,
         borderRadius: 50,
         elevation:3
     },
