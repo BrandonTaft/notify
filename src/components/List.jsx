@@ -116,7 +116,7 @@ export default function List({ reminders, onSucess }) {
             />
             <View style={styles.listContainer}>
                 <ScrollView>
-                    <Text style={styles.title} >SCHEDULED</Text>
+                    <Text style={styles.title} >Scheduled</Text>
                     <Item
                         list={scheduled}
                         type={"UPDATESCHEDULED"}
@@ -125,7 +125,7 @@ export default function List({ reminders, onSucess }) {
                         setModalVisible={setModalVisible}
                         handleCheck={handleCheck}
                     />
-                    <Text style={styles.title} >UNSCHEDULED</Text>
+                    <Text style={styles.title} >Unscheduled</Text>
                     <Item
                         list={unScheduled}
                         type={"UPDATEUNSCHEDULED"}
@@ -134,7 +134,7 @@ export default function List({ reminders, onSucess }) {
                         setModalVisible={setModalVisible}
                         handleCheck={handleCheck}
                     />
-                    <Text style={styles.title} >COMPLETED</Text>
+                    <Text style={styles.title} >Completed</Text>
                     <Item
                         list={completed}
                         type={"COMPLETED"}
@@ -231,8 +231,9 @@ const styles = StyleSheet.create({
     title: {
         fontFamily: "Rubik-Medium",
         color: 'grey',
-        fontSize: 15,
+        fontSize: 17,
         marginTop: 10,
+        marginLeft:8
     },
     btnContainer: {
         flex: 1,

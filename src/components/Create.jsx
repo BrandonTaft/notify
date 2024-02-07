@@ -100,7 +100,7 @@ export default function Create({
           <Pressable
             android_ripple={
               RippleConfig = {
-                color: "#b804d1de",
+                color: "#8789f7",
                 borderless: false,
                 foreground: false
               }
@@ -115,7 +115,7 @@ export default function Create({
           <Pressable
             android_ripple={
               RippleConfig = {
-                color: "#b804d1de",
+                color: "#8789f7",
                 borderless: false,
                 foreground: false
               }
@@ -129,7 +129,7 @@ export default function Create({
           </Pressable>
         </View>
       </Modal>
-      <View style={styles.centeredView}>
+    
         <View style={styles.modalView}>
           <TextInput
             autoFocus={true}
@@ -144,7 +144,7 @@ export default function Create({
           <Pressable
             android_ripple={
               RippleConfig = {
-                color: "#b804d1de",
+                color: "#8789f7",
                 borderless: false,
                 foreground: false
               }
@@ -166,8 +166,8 @@ export default function Create({
             <Pressable
               android_ripple={
                 RippleConfig = {
-                  color: "#b804d1de",
-                  borderless: false,
+                  color: "#312e3f",
+                  borderless: true,
                   foreground: false
                 }
               }
@@ -179,8 +179,8 @@ export default function Create({
             <Pressable
               android_ripple={
                 RippleConfig = {
-                  color: "#b804d1de",
-                  borderless: false,
+                  color: "#312e3f",
+                  borderless: true,
                   foreground: false
                 }
               }
@@ -194,8 +194,8 @@ export default function Create({
             <Pressable
               android_ripple={
                 RippleConfig = {
-                  color: "#b804d1de",
-                  borderless: false,
+                  color: "#312e3f",
+                  borderless: true,
                   foreground: false
                 }
               }
@@ -225,8 +225,8 @@ export default function Create({
             <Pressable
               android_ripple={
                 RippleConfig = {
-                  color: "#b804d1de",
-                  borderless: false,
+                  color: "#312e3f",
+                  borderless: true,
                   foreground: false
                 }
               }
@@ -239,29 +239,25 @@ export default function Create({
             </Pressable>
           </View>
         </View>
-      </View>
+ 
     </Modal>
   );
 };
 
 const styles = StyleSheet.create({
-  centeredView: {
-    backgroundColor: '#00030ae0',
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
+ 
   horizontalView: {
     width: '100%',
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
+    justifyContent:"space-evenly",
     alignItems: 'center',
-    paddingTop: 10
+    flex:1
   },
   modalView: {
     width: '100%',
-    margin: 20,
-    backgroundColor: '#000',
+    flex:1,
+    
+    backgroundColor: '#15131d',
     borderRadius: 20,
     padding: 15,
     alignItems: 'center',
@@ -281,46 +277,50 @@ const styles = StyleSheet.create({
   mainText: {
     fontSize: 18,
     fontFamily: 'Rubik-Regular',
-    color:'#fff'
+    color: '#fff'
   },
   input: {
+    width:'100%',
     fontSize: 19,
-        fontFamily: 'Rubik-Light',
-        color: '#fff',
-        backgroundColor: '#2e2e2f',
-        borderRadius: 10,
-        margin: 12,
-        marginVertical: 0,
-        textAlignVertical: 'top',
-        padding:10
+    fontFamily: 'Rubik-Light',
+    flex: 4,
+    color: '#fff',
+    backgroundColor: '#312e3f',
+    borderRadius: 10,
+    margin: 12,
+    marginVertical: 0,
+    textAlignVertical: 'top',
+    padding:10
   },
   addTime: {
     width: '100%',
     color: '#fff',
-    backgroundColor: '#121212',
+    backgroundColor: '#312e3f',
     borderRadius: 10,
     margin: 5,
     padding: 10
   },
   round: {
     justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#b804d1de',
-    borderRadius: 50,
-    width: 80,
-    height: 80,
-    elevation: 2,
+        alignItems: 'center',
+        backgroundColor: '#8789f7',
+        borderRadius: 35,
+        width: 100,
+        height: 70,
+        margin:20,
+        elevation: 5,
   },
   deleteBtn: {
     backgroundColor: 'red',
-    width: '75%',
-    borderRadius: 20,
+    width: '50%',
+    borderRadius: 215,
     padding: 6,
     justifyContent: 'center',
     alignItems: 'center',
+    elevation:5
   },
   messageModal: {
-    backgroundColor: 'red', 
+    backgroundColor: 'red',
     flex: .35,
     margin: 20,
     borderRadius: 20,

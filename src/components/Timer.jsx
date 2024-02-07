@@ -91,7 +91,7 @@ export default function Timer({ setShowTimer, stopTime }) {
                                 setShowTimer(false)
                             }}
                         >
-                            <Text style={styles.btnText}>
+                            <Text style={styles.timeIsUpBtnText}>
                                 End
                             </Text>
                         </Pressable>
@@ -182,8 +182,8 @@ export default function Timer({ setShowTimer, stopTime }) {
 
 const styles = StyleSheet.create({
     container: {
-        paddingTop: 10,
-        paddingBottom: 20,
+        paddingTop: 30,
+        paddingBottom: 40,
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: '#312e3f',
@@ -237,14 +237,20 @@ const styles = StyleSheet.create({
         height: 70,
         elevation: 5,
     },
-    timeIsUpBtn: {
-       
-    },
     title: {
         color: '#fff',
-        fontSize: 30,
+        fontSize: 36,
         fontWeight: 'bold',
         margin:14,
+    },
+    timeIsUpBtn: {
+        width:100,
+        height:50
+    },
+    timeIsUpBtnText: {
+        fontSize:22,
+        fontWeight: 'bold',
+        color: '#fff'
     },
     btnText: {
         fontSize: 20,

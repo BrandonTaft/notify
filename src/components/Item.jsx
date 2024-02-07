@@ -15,20 +15,21 @@ function Item({
                 <>
                     {list.map((reminder) => {
                         return (
-                            <View key={reminder._id}>
                                 <Pressable
-                                    android_ripple={
-                                        RippleConfig = {
-                                            color: "#bb86fa",
-                                            borderless: false,
-                                            foreground: false
-                                        }
+                                   android_ripple={
+                                    RippleConfig = {
+                                        color: "#15131d",
+                                        borderless: false,
+                                        foreground: true
                                     }
+                                }
+                                key={reminder._id}
+                                style={[styles.item, styles.unscheduledItem]}
                                     onPress={() => {
                                         setEditable(reminder)
                                         setModalVisible(!modalVisible)
                                     }}
-                                    style={[styles.item, styles.unscheduledItem]}
+                                    
                                 >
                                     <CheckBox
                                         checked={reminder.priority}
@@ -37,9 +38,9 @@ function Item({
                                         containerStyle={styles.checkBox}
                                         right={true}
                                         checkedIcon='check'
-                                        checkedColor='#bb86fa'
+                                        checkedColor='#8789f7'
                                         uncheckedIcon='circle-o'
-                                        uncheckedColor='#e4e0eb'
+                                        uncheckedColor='#8789f7'
                                     />
                                     <View style={styles.horizontal}>
                                         <Text style={styles.itemText}>
@@ -54,7 +55,6 @@ function Item({
                     }
                                     </View>
                                 </Pressable>
-                            </View>
                         );
                     })}
                 </>
@@ -72,9 +72,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         borderRadius: 20,
         margin: 4,
-        marginLeft: 0,
-        marginRight: 0,
-       
+        marginLeft: 8,
+        marginRight: 8,
     },
     empty: {
         paddingVertical:44,
@@ -84,7 +83,7 @@ const styles = StyleSheet.create({
     },
     emptyText: {
         fontFamily: "Rubik-Medium",
-        color: '#bb86fa',
+        color: '#312e3f',
         fontSize: 18
     },
     unscheduledItem: {

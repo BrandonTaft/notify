@@ -10,13 +10,13 @@ export default function ({ open }) {
                     RippleConfig = {
                         color: '#8789f7',
                         foreground: true,
-                        borderLess: true
+                        borderLess: false
                     }
                 }
                 style={styles.menuIcon}
                 onPress={() => open()}
             >
-                <MaterialCommunityIcons name="menu" color="white" size={42} />
+                <MaterialCommunityIcons name="menu" color="white" size={48} />
             </Pressable >
             <Text style={styles.headerTitle}>NOTIFY</Text>
         </View>
@@ -33,11 +33,11 @@ const styles = StyleSheet.create({
     headerTitle: {
         fontFamily: "Rubik-Black",
         color: '#8789f7',
-        fontSize: 32,
+        fontSize: 36,
     },
     menuIcon : {
         position:'absolute',
         left:15,
-        top:12
+        top:10
     }
 });
