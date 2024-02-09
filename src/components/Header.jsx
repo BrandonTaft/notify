@@ -16,7 +16,7 @@ export default function ({ open }) {
                 style={styles.menuIcon}
                 onPress={() => open()}
             >
-                <MaterialCommunityIcons name="menu" color="white" size={48} />
+                <MaterialCommunityIcons name="menu" color="white" size={44} />
             </Pressable >
             <Text style={styles.headerTitle}>NOTIFY</Text>
         </View>
@@ -33,11 +33,11 @@ const styles = StyleSheet.create({
     headerTitle: {
         fontFamily: "Rubik-Black",
         color: '#8789f7',
-        fontSize: 36,
+        fontSize: 32,
     },
     menuIcon : {
         position:'absolute',
         left:15,
-        top:10
+        top:12
     }
 });

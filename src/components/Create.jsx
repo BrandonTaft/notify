@@ -29,7 +29,7 @@ export default function Create({
   }, [editable]);
 
   const resetState = () => {
-    onSucess()
+    
     setSelectedDate()
     onChangeName("")
     setAction('POST')
@@ -270,10 +270,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
-  modalText: {
-    marginBottom: 15,
-    textAlign: 'center',
-  },
+ 
   mainText: {
     fontSize: 18,
     fontFamily: 'Rubik-Regular',

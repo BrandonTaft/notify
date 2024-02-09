@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     },
     emptyText: {
         fontFamily: "Rubik-Medium",
-        color: '#312e3f',
+        color: '#8789f7',
         fontSize: 18
     },
     unscheduledItem: {

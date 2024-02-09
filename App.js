@@ -1,17 +1,16 @@
 import { useState, useCallback } from 'react';
 import { StatusBar } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import Loader from './src/components/Loader';
+import useFetch from './src/hooks/useFetch';
 import List from './src/components/List';
 import Layout from './src/components/Layout';
 import TimePicker from "./src/components/TimePicker";
-import useFetch from './src/hooks/useFetch';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 
 
 export default function App() {
-  const { isLoading, reminders, setRefresh, refresh } = useFetch();
+  
   const [showPicker, setShowPicker] = useState(false);
   const [fontsLoaded] = useFonts({
     'Rubik-Black': require('./assets/fonts/Rubik-Black.ttf'),
@@ -31,24 +30,16 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
-      {isLoading
-        ?
-        <Loader />
-        :
         <Layout
           setShowPicker={setShowPicker}
         >
-          <List
-            reminders={reminders}
-            onSucess={() => setRefresh(!refresh)}
-          />
+          <List />
           <TimePicker
             setShowPicker={setShowPicker}
             showPicker={showPicker}
           />
           <StatusBar  />
         </Layout>
-      }
     </SafeAreaProvider>
   );
 }
