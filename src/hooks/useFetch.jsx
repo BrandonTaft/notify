@@ -7,6 +7,7 @@ const useFetch = () => {
     const [refresh, setRefresh] = useState(false);
 
     useEffect(() => {
+        console.log("fetch")
         setIsLoading(true);
         fetchReminders()
             .then((data) => {

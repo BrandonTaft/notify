@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, Pressable } from 'react-native';
 import { CheckBox } from '@rneui/themed';
 
-function Item({
+function Items({
     list,
     type,
     setEditable,
@@ -24,7 +24,7 @@ function Item({
                                     }
                                 }
                                 key={reminder._id}
-                                style={[styles.item, styles.unscheduledItem]}
+                                style={[styles.item, reminder.notification ? null : styles.unscheduledItem]}
                                     onPress={() => {
                                         setEditable(reminder)
                                         setModalVisible(!modalVisible)
@@ -74,9 +74,10 @@ const styles = StyleSheet.create({
         margin: 4,
         marginLeft: 8,
         marginRight: 8,
+        paddingTop:4,
+        paddingBottom:2
     },
     empty: {
-        paddingVertical:44,
         textAlign: 'center',
         justifyContent: 'center',
         alignItems: 'center'
@@ -84,11 +85,12 @@ const styles = StyleSheet.create({
     emptyText: {
         fontFamily: "Rubik-Medium",
         color: '#8789f7',
-        fontSize: 18
+        fontSize: 18,
+        marginVertical:44
     },
     unscheduledItem: {
-        paddingTop: 8,
-        paddingBottom: 8
+        paddingTop: 12,
+        paddingBottom: 12
     },
     horizontal: {
         flexDirection: 'column',
@@ -110,4 +112,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default Item
+export default Items

@@ -1,36 +1,30 @@
 import { useState, useCallback, useReducer, useEffect } from 'react';
 import { StyleSheet, Text, View, Pressable, ScrollView } from 'react-native';
 import Create from './Create';
-import Item from './Item';
+import Items from './Items';
 import { Icon } from "@rneui/base";
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-import useFetch from '../hooks/useFetch';
-import Loader from './Loader';
 import { completeMany, deleteMany } from '../api';
 import usePushNotification from '../hooks/usePushNotification';
 import Alarm from './Alarm';
 
-export default function List() {
-    
-    const { isLoading, reminders, setRefresh, refresh } = useFetch();
+export default function List({reminders, onSucess}) {
     const { notification, setSound, showAlarm, setShowAlarm, expoPushToken } = usePushNotification();
     const [editable, setEditable] = useState({});
     const [modalVisible, setModalVisible] = useState(false);
-
+    
     const [fontsLoaded] = useFonts({
         'Rubik-Medium': require('../../assets/fonts/Rubik-Medium.ttf'),
         'Rubik-Regular': require('../../assets/fonts/Rubik-Regular.ttf'),
     });
 
-    
     const initialState = {
-    //     scheduled: [...reminders.scheduled],
-    //     unScheduled: [...reminders.unScheduled],
-    //     completed: [...reminders.completed],
+        scheduled: [...reminders.scheduled],
+        unScheduled: [...reminders.unScheduled],
+        completed: [...reminders.completed],
         selected: []
-     }
-
+    }
     const [state, dispatch] = useReducer(reducer, initialState);
     const { scheduled, unScheduled, selected, completed } = state;
 
@@ -97,7 +91,7 @@ export default function List() {
         completeMany(selected)
             .then(result => {
                 if (result.success) {
-                    setRefresh(!refresh)
+                    onSucess()
                 }
             })
     }
@@ -107,126 +101,122 @@ export default function List() {
         deleteMany(selected)
             .then(result => {
                 if (result.success) {
-                    setRefresh(!refresh)
+                    onSucess()
                 }
             })
     }
 
     return (
-        <>
-            {isLoading
-                ?
-                <Loader />
-                :
-                <View style={styles.container}>
-                    <Alarm
-                        notification={notification}
-                        setSound={setSound}
-                        showAlarm={showAlarm}
-                        setShowAlarm={setShowAlarm}
+        <View style={styles.container}>
+            <Alarm
+                notification={notification}
+                setSound={setSound}
+                showAlarm={showAlarm}
+                setShowAlarm={setShowAlarm}
+            />
+                
+            <View style={styles.listContainer}>
+                <ScrollView>
+                    <Text style={styles.title} >Scheduled</Text>
+                
+                    <Items
+                        list={scheduled}
+                        type={"UPDATESCHEDULED"}
+                        setEditable={setEditable}
+                        modalVisible={modalVisible}
+                        setModalVisible={setModalVisible}
+                        handleCheck={handleCheck}
                     />
-                    <View style={styles.listContainer}>
-                        <ScrollView>
-                            <Text style={[styles.title, { marginTop: 0 }]} >Scheduled</Text>
-                            <Item
-                                list={reminders.scheduled}
-                                type={"UPDATESCHEDULED"}
-                                setEditable={setEditable}
-                                modalVisible={modalVisible}
-                                setModalVisible={setModalVisible}
-                                handleCheck={handleCheck}
-                            />
-                            <Text style={styles.title} >Unscheduled</Text>
-                            {/* <Item
-                                list={unScheduled}
-                                type={"UPDATEUNSCHEDULED"}
-                                setEditable={setEditable}
-                                modalVisible={modalVisible}
-                                setModalVisible={setModalVisible}
-                                handleCheck={handleCheck}
-                            />
-                            <Text style={styles.title} >Completed</Text>
-                            <Item
-                                list={completed}
-                                type={"COMPLETED"}
-                                setEditable={setEditable}
-                                modalVisible={modalVisible}
-                                setModalVisible={setModalVisible}
-                                handleCheck={handleCheck}
-                            /> */}
-                        </ScrollView>
-                        <Create
-                            onSucess={() => setRefresh(!refresh)}
-                            expoPushToken={expoPushToken}
-                            editable={editable}
-                            setEditable={setEditable}
-                            setModalVisible={setModalVisible}
-                            modalVisible={modalVisible}
-                        />
-                    </View>
-                    <View style={styles.btnContainer}>
-                        <Pressable
-                            style={styles.round}
-                            onPress={() => setModalVisible(true)}
-                            android_ripple={
-                                RippleConfig = {
-                                    color: "#312e3f",
-                                    borderless: true,
-                                    foreground: false
-                                }
-                            }
-                        >
-                            <Icon name="add" color="#fff" size={34} />
-                        </Pressable>
+                    <Text style={styles.title} >Unscheduled</Text>
+                    <Items
+                        list={unScheduled}
+                        type={"UPDATEUNSCHEDULED"}
+                        setEditable={setEditable}
+                        modalVisible={modalVisible}
+                        setModalVisible={setModalVisible}
+                        handleCheck={handleCheck}
+                    />
+                    <Text style={styles.title} >Completed</Text>
+                    <Items
+                        list={completed}
+                        type={"COMPLETED"}
+                        setEditable={setEditable}
+                        modalVisible={modalVisible}
+                        setModalVisible={setModalVisible}
+                        handleCheck={handleCheck}
+                    />
+                </ScrollView>
+                <Create
+                    onSucess={onSucess}
+                    expoPushToken={expoPushToken}
+                    editable={editable}
+                    setEditable={setEditable}
+                    setModalVisible={setModalVisible}
+                    modalVisible={modalVisible}
+                />
+            </View>
 
-                        <Pressable
-                            onPress={() => handleCompleted()}
-                            android_ripple={
-                                RippleConfig = {
-                                    color: "#312e3f",
-                                    borderless: true,
-                                    foreground: false
-                                }
-                            }
-                            disabled={selected.length ? false : true}
-                        >
-                            <Icon name="check" color="#bb86fa" size={34} />
-                            <Text style={styles.btn}>Done</Text>
-                        </Pressable>
+            <View style={styles.btnContainer}>
+                <Pressable
+                    style={styles.round}
+                    onPress={() => setModalVisible(true)}
+                    android_ripple={
+                        RippleConfig = {
+                            color: "#bb86fa",
+                            borderless: true,
+                            foreground: false
+                        }
+                    }
+                >
+                    <Icon name="add" color="#fff" size={34} />
+                </Pressable>
 
-                        <Pressable
-                            onPress={() => setModalVisible(true)}
-                            android_ripple={
-                                RippleConfig = {
-                                    color: "#312e3f",
-                                    borderless: true,
-                                    foreground: false
-                                }
-                            }
-                        >
-                            <Icon name="share" color="#bb86fa" size={34} />
-                            <Text style={styles.btn}>Share</Text>
-                        </Pressable>
+                <Pressable
+                    onPress={() => handleCompleted()}
+                    android_ripple={
+                        RippleConfig = {
+                            color: "#bb86fa",
+                            borderless: true,
+                            foreground: false
+                        }
+                    }
+                disabled={selected.length ? false : true}
+                >
+                    <Icon name="check" color="#bb86fa" size={34} />
+                    <Text style={styles.btn}>Done</Text>
+                </Pressable>
 
-                        <Pressable
-                            onPress={() => deleteChecked()}
-                            android_ripple={
-                                RippleConfig = {
-                                    color: "#8789f7",
-                                    borderless: false,
-                                    foreground: true
-                                }
-                            }
-                            disabled={selected.length ? false : true}
-                        >
-                            <Icon name="delete" color="#bb86fa" size={34} />
-                            <Text style={styles.btn}>Delete</Text>
-                        </Pressable>
+                <Pressable
+                    onPress={() => setModalVisible(true)}
+                    android_ripple={
+                        RippleConfig = {
+                            color: "#bb86fa",
+                            borderless: true,
+                            foreground: false
+                        }
+                    }
+                >
+                    <Icon name="share" color="#bb86fa" size={34} />
+                    <Text style={styles.btn}>Share</Text>
+                </Pressable>
 
-                    </View>
-                </View>
-            }
-        </>
+                <Pressable
+                    onPress={() => deleteChecked()}
+                    android_ripple={
+                        RippleConfig = {
+                            color: "#bb86fa",
+                            borderless: true,
+                            foreground: false
+                        }
+                    }
+                disabled={selected.length ? false : true}
+                >
+                    <Icon name="delete" color="#bb86fa" size={34} />
+                    <Text style={styles.btn}>Delete</Text>
+                </Pressable>
+
+            </View>
+        </View>
     );
 }
 
@@ -245,7 +235,7 @@ const styles = StyleSheet.create({
         fontFamily: "Rubik-Medium",
         color: 'grey',
         fontSize: 17,
-        marginTop: 8,
+        marginTop: 10,
         marginLeft: 8
     },
     btnContainer: {
@@ -267,10 +257,9 @@ const styles = StyleSheet.create({
     round: {
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#8789f7',
+        backgroundColor: '#bb86fa',
         borderRadius: 50,
         width: 60,
-        height: 60,
-        elevation: 5,
+        height: 60
     }
 });

@@ -1,10 +1,29 @@
-import { useRef } from "react";
+import { useRef, useCallback } from "react";
 import { View, StyleSheet, DrawerLayoutAndroid } from "react-native";
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { StatusBar } from 'react-native';
+import { useFonts } from 'expo-font';
+import * as SplashScreen from 'expo-splash-screen';
 import Header from "./Header";
 import Menu from "./Menu";
 
 export default function Layout({ setShowPicker, children }) {
     const drawer = useRef(null);
+    const [fontsLoaded] = useFonts({
+        'Rubik-Black': require('../../assets/fonts/Rubik-Black.ttf'),
+        'Rubik-Bold': require('../../assets/fonts/Rubik-ExtraBold.ttf'),
+        'Rubik-Medium': require('../../assets/fonts/Rubik-Medium.ttf'),
+        'Rubik-Light': require('../../assets/fonts/Rubik-Light.ttf'),
+      });
+      const onLayoutRootView = useCallback(async () => {
+        if (fontsLoaded) {
+          await SplashScreen.hideAsync();
+        }
+      }, [fontsLoaded]);
+    
+      if (!fontsLoaded) {
+        return null;
+      }
     const navigationView = () => (
         <Menu
             setShowPicker={setShowPicker}
@@ -13,6 +32,7 @@ export default function Layout({ setShowPicker, children }) {
     );
 
     return (
+        <SafeAreaProvider>
         <DrawerLayoutAndroid
             ref={drawer}
             drawerWidth={300}
@@ -26,8 +46,9 @@ export default function Layout({ setShowPicker, children }) {
                     {children}
                 </View>
             </View>
-
+            <StatusBar />
         </DrawerLayoutAndroid>
+        </SafeAreaProvider>
     );
 };
 

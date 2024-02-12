@@ -29,7 +29,7 @@ export default function Create({
   }, [editable]);
 
   const resetState = () => {
-    
+    onSucess()
     setSelectedDate()
     onChangeName("")
     setAction('POST')
