@@ -1,4 +1,4 @@
-import { useState, useCallback, useReducer, useEffect } from 'react';
+import { useState, useCallback, useReducer } from 'react';
 import { StyleSheet, Text, View, Pressable, ScrollView } from 'react-native';
 import Create from './Create';
 import Items from './Items';
@@ -9,7 +9,7 @@ import { completeMany, deleteMany } from '../api';
 import usePushNotification from '../hooks/usePushNotification';
 import Alarm from './Alarm';
 
-export default function List({reminders, onSucess}) {
+export default function List({ reminders, onSucess }) {
     const { notification, setSound, showAlarm, setShowAlarm, expoPushToken } = usePushNotification();
     const [editable, setEditable] = useState({});
     const [modalVisible, setModalVisible] = useState(false);
@@ -114,11 +114,9 @@ export default function List({reminders, onSucess}) {
                 showAlarm={showAlarm}
                 setShowAlarm={setShowAlarm}
             />
-                
             <View style={styles.listContainer}>
                 <ScrollView>
                     <Text style={styles.title} >Scheduled</Text>
-                
                     <Items
                         list={scheduled}
                         type={"UPDATESCHEDULED"}
@@ -155,7 +153,6 @@ export default function List({reminders, onSucess}) {
                     modalVisible={modalVisible}
                 />
             </View>
-
             <View style={styles.btnContainer}>
                 <Pressable
                     style={styles.round}
@@ -180,7 +177,7 @@ export default function List({reminders, onSucess}) {
                             foreground: false
                         }
                     }
-                disabled={selected.length ? false : true}
+                    disabled={selected.length ? false : true}
                 >
                     <Icon name="check" color="#bb86fa" size={34} />
                     <Text style={styles.btn}>Done</Text>
@@ -209,7 +206,7 @@ export default function List({reminders, onSucess}) {
                             foreground: false
                         }
                     }
-                disabled={selected.length ? false : true}
+                    disabled={selected.length ? false : true}
                 >
                     <Icon name="delete" color="#bb86fa" size={34} />
                     <Text style={styles.btn}>Delete</Text>
@@ -236,18 +233,18 @@ const styles = StyleSheet.create({
         color: 'grey',
         fontSize: 17,
         marginTop: 10,
-        marginLeft: 8
+        marginLeft:8
     },
     btnContainer: {
         flex: 1,
         padding: 12,
-        marginHorizontal: 10,
+        marginHorizontal:10,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-evenly',
         borderRadius: 20,
         backgroundColor: '#312e3f',
-
+        
     },
     btn: {
         color: '#fff',

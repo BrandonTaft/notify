@@ -4,6 +4,7 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import Icon from 'react-native-vector-icons/AntDesign';
 import { addReminders, deleteMany } from '../api';
 import * as SMS from 'expo-sms';
+import * as Crypto from 'expo-crypto';
 
 
 export default function Create({
@@ -12,11 +13,13 @@ export default function Create({
   modalVisible,
   setModalVisible,
   editable,
-  setEditable
+  setEditable,
+  storedIds,
+  setStoredIds
 }) {
   const [name, onChangeName] = useState("");
   const [action, setAction] = useState('POST');
-  const [selectedDate, setSelectedDate] = useState();
+  const [selectedDate, setSelectedDate] = useState(null);
   const [datePickerVisible, setDatePickerVisible] = useState(false);
   const [sendMessage, setSendMessage] = useState(false);
   const [number, onChangeNumber] = useState("");
@@ -38,8 +41,10 @@ export default function Create({
   };
 
   const postReminder = () => {
+    const UUID = Crypto.randomUUID();
     if (name) {
-      addReminders(name, action, selectedDate, editable._id, expoPushToken)
+      setStoredIds([...storedIds, UUID])
+      addReminders(UUID, name, action, selectedDate, editable._id, expoPushToken)
         .then(result => {
           if (result.success) {
             resetState()

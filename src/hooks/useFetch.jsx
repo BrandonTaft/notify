@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { fetchReminders } from '../api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const useFetch = () => {
     const [reminders, setReminders] = useState([]);
