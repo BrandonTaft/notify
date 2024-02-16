@@ -1,4 +1,4 @@
-import { useState, useCallback, useReducer } from 'react';
+import { useState, useCallback, useReducer, useEffect } from 'react';
 import { StyleSheet, Text, View, Pressable, ScrollView } from 'react-native';
 import Create from './Create';
 import Items from './Items';
@@ -8,16 +8,35 @@ import * as SplashScreen from 'expo-splash-screen';
 import { completeMany, deleteMany } from '../api';
 import usePushNotification from '../hooks/usePushNotification';
 import Alarm from './Alarm';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function List({ reminders, onSucess }) {
     const { notification, setSound, showAlarm, setShowAlarm, expoPushToken } = usePushNotification();
     const [editable, setEditable] = useState({});
     const [modalVisible, setModalVisible] = useState(false);
-    
+    const [items, setItems] = useState([])
+    console.log("REMINDERS",reminders)
     const [fontsLoaded] = useFonts({
         'Rubik-Medium': require('../../assets/fonts/Rubik-Medium.ttf'),
         'Rubik-Regular': require('../../assets/fonts/Rubik-Regular.ttf'),
     });
+    useEffect(() => {
+        const getData = async () => {
+            try {
+              const value = await AsyncStorage.getItem('reminders');
+              if (value !== null) {
+                const x = JSON.parse(value)
+                console.log("VALUE", x.completed)
+                setItems(x)
+              }
+            } catch (e) {
+                console.log("ERROR:" ,e)
+              // error reading value
+            }
+          };
+
+          getData()
+    },[])
 
     const initialState = {
         scheduled: [...reminders.scheduled],
@@ -127,7 +146,7 @@ export default function List({ reminders, onSucess }) {
                     />
                     <Text style={styles.title} >Unscheduled</Text>
                     <Items
-                        list={unScheduled}
+                        list={items.unScheduled}
                         type={"UPDATEUNSCHEDULED"}
                         setEditable={setEditable}
                         modalVisible={modalVisible}
@@ -135,14 +154,14 @@ export default function List({ reminders, onSucess }) {
                         handleCheck={handleCheck}
                     />
                     <Text style={styles.title} >Completed</Text>
-                    <Items
-                        list={completed}
+                    {/* <Items
+                        list={items.completed}
                         type={"COMPLETED"}
                         setEditable={setEditable}
                         modalVisible={modalVisible}
                         setModalVisible={setModalVisible}
                         handleCheck={handleCheck}
-                    />
+                    /> */}
                 </ScrollView>
                 <Create
                     onSucess={onSucess}

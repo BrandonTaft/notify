@@ -9,10 +9,18 @@ const useFetch = () => {
 
     useEffect(() => {
         console.log("fetch")
+        const storeReminders = async (data) => {
+            try {
+              await AsyncStorage.setItem('reminders', JSON.stringify(data));
+            } catch (error) {
+              console.log("error: ", error)
+            }
+          };
         setIsLoading(true);
         fetchReminders()
             .then((data) => {
                 setReminders(data)
+                storeReminders(data)
             })
             .finally(() => {
                 setIsLoading(false);

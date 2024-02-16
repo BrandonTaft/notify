@@ -13,9 +13,7 @@ export default function Create({
   modalVisible,
   setModalVisible,
   editable,
-  setEditable,
-  storedIds,
-  setStoredIds
+  setEditable
 }) {
   const [name, onChangeName] = useState("");
   const [action, setAction] = useState('POST');
@@ -43,8 +41,7 @@ export default function Create({
   const postReminder = () => {
     const UUID = Crypto.randomUUID();
     if (name) {
-      setStoredIds([...storedIds, UUID])
-      addReminders(UUID, name, action, selectedDate, editable._id, expoPushToken)
+      addReminders(name, action, selectedDate, editable._id, expoPushToken)
         .then(result => {
           if (result.success) {
             resetState()
