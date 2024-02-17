@@ -6,7 +6,7 @@ import useFetch from './src/hooks/useFetch';
 import Loader from './src/components/Loader'
 
 export default function App() {
-  const {isLoading, reminders, setRefresh, refresh, storedIds, setStoredIds} = useFetch()
+  const {isLoading, reminders, setRefresh, refresh} = useFetch()
   const [showPicker, setShowPicker] = useState(false);
   return (
     <Layout

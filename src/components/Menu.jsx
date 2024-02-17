@@ -4,11 +4,11 @@ import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
 import DeletedItems from "./DeletedItems";
 import Notes from "./Notes";
 
-export default function Menu({ setShowPicker, close }) {
+export default function Menu({ setShowPicker, close, refresh, setRefresh }) {
 
     const [showDeleted, setShowDeleted] = useState(false);
     const [showNotes, setShowNotes] = useState(false);
-    const [refresh, setRefresh] = useState(false);
+    
 
     return (
         <View style={styles.drawer}>

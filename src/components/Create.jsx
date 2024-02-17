@@ -5,9 +5,11 @@ import Icon from 'react-native-vector-icons/AntDesign';
 import { addReminders, deleteMany } from '../api';
 import * as SMS from 'expo-sms';
 import * as Crypto from 'expo-crypto';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 export default function Create({
+  reminders,
   onSucess,
   expoPushToken,
   modalVisible,
@@ -38,16 +40,51 @@ export default function Create({
     setModalVisible(!modalVisible)
   };
 
-  const postReminder = () => {
+  const postReminder = async() => {
     const UUID = Crypto.randomUUID();
-    if (name) {
-      addReminders(name, action, selectedDate, editable._id, expoPushToken)
-        .then(result => {
-          if (result.success) {
-            resetState()
-          }
-        })
+    if (selectedDate) {
+      let newDate = new Date(selectedDate)
+      reminders.scheduled.push({
+        _id: UUID,
+        name: name,
+        notification: selectedDate,
+        month: newDate.getMonth(),
+        day: newDate.getDate(),
+        time: newDate.toLocaleTimeString('en-US'),
+        token: expoPushToken,
+        priority: false,
+        done: false
+      })
+    } else {
+      reminders.unScheduled.push({
+        _id: UUID,
+        name: name,
+        token: expoPushToken,
+        priority: false,
+        done: false
+      })
     }
+      await AsyncStorage.setItem('reminders', JSON.stringify(reminders));
+      fetch("https://f3d8-2600-6c5a-4a7f-463a-216f-184f-7ee0-9ac.ngrok-free.app/all", {
+        method:'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          reminders: reminders
+      })
+      }).catch((err) => {
+        console.log(err);
+    })
+      resetState()
+      // addReminders(name, action, selectedDate, editable._id, expoPushToken)
+      //   .then(result => {
+      //     if (result.success) {
+      //       resetState()
+      //     }
+      //   })
+    
   };
 
   const handleDeleteReminder = () => {
@@ -131,134 +168,134 @@ export default function Create({
           </Pressable>
         </View>
       </Modal>
-    
-        <View style={styles.modalView}>
-          <TextInput
-            autoFocus={true}
-            multiline={true}
-            numberOfLines={6}
-            placeholderTextColor="#fff"
-            style={styles.input}
-            onChangeText={onChangeName}
-            value={name}
-            placeholder=""
-          />
+
+      <View style={styles.modalView}>
+        <TextInput
+          autoFocus={true}
+          multiline={true}
+          numberOfLines={6}
+          placeholderTextColor="#fff"
+          style={styles.input}
+          onChangeText={onChangeName}
+          value={name}
+          placeholder=""
+        />
+        <Pressable
+          android_ripple={
+            RippleConfig = {
+              color: "#8789f7",
+              borderless: false,
+              foreground: false
+            }
+          }
+          style={styles.addTime}
+          onPress={() => setDatePickerVisible(true)}
+        >
+          <Text style={styles.mainText}>
+            {
+              (selectedDate || editable.notification)
+                ?
+                new Date((selectedDate || editable.notification)).toLocaleDateString([], { weekday: 'short', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+                :
+                'Add Time'
+            }
+          </Text>
+        </Pressable>
+        <View style={styles.horizontalView}>
           <Pressable
             android_ripple={
               RippleConfig = {
-                color: "#8789f7",
-                borderless: false,
+                color: "#312e3f",
+                borderless: true,
                 foreground: false
               }
             }
-            style={styles.addTime}
-            onPress={() => setDatePickerVisible(true)}
+            style={styles.round}
+            onPress={() => setSendMessage(true)}
           >
-            <Text style={styles.mainText}>
-              {
-                (selectedDate || editable.notification)
-                  ?
-                  new Date((selectedDate || editable.notification)).toLocaleDateString([], { weekday: 'short', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })
-                  :
-                  'Add Time'
+            <Icon name="message1" style={{ color: 'white' }} size={34} />
+          </Pressable>
+          <Pressable
+            android_ripple={
+              RippleConfig = {
+                color: "#312e3f",
+                borderless: true,
+                foreground: false
               }
+            }
+            style={styles.round}
+            onPress={() => postReminder()}
+          >
+            <Text style={{ fontSize: 18, color: 'white', fontWeight: 'bold' }}>
+              Save
             </Text>
           </Pressable>
-          <View style={styles.horizontalView}>
-            <Pressable
-              android_ripple={
-                RippleConfig = {
-                  color: "#312e3f",
-                  borderless: true,
-                  foreground: false
-                }
+          <Pressable
+            android_ripple={
+              RippleConfig = {
+                color: "#312e3f",
+                borderless: true,
+                foreground: false
               }
-              style={styles.round}
-              onPress={() => setSendMessage(true)}
-            >
-              <Icon name="message1" style={{ color: 'white' }} size={34} />
-            </Pressable>
-            <Pressable
-              android_ripple={
-                RippleConfig = {
-                  color: "#312e3f",
-                  borderless: true,
-                  foreground: false
-                }
-              }
-              style={styles.round}
-              onPress={() => postReminder()}
-            >
-              <Text style={{ fontSize: 18, color: 'white', fontWeight: 'bold' }}>
-                Save
-              </Text>
-            </Pressable>
-            <Pressable
-              android_ripple={
-                RippleConfig = {
-                  color: "#312e3f",
-                  borderless: true,
-                  foreground: false
-                }
-              }
-              style={styles.round}
-              onPress={() => {
-                resetState()
-              }}
-            >
-              <Text style={{ fontSize: 18, color: 'white', fontWeight: 'bold' }}>
-                Cancel
-              </Text>
-            </Pressable>
-          </View>
-          <DateTimePickerModal
-            date={new Date()}
-            isVisible={datePickerVisible}
-            mode="datetime"
-            onConfirm={(selectedDate) => {
-              setDatePickerVisible(false)
-              setSelectedDate(selectedDate)
+            }
+            style={styles.round}
+            onPress={() => {
+              resetState()
             }}
-            onCancel={() => {
-              setDatePickerVisible(false)
-            }}
-          />
-          <View style={styles.horizontalView}>
-            <Pressable
-              android_ripple={
-                RippleConfig = {
-                  color: "#312e3f",
-                  borderless: true,
-                  foreground: false
-                }
-              }
-              style={styles.deleteBtn}
-              onPress={handleDeleteReminder}
-            >
-              <Text style={{ fontSize: 22, color: 'white', fontWeight: 'bold' }}>
-                Delete
-              </Text>
-            </Pressable>
-          </View>
+          >
+            <Text style={{ fontSize: 18, color: 'white', fontWeight: 'bold' }}>
+              Cancel
+            </Text>
+          </Pressable>
         </View>
- 
+        <DateTimePickerModal
+          date={new Date()}
+          isVisible={datePickerVisible}
+          mode="datetime"
+          onConfirm={(selectedDate) => {
+            setDatePickerVisible(false)
+            setSelectedDate(selectedDate)
+          }}
+          onCancel={() => {
+            setDatePickerVisible(false)
+          }}
+        />
+        <View style={styles.horizontalView}>
+          <Pressable
+            android_ripple={
+              RippleConfig = {
+                color: "#312e3f",
+                borderless: true,
+                foreground: false
+              }
+            }
+            style={styles.deleteBtn}
+            onPress={handleDeleteReminder}
+          >
+            <Text style={{ fontSize: 22, color: 'white', fontWeight: 'bold' }}>
+              Delete
+            </Text>
+          </Pressable>
+        </View>
+      </View>
+
     </Modal>
   );
 };
 
 const styles = StyleSheet.create({
- 
+
   horizontalView: {
     width: '100%',
     flexDirection: 'row',
-    justifyContent:"space-evenly",
+    justifyContent: "space-evenly",
     alignItems: 'center',
-    flex:1
+    flex: 1
   },
   modalView: {
     width: '100%',
-    flex:1,
-    
+    flex: 1,
+
     backgroundColor: '#15131d',
     borderRadius: 20,
     padding: 15,
@@ -272,14 +309,14 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
- 
+
   mainText: {
     fontSize: 18,
     fontFamily: 'Rubik-Regular',
     color: '#fff'
   },
   input: {
-    width:'100%',
+    width: '100%',
     fontSize: 19,
     fontFamily: 'Rubik-Light',
     flex: 4,
@@ -289,7 +326,7 @@ const styles = StyleSheet.create({
     margin: 12,
     marginVertical: 0,
     textAlignVertical: 'top',
-    padding:10
+    padding: 10
   },
   addTime: {
     width: '100%',
@@ -301,13 +338,13 @@ const styles = StyleSheet.create({
   },
   round: {
     justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#8789f7',
-        borderRadius: 35,
-        width: 100,
-        height: 70,
-        margin:20,
-        elevation: 5,
+    alignItems: 'center',
+    backgroundColor: '#8789f7',
+    borderRadius: 35,
+    width: 100,
+    height: 70,
+    margin: 20,
+    elevation: 5,
   },
   deleteBtn: {
     backgroundColor: 'red',
@@ -316,7 +353,7 @@ const styles = StyleSheet.create({
     padding: 6,
     justifyContent: 'center',
     alignItems: 'center',
-    elevation:5
+    elevation: 5
   },
   messageModal: {
     backgroundColor: 'red',

@@ -1,4 +1,4 @@
-import { useRef, useCallback } from "react";
+import { useRef, useCallback, useState } from "react";
 import { View, StyleSheet, DrawerLayoutAndroid } from "react-native";
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StatusBar } from 'react-native';
@@ -8,6 +8,7 @@ import Header from "./Header";
 import Menu from "./Menu";
 
 export default function Layout({ setShowPicker, children }) {
+    const [refresh, setRefresh] = useState(false);
     const drawer = useRef(null);
     const [fontsLoaded] = useFonts({
         'Rubik-Black': require('../../assets/fonts/Rubik-Black.ttf'),
@@ -26,6 +27,8 @@ export default function Layout({ setShowPicker, children }) {
       }
     const navigationView = () => (
         <Menu
+            refresh={refresh}
+            setRefresh={setRefresh}
             setShowPicker={setShowPicker}
             close={() => drawer.current.closeDrawer()}
         />
@@ -39,6 +42,7 @@ export default function Layout({ setShowPicker, children }) {
             drawerPosition={'left'}
             renderNavigationView={navigationView}
             drawerBackgroundColor="rgba(21,19,29,0.75)"
+            onDrawerOpen={() => setRefresh(!refresh)}
         >
             <View style={styles.container}>
                 <Header open={() => drawer.current.openDrawer()} />

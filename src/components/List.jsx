@@ -14,35 +14,19 @@ export default function List({ reminders, onSucess }) {
     const { notification, setSound, showAlarm, setShowAlarm, expoPushToken } = usePushNotification();
     const [editable, setEditable] = useState({});
     const [modalVisible, setModalVisible] = useState(false);
-    const [items, setItems] = useState([])
+    
     console.log("REMINDERS",reminders)
     const [fontsLoaded] = useFonts({
         'Rubik-Medium': require('../../assets/fonts/Rubik-Medium.ttf'),
         'Rubik-Regular': require('../../assets/fonts/Rubik-Regular.ttf'),
     });
-    useEffect(() => {
-        const getData = async () => {
-            try {
-              const value = await AsyncStorage.getItem('reminders');
-              if (value !== null) {
-                const x = JSON.parse(value)
-                console.log("VALUE", x.completed)
-                setItems(x)
-              }
-            } catch (e) {
-                console.log("ERROR:" ,e)
-              // error reading value
-            }
-          };
-
-          getData()
-    },[])
 
     const initialState = {
-        scheduled: [...reminders.scheduled],
-        unScheduled: [...reminders.unScheduled],
-        completed: [...reminders.completed],
-        selected: []
+        scheduled: reminders ? [...reminders.scheduled] : [],
+        unScheduled: reminders ? [...reminders.unScheduled] : [],
+        completed: reminders ? [...reminders.completed] : [],
+        deleted:  reminders ? [...reminders.deleted] : [],
+        selected: [],
     }
     const [state, dispatch] = useReducer(reducer, initialState);
     const { scheduled, unScheduled, selected, completed } = state;
@@ -93,9 +77,9 @@ export default function List({ reminders, onSucess }) {
         let temp = list.map((item) => {
             if (reminder._id === item._id) {
                 if (item.priority === false) {
-                    dispatch({ type: "UPDATESELECTED", payload: [...selected, item._id] });
+                    dispatch({ type: "UPDATESELECTED", payload: [...selected, item] });
                 } else if (item.priority === true) {
-                    dispatch({ type: "UPDATESELECTED", payload: selected.filter(existing => existing !== item._id) });
+                    dispatch({ type: "UPDATESELECTED", payload: selected.filter(existing => existing._id !== item._id) });
                 }
                 return { ...item, priority: !item.priority };
             }
@@ -105,24 +89,42 @@ export default function List({ reminders, onSucess }) {
     };
 
     //Sends all selected reminders to server to be marked as done
-    const handleCompleted = () => {
-        dispatch({ type: 'COMPLETE', payload: selected });
-        completeMany(selected)
-            .then(result => {
-                if (result.success) {
-                    onSucess()
-                }
-            })
+    const handleCompleted = async () => {
+        // dispatch({ type: 'COMPLETE', payload: selected });
+        // completeMany(selected)
+        //     .then(result => {
+        //         if (result.success) {
+        //             onSucess()
+        //         }
+        //     })
+        reminders.completed = [ ...reminders.completed, ...selected ]
+        for (let i = 0; i < selected.length;  i++) {
+           
+         reminders.scheduled = reminders.scheduled.filter(function(el) { return el._id !== selected[i]._id; });
+         reminders.unScheduled = reminders.unScheduled.filter(function(el) { return el._id !== selected[i]._id; });
+        
+        }
+        await AsyncStorage.setItem('reminders', JSON.stringify(reminders));
+        onSucess()
     }
 
     //Sends all selected reminders to server to be deleted
-    const deleteChecked = () => {
-        deleteMany(selected)
-            .then(result => {
-                if (result.success) {
-                    onSucess()
-                }
-            })
+    const deleteChecked = async () => {
+        reminders.deleted = [ ...reminders.deleted, ...selected ]
+        for (let i = 0; i < selected.length;  i++) {
+           
+         reminders.scheduled = reminders.scheduled.filter(function(el) { return el._id !== selected[i]._id; });
+         reminders.unScheduled = reminders.unScheduled.filter(function(el) { return el._id !== selected[i]._id; });
+        
+        }
+        await AsyncStorage.setItem('reminders', JSON.stringify(reminders));
+        onSucess()
+        // deleteMany(selected)
+        //     .then(result => {
+        //         if (result.success) {
+        //             onSucess()
+        //         }
+        //     })
     }
 
     return (
@@ -146,7 +148,7 @@ export default function List({ reminders, onSucess }) {
                     />
                     <Text style={styles.title} >Unscheduled</Text>
                     <Items
-                        list={items.unScheduled}
+                        list={unScheduled}
                         type={"UPDATEUNSCHEDULED"}
                         setEditable={setEditable}
                         modalVisible={modalVisible}
@@ -154,17 +156,18 @@ export default function List({ reminders, onSucess }) {
                         handleCheck={handleCheck}
                     />
                     <Text style={styles.title} >Completed</Text>
-                    {/* <Items
-                        list={items.completed}
+                    <Items
+                        list={completed}
                         type={"COMPLETED"}
                         setEditable={setEditable}
                         modalVisible={modalVisible}
                         setModalVisible={setModalVisible}
                         handleCheck={handleCheck}
-                    /> */}
+                    />
                 </ScrollView>
                 <Create
                     onSucess={onSucess}
+                    reminders={state}
                     expoPushToken={expoPushToken}
                     editable={editable}
                     setEditable={setEditable}

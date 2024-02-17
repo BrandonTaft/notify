@@ -3,6 +3,7 @@ import { Pressable, View, Text, StyleSheet, ScrollView } from "react-native";
 import { FontAwesome5 } from '@expo/vector-icons';
 import { CheckBox } from '@rneui/themed';
 import { fetchReminders, wipeAll, restoreMany } from "../api";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function DeletedItems({ showDeleted, setShowDeleted, showNotes, refresh, setRefresh }) {
     const [items, setItems] = useState([]);
@@ -10,15 +11,40 @@ export default function DeletedItems({ showDeleted, setShowDeleted, showNotes, r
     // const [refresh, setRefresh] = useState(false);
 
     useEffect(() => {
-        fetchReminders()
-            .then(result => {
-                if (result.success) {
-                    setItems(result.deleted)
-                    setSelected([])
+        console.log("IRANNNNNNNNNNN")
+        // fetchReminders()
+        //     .then(result => {
+        //         if (result.success) {
+        //             setItems(result.deleted)
+        //             setSelected([])
+        //         }
+        //     })
+        const getReminders = async () => {
+            //await AsyncStorage.clear()
+            try {
+                const jsonValue = await AsyncStorage.getItem('reminders');
+                if (jsonValue !== null) {
+                    const reminders = JSON.parse(jsonValue)
+                    setItems(reminders.deleted)
                 }
-            })
+                else {
+                    fetchReminders()
+                        .then(result => {
+                            if (result.success) {
+                                setItems(result.deleted)
+                                setSelected([])
+                            }
+                        })
+                }
+            } catch (error) {
+                console.log("Error: ", error)
+            } finally {
+                setSelected([])
+            }
+        };
+        getReminders()
         if (showNotes) setShowDeleted(false)
-    }, [refresh, showNotes])
+    }, [refresh, showNotes, showDeleted])
 
     const handleCheck = (reminder) => {
         let temp = items.map((item) => {
@@ -182,41 +208,41 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingLeft: 22,
         paddingRight: 20,
-        paddingVertical:4,
-        marginHorizontal:4,
+        paddingVertical: 4,
+        marginHorizontal: 4,
         marginTop: 10,
     },
     active: {
         borderColor: '#8789f7',
         borderBottomLeftRadius: 0,
         borderBottomRightRadius: 0,
-        marginBottom:4
+        marginBottom: 4
     },
     menuBtnText: {
         fontFamily: 'Rubik-Medium',
         color: '#8789f7',
         fontSize: 24,
         marginLeft: 25,
-        marginTop:2
+        marginTop: 2
     },
     item: {
         backgroundColor: '#312e3f',
         flexDirection: 'row',
-        marginHorizontal:4,
-        marginBottom:5,
+        marginHorizontal: 4,
+        marginBottom: 5,
         paddingVertical: 3,
         overflow: 'hidden',
-        paddingRight:'15%'
+        paddingRight: '15%'
     },
     altItem: {
         backgroundColor: '#312e3f',
         flexDirection: 'row',
-        marginHorizontal:4,
-        marginBottom:5,
+        marginHorizontal: 4,
+        marginBottom: 5,
         paddingTop: 12,
-        paddingBottom:16,
+        paddingBottom: 16,
         overflow: 'hidden',
-        paddingRight:'15%'
+        paddingRight: '15%'
     },
     itemText: {
         fontFamily: "Rubik-Regular",
@@ -248,7 +274,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#15131d',
         borderBottomLeftRadius: 16,
         borderBottomRightRadius: 16,
-        marginHorizontal:4,
+        marginHorizontal: 4,
     },
     btnText: {
         color: "#fff",
@@ -262,6 +288,6 @@ const styles = StyleSheet.create({
         backgroundColor: "#8789f7",
         padding: 7,
         borderRadius: 50,
-        elevation:4
+        elevation: 4
     },
 });
