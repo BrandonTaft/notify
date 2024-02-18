@@ -1,4 +1,46 @@
-const BASE_URL = "https://f3d8-2600-6c5a-4a7f-463a-216f-184f-7ee0-9ac.ngrok-free.app";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const BASE_URL = "https://7faf-2600-6c5a-4a7f-463a-154c-959d-157f-5104.ngrok-free.app";
+
+export const storeBackUpData = async (reminders) => {
+    const isNew = await AsyncStorage.getItem('newDevice');
+    const deviceId = await AsyncStorage.getItem('deviceId');
+    console.log("ISSSNEWWWW", isNew)
+    return await fetch(BASE_URL + '/store', {
+        method: 'POST',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            isNew:isNew,
+            deviceId: deviceId,
+            reminders: reminders
+        })
+    }).catch((err) => {
+        console.log(err);
+    }).then(response => {
+        AsyncStorage.setItem('newDevice', 'false');
+        response.json()
+    })
+};
+
+export const fetchBackUpData = async () => {
+    const deviceId = await AsyncStorage.getItem('deviceId');
+    return await fetch(BASE_URL, {
+        method: 'POST',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            deviceId: deviceId
+        })
+    }).catch((err) => {
+        console.log(err);
+    }).then(response => response.json())
+};
+
 
 export const fetchReminders = async () => {
     return await fetch(BASE_URL)
@@ -12,16 +54,16 @@ export const addReminders = async (name, action, selectedDate, editable, expoPus
     return await fetch(BASE_URL, {
         method: action,
         headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          id: editable,
-          name: name,
-          notification: selectedDate,
-          expoPushToken: expoPushToken
+            id: editable,
+            name: name,
+            notification: selectedDate,
+            expoPushToken: expoPushToken
         })
-      }).catch((err) => {
+    }).catch((err) => {
         console.log(err);
     }).then(response => response.json())
 };
@@ -35,35 +77,35 @@ export const fetchNotes = async () => {
 };
 
 export const addNote = async (note) => {
-    return await fetch(BASE_URL  + "/notes", {
+    return await fetch(BASE_URL + "/notes", {
         method: 'POST',
         headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          name: note.name,
-          note: true
+            name: note.name,
+            note: true
         })
-      }).catch((err) => {
+    }).catch((err) => {
         console.log(err);
     }).then(response => response.json())
 };
 
 export const updateNote = async (note) => {
-    return await fetch(BASE_URL  + "/notes", {
+    return await fetch(BASE_URL + "/notes", {
         method: 'PUT',
         headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          name: note.name,
-          note: true,
-          id:note._id,
-          priority:note.false
+            name: note.name,
+            note: true,
+            id: note._id,
+            priority: note.false
         })
-      }).catch((err) => {
+    }).catch((err) => {
         console.log(err);
     }).then(response => response.json())
 };
@@ -82,16 +124,17 @@ export const completeMany = async (selected) => {
 };
 
 export const deleteMany = async (selected) => {
-    return fetch(BASE_URL + "/delete", {
-        method: 'POST',
-        headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            selected: selected
-        })
-    }).then(response => response.json())
+
+    // return fetch(BASE_URL + "/delete", {
+    //     method: 'POST',
+    //     headers: {
+    //         Accept: 'application/json',
+    //         'Content-Type': 'application/json',
+    //     },
+    //     body: JSON.stringify({
+    //         selected: selected
+    //     })
+    // }).then(response => response.json())
 };
 
 export const restoreMany = async (selected) => {
@@ -110,7 +153,7 @@ export const restoreMany = async (selected) => {
 
 
 export const wipeAll = async (selected) => {
-    return  fetch(BASE_URL + "/wipe", {
+    return fetch(BASE_URL + "/wipe", {
         method: 'POST',
         headers: {
             Accept: 'application/json',

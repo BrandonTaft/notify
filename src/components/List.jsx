@@ -5,7 +5,7 @@ import Items from './Items';
 import { Icon } from "@rneui/base";
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-import { completeMany, deleteMany } from '../api';
+import { completeMany, deleteMany, storeBackUpData } from '../api';
 import usePushNotification from '../hooks/usePushNotification';
 import Alarm from './Alarm';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -15,7 +15,7 @@ export default function List({ reminders, onSucess }) {
     const [editable, setEditable] = useState({});
     const [modalVisible, setModalVisible] = useState(false);
     
-    console.log("REMINDERS",reminders)
+    // console.log("REMINDERS",reminders)
     const [fontsLoaded] = useFonts({
         'Rubik-Medium': require('../../assets/fonts/Rubik-Medium.ttf'),
         'Rubik-Regular': require('../../assets/fonts/Rubik-Regular.ttf'),
@@ -105,6 +105,7 @@ export default function List({ reminders, onSucess }) {
         
         }
         await AsyncStorage.setItem('reminders', JSON.stringify(reminders));
+        storeBackUpData(reminders)
         onSucess()
     }
 
@@ -118,6 +119,7 @@ export default function List({ reminders, onSucess }) {
         
         }
         await AsyncStorage.setItem('reminders', JSON.stringify(reminders));
+        storeBackUpData(reminders)
         onSucess()
         // deleteMany(selected)
         //     .then(result => {

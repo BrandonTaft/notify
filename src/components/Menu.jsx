@@ -51,14 +51,14 @@ export default function Menu({ setShowPicker, close, refresh, setRefresh }) {
                 </Text>
                 <FontAwesome5 name="chevron-circle-right" size={30} color="#fff" style={{ marginLeft: 'auto', marginTop: "auto", marginBottom: 'auto' }} />
             </Pressable>
-            <Notes
+            {/* <Notes
                 showNotes={showNotes}
                 setShowNotes={setShowNotes}
                 showDeleted={showDeleted}
                 setShowDeleted={setShowDeleted}
                 refresh={refresh}
                 setRefresh={setRefresh}
-            />
+            />*/}
             {!showNotes &&
             <DeletedItems
                 showDeleted={showDeleted}
@@ -67,7 +67,7 @@ export default function Menu({ setShowPicker, close, refresh, setRefresh }) {
                 refresh={refresh}
                 setRefresh={setRefresh}
             />
-}
+} 
         </View>
     )
 }

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { StyleSheet, TextInput, View, Modal, Text, Pressable } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import Icon from 'react-native-vector-icons/AntDesign';
-import { addReminders, deleteMany } from '../api';
+import { addReminders, storeBackUpData, deleteMany } from '../api';
 import * as SMS from 'expo-sms';
 import * as Crypto from 'expo-crypto';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -65,18 +65,19 @@ export default function Create({
       })
     }
       await AsyncStorage.setItem('reminders', JSON.stringify(reminders));
-      fetch("https://f3d8-2600-6c5a-4a7f-463a-216f-184f-7ee0-9ac.ngrok-free.app/all", {
-        method:'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          reminders: reminders
-      })
-      }).catch((err) => {
-        console.log(err);
-    })
+    //   fetch("https://f3d8-2600-6c5a-4a7f-463a-216f-184f-7ee0-9ac.ngrok-free.app/all", {
+    //     method:'POST',
+    //     headers: {
+    //       Accept: 'application/json',
+    //       'Content-Type': 'application/json',
+    //     },
+    //     body: JSON.stringify({
+    //       reminders: reminders
+    //   })
+    //   }).catch((err) => {
+    //     console.log(err);
+    // })
+    storeBackUpData(reminders)
       resetState()
       // addReminders(name, action, selectedDate, editable._id, expoPushToken)
       //   .then(result => {

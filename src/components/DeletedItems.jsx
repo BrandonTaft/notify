@@ -27,15 +27,12 @@ export default function DeletedItems({ showDeleted, setShowDeleted, showNotes, r
                     const reminders = JSON.parse(jsonValue)
                     setItems(reminders.deleted)
                 }
-                else {
-                    fetchReminders()
-                        .then(result => {
-                            if (result.success) {
-                                setItems(result.deleted)
-                                setSelected([])
-                            }
-                        })
-                }
+                // else {
+                //     fetchReminders()
+                //         .then((data) => {
+                //             setReminders(data)
+                //         })
+                // }
             } catch (error) {
                 console.log("Error: ", error)
             } finally {
