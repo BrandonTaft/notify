@@ -10,36 +10,28 @@ const useFetch = () => {
 
     useEffect(() => {
         console.log("fetch")
-        
-        
         const getReminders = async () => {
             //await AsyncStorage.clear()
-            const UUID = ['deviceId',Crypto.randomUUID()];
+            const UUID = ['deviceId', Crypto.randomUUID()];
             const deviceId = await AsyncStorage.getItem('deviceId');
-            if(deviceId === null) {
+            if (deviceId === null) {
                 const isNew = ['newDevice', 'true']
                 await AsyncStorage.multiSet([isNew, UUID])
-            } 
+            }
             try {
-                const jsonValue = await AsyncStorage.getItem('reminde');
+                const jsonValue = await AsyncStorage.getItem('reminders');
                 if (jsonValue !== null) {
                     setReminders(JSON.parse(jsonValue))
-                    // fetchBackUpData()
-                    //     .then((data) => {
-                    //        console.log(data.reminders[0].reminders)
-                    //       })
-            } else {
-                fetchBackUpData()
-                .then((data) => {
-                    console.log(data.reminders[0].reminders)
-                    setReminders(data.reminders[0].reminders)
-                    setRefresh(!re)
-                })
-           }
+                    setIsLoading(false)
+                } else {
+                    fetchBackUpData()
+                        .then((data) => {
+                            setReminders(data.reminders[0].reminders)
+                            setIsLoading(false)
+                        })
+                }
             } catch (error) {
                 console.log("Error: ", error)
-            } finally {
-                setIsLoading(false)
             }
         };
         setIsLoading(true);

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Pressable, View, Text, StyleSheet, ScrollView } from "react-native";
 import { FontAwesome5 } from '@expo/vector-icons';
 import { CheckBox } from '@rneui/themed';
-import { fetchReminders, wipeAll, restoreMany } from "../api";
+import { fetchBackUpData, wipeAll, restoreMany } from "../api";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function DeletedItems({ showDeleted, setShowDeleted, showNotes, refresh, setRefresh }) {
@@ -22,17 +22,16 @@ export default function DeletedItems({ showDeleted, setShowDeleted, showNotes, r
         const getReminders = async () => {
             //await AsyncStorage.clear()
             try {
-                const jsonValue = await AsyncStorage.getItem('reminders');
+                const jsonValue = await AsyncStorage.getItem('remindes');
                 if (jsonValue !== null) {
                     const reminders = JSON.parse(jsonValue)
                     setItems(reminders.deleted)
+                } else {
+                    fetchBackUpData()
+                        .then((data) => {
+                            setItems(data.reminders[0].reminders.deleted)
+                        })
                 }
-                // else {
-                //     fetchReminders()
-                //         .then((data) => {
-                //             setReminders(data)
-                //         })
-                // }
             } catch (error) {
                 console.log("Error: ", error)
             } finally {
