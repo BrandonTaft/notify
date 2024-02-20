@@ -10,7 +10,7 @@ import usePushNotification from '../hooks/usePushNotification';
 import Alarm from './Alarm';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function List({ reminders, onSucess }) {
+export default function List({ reminders, onSuccess }) {
     const { notification, setSound, showAlarm, setShowAlarm, expoPushToken } = usePushNotification();
     const [editable, setEditable] = useState({});
     const [modalVisible, setModalVisible] = useState(false);
@@ -94,7 +94,7 @@ export default function List({ reminders, onSucess }) {
         // completeMany(selected)
         //     .then(result => {
         //         if (result.success) {
-        //             onSucess()
+        //             onSuccess()
         //         }
         //     })
         reminders.completed = [ ...reminders.completed, ...selected ]
@@ -106,7 +106,7 @@ export default function List({ reminders, onSucess }) {
         }
         await AsyncStorage.setItem('reminders', JSON.stringify(reminders));
         storeBackUpData(reminders)
-        onSucess()
+        onSuccess()
     }
 
     //Sends all selected reminders to server to be deleted
@@ -116,15 +116,16 @@ export default function List({ reminders, onSucess }) {
            
          reminders.scheduled = reminders.scheduled.filter(function(el) { return el._id !== selected[i]._id; });
          reminders.unScheduled = reminders.unScheduled.filter(function(el) { return el._id !== selected[i]._id; });
+         reminders.completed = reminders.completed.filter(function(el) { return el._id !== selected[i]._id; });
         
         }
         await AsyncStorage.setItem('reminders', JSON.stringify(reminders));
         storeBackUpData(reminders)
-        onSucess()
+        onSuccess()
         // deleteMany(selected)
         //     .then(result => {
         //         if (result.success) {
-        //             onSucess()
+        //             onSuccess()
         //         }
         //     })
     }
@@ -168,7 +169,7 @@ export default function List({ reminders, onSucess }) {
                     />
                 </ScrollView>
                 <Create
-                    onSucess={onSucess}
+                    onSuccess={onSuccess}
                     reminders={state}
                     expoPushToken={expoPushToken}
                     editable={editable}

@@ -3,9 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const BASE_URL = "https://7faf-2600-6c5a-4a7f-463a-154c-959d-157f-5104.ngrok-free.app";
 
 export const storeBackUpData = async (reminders) => {
-    const isNew = await AsyncStorage.getItem('newDevice');
     const deviceId = await AsyncStorage.getItem('deviceId');
-    console.log("ISSSNEWWWW", isNew)
     return await fetch(BASE_URL + '/store', {
         method: 'POST',
         headers: {
@@ -13,14 +11,12 @@ export const storeBackUpData = async (reminders) => {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            isNew:isNew,
             deviceId: deviceId,
             reminders: reminders
         })
     }).catch((err) => {
         console.log(err);
     }).then(response => {
-        AsyncStorage.setItem('newDevice', 'false');
         response.json()
     })
 };

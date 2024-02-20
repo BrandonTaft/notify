@@ -7,7 +7,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import Header from "./Header";
 import Menu from "./Menu";
 
-export default function Layout({ setShowPicker, children }) {
+export default function Layout({ setShowPicker, children, onSuccess }) {
     const [refresh, setRefresh] = useState(false);
     const drawer = useRef(null);
     const [fontsLoaded] = useFonts({
@@ -25,11 +25,13 @@ export default function Layout({ setShowPicker, children }) {
       if (!fontsLoaded) {
         return null;
       }
+      console.log(onSuccess)
     const navigationView = () => (
         <Menu
             refresh={refresh}
             setRefresh={setRefresh}
             setShowPicker={setShowPicker}
+            onSuccess={onSuccess}
             close={() => drawer.current.closeDrawer()}
         />
     );

@@ -11,9 +11,10 @@ export default function App() {
   return (
     <Layout
       setShowPicker={setShowPicker}
+      onSuccess={() => setRefresh(!refresh)}
     >
       {isLoading ? <Loader /> :
-      <List reminders={reminders} onSucess={() => setRefresh(!refresh)}/>
+      <List reminders={reminders} onSuccess={() => setRefresh(!refresh)}/>
   }
       <TimePicker
         setShowPicker={setShowPicker}

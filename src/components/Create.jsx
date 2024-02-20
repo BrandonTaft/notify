@@ -10,7 +10,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Create({
   reminders,
-  onSucess,
+  onSuccess,
   expoPushToken,
   modalVisible,
   setModalVisible,
@@ -32,7 +32,7 @@ export default function Create({
   }, [editable]);
 
   const resetState = () => {
-    onSucess()
+    onSuccess()
     setSelectedDate()
     onChangeName("")
     setAction('POST')
