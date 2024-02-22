@@ -9,6 +9,8 @@ import Menu from "./Menu";
 
 export default function Layout({ setShowPicker, children, onSuccess }) {
     const [refresh, setRefresh] = useState(false);
+    const [showDeleted, setShowDeleted] = useState(false);
+    const [showNotes, setShowNotes] = useState(false);
     const drawer = useRef(null);
     const [fontsLoaded] = useFonts({
         'Rubik-Black': require('../../assets/fonts/Rubik-Black.ttf'),
@@ -25,12 +27,16 @@ export default function Layout({ setShowPicker, children, onSuccess }) {
       if (!fontsLoaded) {
         return null;
       }
-      console.log(onSuccess)
+
     const navigationView = () => (
         <Menu
             refresh={refresh}
             setRefresh={setRefresh}
             setShowPicker={setShowPicker}
+            showDeleted={showDeleted}
+            setShowDeleted={setShowDeleted}
+            showNotes={showNotes}
+            setShowNotes={setShowNotes}
             onSuccess={onSuccess}
             close={() => drawer.current.closeDrawer()}
         />
@@ -45,6 +51,10 @@ export default function Layout({ setShowPicker, children, onSuccess }) {
             renderNavigationView={navigationView}
             drawerBackgroundColor="rgba(21,19,29,0.75)"
             onDrawerOpen={() => setRefresh(!refresh)}
+            onDrawerClose={() => {
+                setShowNotes(false)
+                setShowDeleted(false)
+            }}
         >
             <View style={styles.container}>
                 <Header open={() => drawer.current.openDrawer()} />

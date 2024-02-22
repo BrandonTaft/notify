@@ -28,15 +28,23 @@ const useFetch = () => {
                     setReminders(JSON.parse(jsonValue))
                     setIsLoading(false)
                 } else {
+                    try {
                     fetchBackUpData()
                         .then((data) => {
                             
                             if (data.success) {
 
                                 setReminders(data.reminders[0].reminders)
+                            } else {
+                                console.log(data.error)
                             }
-                            setIsLoading(false)
                         })
+                    } catch(error) {
+
+                    }
+                    finally {
+                        setIsLoading(false)
+                    }
                 }
             } catch (error) {
                 console.log("Error: ", error)

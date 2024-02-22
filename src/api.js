@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const BASE_URL = "https://7faf-2600-6c5a-4a7f-463a-154c-959d-157f-5104.ngrok-free.app";
+const BASE_URL = "https://12e2-2600-6c5a-4a7f-463a-7855-4035-8a46-3434.ngrok-free.app";
 
 export const storeBackUpData = async (reminders) => {
     const deviceId = await AsyncStorage.getItem('deviceId');
@@ -32,9 +32,18 @@ export const fetchBackUpData = async () => {
         body: JSON.stringify({
             deviceId: deviceId
         })
-    }).catch((err) => {
-        console.log(err);
-    }).then(response => response.json())
+    }).catch((error) => {
+        console.log(error);
+    }).then(response => {
+        console.log(response.success)
+        if (response.success) {
+            return response.json()
+        } else if (response.success === 'empty'){
+            return { 'success': false, 'error': "Nothing to backup"}
+        } else {
+            return { 'success': false, 'error': "Server is not responding..."}
+        }
+    })
 };
 
 

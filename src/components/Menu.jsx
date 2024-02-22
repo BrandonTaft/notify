@@ -1,15 +1,18 @@
-import { useState } from "react";
 import { Pressable, View, Text, StyleSheet } from "react-native";
 import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
 import DeletedItems from "./DeletedItems";
 import Notes from "./Notes";
 
-export default function Menu({ setShowPicker, close, refresh, setRefresh, onSuccess }) {
-
-    const [showDeleted, setShowDeleted] = useState(false);
-    const [showNotes, setShowNotes] = useState(false);
-    
-
+export default function Menu({
+    setShowPicker,
+    close,
+    refresh,
+    setRefresh,
+    showDeleted,
+    setShowDeleted,
+    showNotes,
+    setShowNotes
+}) {
     return (
         <View style={styles.drawer}>
             <View style={styles.drawerHeader}>
@@ -22,7 +25,11 @@ export default function Menu({ setShowPicker, close, refresh, setRefresh, onSucc
                         }
                     }
                     style={styles.drawerHeaderIcon}
-                    onPress={() => close()}
+                    onPress={() => {
+                        setShowDeleted(false)
+                        setShowDeleted(false)
+                        close()
+                    }}
                 >
                     <MaterialCommunityIcons name="close-circle" color="#8789f7" size={35} />
                 </Pressable >
@@ -66,7 +73,6 @@ export default function Menu({ setShowPicker, close, refresh, setRefresh, onSucc
                 showNotes={showNotes}
                 refresh={refresh}
                 setRefresh={setRefresh}
-                onSuccess={onSuccess}
             />
 } 
         </View>

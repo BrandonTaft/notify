@@ -5,7 +5,7 @@ import { CheckBox } from '@rneui/themed';
 import { fetchBackUpData, wipeAll, restoreMany, storeBackUpData } from "../api";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function DeletedItems({ showDeleted, setShowDeleted, showNotes, refresh, setRefresh, onSuccess }) {
+export default function DeletedItems({ showDeleted, setShowDeleted, showNotes, refresh, setRefresh }) {
     const [allReminders, setAllReminders] = useState({
         scheduled: [],
         unScheduled: [],
@@ -61,43 +61,34 @@ export default function DeletedItems({ showDeleted, setShowDeleted, showNotes, r
     };
 
     const deleteForGood = async () => {
-        setAllReminders({
+        let wipedReminders = {
             ...allReminders,
             deleted: allReminders.deleted.filter((reminder) => { return reminder.priority !== true; })
-        })
-        await AsyncStorage.setItem('reminders', JSON.stringify({
-            ...allReminders,
-            deleted: allReminders.deleted.filter((reminder) => { return reminder.priority !== true; })
-        }))
-        storeBackUpData({
-            ...allReminders,
-            deleted: allReminders.deleted.filter((reminder) => { return reminder.priority !== true; })
-        })
+        }
+        setAllReminders(wipedReminders)
+        await AsyncStorage.setItem('reminders', JSON.stringify(wipedReminders))
+        storeBackUpData(wipedReminders)
     }
-    
+
     const restoreDeleted = async () => {
         let scheduled = [];
-    let unScheduled = [];
+        let unScheduled = [];
         for (let i = 0; i < allReminders.deleted.length; i++) {
             if (allReminders.deleted[i].priority === true && allReminders.deleted[i].notification === undefined) {
                 unScheduled.push({ ...allReminders.deleted[i], priority: false })
-            } else if (allReminders.deleted[i] === true && allReminders.deleted[i]) {
+            } else if (allReminders.deleted[i].priority === true && allReminders.deleted[i].notification) {
                 scheduled.push({ ...allReminders.deleted[i], priority: false })
             }
         }
-        setAllReminders({
+        let updatedList = {
             completed: [...allReminders.completed],
             scheduled: [...allReminders.scheduled, ...scheduled],
             unScheduled: [...allReminders.unScheduled, ...unScheduled],
             deleted: allReminders.deleted.filter((reminder) => reminder.priority !== true)
-        })
-        await AsyncStorage.setItem('reminders', JSON.stringify({
-            completed: [...allReminders.completed],
-            scheduled: [...allReminders.scheduled, ...scheduled],
-            unScheduled: [...allReminders.unScheduled, ...unScheduled],
-            deleted: allReminders.deleted.filter((reminder) => reminder.priority !== true)
-        }))
-        onSuccess()
+        }
+        setAllReminders(updatedList)
+        await AsyncStorage.setItem('reminders', JSON.stringify(updatedList))
+        setRefresh(!refresh)
     }
 
     return (

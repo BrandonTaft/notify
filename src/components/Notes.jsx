@@ -9,14 +9,14 @@ export default function Notes({
     setShowNotes,
     showDeleted,
     setShowDeleted,
-    refresh, setRefresh
+    refresh,
+    onSuccess
 }) {
     const [showInput, setShowInput] = useState(false);
     const [note, setNote] = useState();
     const [edit, setEdit] = useState(false);
     const [items, setItems] = useState([]);
     const [selected, setSelected] = useState([]);
-    // const [refresh, setRefresh] = useState(false);
     const [isUpdate, setIsUpdate] = useState(false);
 
     useEffect(() => {
@@ -37,7 +37,7 @@ export default function Notes({
                     if (result.success) {
                         setShowInput(false)
                         setNote()
-                        setRefresh(!refresh)
+                        onSuccess()
                         setEdit(false)
                     }
                 })
@@ -52,7 +52,7 @@ export default function Notes({
                         setIsUpdate(false)
                         setShowInput(false)
                         setNote()
-                        setRefresh(!refresh)
+                        onSuccess()
                         setEdit(false)
                     }
                 })
@@ -78,7 +78,7 @@ export default function Notes({
         deleteMany(selected)
             .then(result => {
                 if (result.success) {
-                    setRefresh(!refresh)
+                    onSuccess()
                 }
             })
     }
@@ -87,7 +87,7 @@ export default function Notes({
         deleteMany([note._id])
             .then(result => {
                 if (result.success) {
-                    setRefresh(!refresh)
+                    onSuccess()
                     setShowInput(false)
                     setNote()
                     setEdit(false)
