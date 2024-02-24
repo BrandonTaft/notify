@@ -4,92 +4,61 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { CheckBox } from '@rneui/themed';
 import { fetchBackUpData, wipeAll, restoreMany, storeBackUpData } from "../api";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import useFetch from '../../src/hooks/useFetch';
 
-export default function DeletedItems({ showDeleted, setShowDeleted, showNotes, refresh, setRefresh }) {
-    const [allReminders, setAllReminders] = useState({
-        scheduled: [],
-        unScheduled: [],
-        completed: [],
-        deleted: []
-    });
+export default function DeletedItems({ showDeleted, setShowDeleted, showNotes}) {
+    const {isLoading, reminders, setRefresh, refresh} = useFetch()
+    // const [showDeleted, setShowDeleted] = useState(false);
+    const [deletedItems, setDeletedItems] = useState([]);
+    // const [refresh, setRefresh] = useState(false);
     useEffect(() => {
-        console.log("RAN")
-        const getReminders = async () => {
-            try {
-                const jsonValue = await AsyncStorage.getItem('reminders');
-                if (jsonValue !== null) {
-                    const reminders = JSON.parse(jsonValue)
-                    setAllReminders({
-                        scheduled: reminders.scheduled,
-                        unScheduled: reminders.unScheduled,
-                        completed: reminders.completed,
-                        deleted: reminders.deleted
-                    })
-                } else {
-                    fetchBackUpData()
-                        .then((data) => {
-                            if (data.success) {
-                                setAllReminders({
-                                    scheduled: data.reminders[0].reminders.scheduled,
-                                    unScheduled: data.reminders[0].reminders.unScheduled,
-                                    completed: data.reminders[0].reminders.completed,
-                                    deleted: data.reminders[0].reminders.deleted
-                                })
-                            }
-                        })
-                }
-            } catch (error) {
-                console.log("Error: ", error)
-            }
-        };
-        getReminders()
+        console.log("DELEDDDD", reminders)
+        setDeletedItems(reminders.filter((item) => item.isDeleted))
         if (showNotes) setShowDeleted(false)
     }, [refresh, showNotes, showDeleted])
 
     const handleCheck = (reminder) => {
-        let temp = allReminders.deleted.map((item) => {
+        let temp = deletedItems.map((item) => {
             if (reminder._id === item._id) {
                 return { ...item, priority: !item.priority };
             }
             return item;
         });
-        setAllReminders({
-            ...allReminders,
-            deleted: temp
-
-        })
+        setDeletedItems(temp)
     };
 
     const deleteForGood = async () => {
-        let wipedReminders = {
-            ...allReminders,
-            deleted: allReminders.deleted.filter((reminder) => { return reminder.priority !== true; })
-        }
-        setAllReminders(wipedReminders)
-        await AsyncStorage.setItem('reminders', JSON.stringify(wipedReminders))
-        storeBackUpData(wipedReminders)
+        let x = reminders.filter((reminder) =>reminder.priority !== true)
+        // let wipedReminders = {
+        //     ...items,
+        //     deleted: items.filter((reminder) => { return reminder.priority !== true; })
+        // }
+        // setDeletedItems(wipedReminders)
+        // await AsyncStorage.setItem('reminders', JSON.stringify(wipedReminders))
+        // storeBackUpData(wipedReminders)
+        console.log(reminders.filter((reminder) =>reminder.priority !== true))
     }
 
-    const restoreDeleted = async () => {
-        let scheduled = [];
-        let unScheduled = [];
-        for (let i = 0; i < allReminders.deleted.length; i++) {
-            if (allReminders.deleted[i].priority === true && allReminders.deleted[i].notification === undefined) {
-                unScheduled.push({ ...allReminders.deleted[i], priority: false })
-            } else if (allReminders.deleted[i].priority === true && allReminders.deleted[i].notification) {
-                scheduled.push({ ...allReminders.deleted[i], priority: false })
-            }
-        }
-        let updatedList = {
-            completed: [...allReminders.completed],
-            scheduled: [...allReminders.scheduled, ...scheduled],
-            unScheduled: [...allReminders.unScheduled, ...unScheduled],
-            deleted: allReminders.deleted.filter((reminder) => reminder.priority !== true)
-        }
-        setAllReminders(updatedList)
-        await AsyncStorage.setItem('reminders', JSON.stringify(updatedList))
-        setRefresh(!refresh)
-    }
+    // const restoreDeleted = async () => {
+    //     let scheduled = [];
+    //     let unScheduled = [];
+    //     for (let i = 0; i < items.length; i++) {
+    //         if (items[i].priority === true && items[i].notification === undefined) {
+    //             unScheduled.push({ ...items[i], priority: false })
+    //         } else if (items[i].priority === true && items[i].notification) {
+    //             scheduled.push({ ...items[i], priority: false })
+    //         }
+    //     }
+    //     let updatedList = {
+    //         completed: [...items.completed],
+    //         scheduled: [...items.scheduled, ...scheduled],
+    //         unScheduled: [...items.unScheduled, ...unScheduled],
+    //         deleted: items.filter((reminder) => reminder.priority !== true)
+    //     }
+    //     setDeletedItems(updatedList)
+    //     await AsyncStorage.setItem('reminders', JSON.stringify(updatedList))
+    //     setRefresh(!refresh)
+    // }
 
     return (
         <>
@@ -103,18 +72,13 @@ export default function DeletedItems({ showDeleted, setShowDeleted, showNotes, r
                 }
                 style={[styles.menuBtn, showDeleted && styles.active]}
                 onPress={() => {
-                    let cleared = allReminders.deleted.map((item) => {
+                    let cleared = deletedItems.map((item) => {
                         if (item.priority === true) {
                             item.priority = false
                         }
                         return item
                     })
-                    setAllReminders({
-                        ...allReminders,
-                        deleted: cleared
-
-                    })
-                    console.log("BUTTON", allReminders.deleted)
+                   setDeletedItems(cleared)
                     setShowDeleted(!showDeleted)
                 }}
             >
@@ -147,7 +111,7 @@ export default function DeletedItems({ showDeleted, setShowDeleted, showNotes, r
             {showDeleted &&
                 <>
                     <ScrollView >
-                        {allReminders.deleted.map((reminder) => {
+                        {deletedItems.map((reminder) => {
                             return (
                                 <View key={reminder._id} style={reminder.notification ? styles.item : styles.altItem}>
                                     <CheckBox

@@ -4,57 +4,43 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Crypto from 'expo-crypto';
 
 const useFetch = () => {
-    const [reminders, setReminders] = useState({
-        scheduled:[],
-        unScheduled:[],
-        completed:[],
-        deleted:[]
-    });
+    const [reminders, setReminders] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [refresh, setRefresh] = useState(false);
 
     useEffect(() => {
         console.log("fetch")
+        setIsLoading(true);
         const getReminders = async () => {
             //await AsyncStorage.clear()
             const UUID = Crypto.randomUUID();
             const deviceId = await AsyncStorage.getItem('deviceId');
             if (deviceId === null) {
                 await AsyncStorage.setItem('deviceId', UUID)
-            }
-            try {
+                setIsLoading(false);
+            } else {
                 const jsonValue = await AsyncStorage.getItem('reminders');
                 if (jsonValue !== null) {
                     setReminders(JSON.parse(jsonValue))
                     setIsLoading(false)
                 } else {
-                    try {
                     fetchBackUpData()
                         .then((data) => {
-                            
                             if (data.success) {
-
                                 setReminders(data.reminders[0].reminders)
-                            } else {
-                                console.log(data.error)
                             }
                         })
-                    } catch(error) {
-
-                    }
-                    finally {
-                        setIsLoading(false)
-                    }
+                        .catch((error) => {
+                            console.log("Server did not respond", error.message);
+                        })
+                        .finally(() => {
+                            setIsLoading(false);
+                        });
                 }
-            } catch (error) {
-                console.log("Error: ", error)
             }
-        };
-        setIsLoading(true);
+        }
         getReminders()
     }, [refresh]);
-
-
     return { isLoading, reminders, setRefresh, refresh };
 };
 

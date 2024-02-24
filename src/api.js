@@ -14,11 +14,9 @@ export const storeBackUpData = async (reminders) => {
             deviceId: deviceId,
             reminders: reminders
         })
-    }).catch((err) => {
-        console.log(err);
-    }).then(response => {
-        response.json()
     })
+    .then(response => response.json())
+    .catch((error) => console.log("Server did not respond", error.message))
 };
 
 export const fetchBackUpData = async () => {
@@ -32,20 +30,10 @@ export const fetchBackUpData = async () => {
         body: JSON.stringify({
             deviceId: deviceId
         })
-    }).catch((error) => {
-        console.log(error);
-    }).then(response => {
-        console.log(response.success)
-        if (response.success) {
-            return response.json()
-        } else if (response.success === 'empty'){
-            return { 'success': false, 'error': "Nothing to backup"}
-        } else {
-            return { 'success': false, 'error': "Server is not responding..."}
-        }
     })
+    .then(response => response.json())
+    .catch((error) => console.log("Server did not respond", error.message))
 };
-
 
 export const fetchReminders = async () => {
     return await fetch(BASE_URL)

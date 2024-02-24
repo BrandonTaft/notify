@@ -9,6 +9,7 @@ function Items({
     setModalVisible,
     handleCheck
 }) {
+    console.log("ITEMS", list)
     return (
         <>
             {list.length > 0 ?

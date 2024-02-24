@@ -10,26 +10,32 @@ import usePushNotification from '../hooks/usePushNotification';
 import Alarm from './Alarm';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function List({ reminders, onSuccess }) {
+export default function List({ reminders, onSuccess, isLoading }) {
     const { notification, setSound, showAlarm, setShowAlarm, expoPushToken } = usePushNotification();
     const [editable, setEditable] = useState({});
     const [modalVisible, setModalVisible] = useState(false);
-    
-    // console.log("REMINDERS",reminders)
+
+    const [allReminders, setAllReminders] = useState([]);
+
+    console.log("REMINDERS", reminders)
     const [fontsLoaded] = useFonts({
         'Rubik-Medium': require('../../assets/fonts/Rubik-Medium.ttf'),
         'Rubik-Regular': require('../../assets/fonts/Rubik-Regular.ttf'),
     });
 
     const initialState = {
-        scheduled: reminders ? [...reminders.scheduled] : [],
-        unScheduled: reminders ? [...reminders.unScheduled] : [],
-        completed: reminders ? [...reminders.completed] : [],
-        deleted:  reminders ? [...reminders.deleted] : [],
+        scheduled: reminders.filter((item) => item.notification && !item.done && !item.isDeleted).sort((a, b) => {
+            if (a.notification !== null && b.notification !== null) {
+                return new Date(a.notification) - new Date(b.notification);
+            }
+        }),
+        unScheduled: reminders.filter((item) => !item.notification && !item.done && !item.isDeleted && !item.note),
+        completed: reminders.filter((item) => item.done && !item.isDeleted && !item.note),
+        deleted: reminders.filter((item) => item.isDeleted),
         selected: [],
     }
     const [state, dispatch] = useReducer(reducer, initialState);
-    const { scheduled, unScheduled, selected, completed } = state;
+    const { selected, scheduled, unScheduled, completed, deleted } = state;
 
     function reducer(state, action) {
         switch (action.type) {
@@ -77,7 +83,7 @@ export default function List({ reminders, onSuccess }) {
         let temp = list.map((item) => {
             if (reminder._id === item._id) {
                 if (item.priority === false) {
-                    dispatch({ type: "UPDATESELECTED", payload: [...selected, item] });
+                    dispatch({ type: "UPDATESELECTED", payload: [...selected, item._id] });
                 } else if (item.priority === true) {
                     dispatch({ type: "UPDATESELECTED", payload: selected.filter(existing => existing._id !== item._id) });
                 }
@@ -87,7 +93,7 @@ export default function List({ reminders, onSuccess }) {
         });
         dispatch({ type: type, payload: temp });
     };
-
+    console.log("SELECTED", selected)
     //Sends all selected reminders to server to be marked as done
     const handleCompleted = async () => {
         // dispatch({ type: 'COMPLETE', payload: selected });
@@ -97,12 +103,12 @@ export default function List({ reminders, onSuccess }) {
         //             onSuccess()
         //         }
         //     })
-        reminders.completed = [ ...reminders.completed, ...selected ]
-        for (let i = 0; i < selected.length;  i++) {
-           
-         reminders.scheduled = reminders.scheduled.filter(function(el) { return el._id !== selected[i]._id; });
-         reminders.unScheduled = reminders.unScheduled.filter(function(el) { return el._id !== selected[i]._id; });
-        
+        reminders.completed = [...reminders.completed, ...selected]
+        for (let i = 0; i < selected.length; i++) {
+
+            reminders.scheduled = reminders.scheduled.filter(function (el) { return el._id !== selected[i]._id; });
+            reminders.unScheduled = reminders.unScheduled.filter(function (el) { return el._id !== selected[i]._id; });
+
         }
         await AsyncStorage.setItem('reminders', JSON.stringify(reminders));
         storeBackUpData(reminders)
@@ -111,14 +117,25 @@ export default function List({ reminders, onSuccess }) {
 
     //Sends all selected reminders to server to be deleted
     const deleteChecked = async () => {
-        reminders.deleted = [ ...reminders.deleted, ...selected ]
-        for (let i = 0; i < selected.length;  i++) {
-           
-         reminders.scheduled = reminders.scheduled.filter(function(el) { return el._id !== selected[i]._id; });
-         reminders.unScheduled = reminders.unScheduled.filter(function(el) { return el._id !== selected[i]._id; });
-         reminders.completed = reminders.completed.filter(function(el) { return el._id !== selected[i]._id; });
-        
+        let x = 0
+        for (let i = 0; i < reminders.length; i++) {
+            if (reminders[i]._id === selected[x]) {
+                reminders[i].isDeleted = true
+                x++
+            }
+            if (x > selected.length) {
+                break
+            }
+            console.log(reminders)
         }
+        // reminders.deleted = [ ...reminders.deleted, ...selected ]
+        // for (let i = 0; i < selected.length;  i++) {
+
+        //  reminders.scheduled = reminders.scheduled.filter(function(el) { return el._id !== selected[i]._id; });
+        //  reminders.unScheduled = reminders.unScheduled.filter(function(el) { return el._id !== selected[i]._id; });
+        //  reminders.completed = reminders.completed.filter(function(el) { return el._id !== selected[i]._id; });
+
+        // }
         await AsyncStorage.setItem('reminders', JSON.stringify(reminders));
         storeBackUpData(reminders)
         onSuccess()
@@ -170,7 +187,7 @@ export default function List({ reminders, onSuccess }) {
                 </ScrollView>
                 <Create
                     onSuccess={onSuccess}
-                    reminders={state}
+                    reminders={reminders}
                     expoPushToken={expoPushToken}
                     editable={editable}
                     setEditable={setEditable}
@@ -258,18 +275,18 @@ const styles = StyleSheet.create({
         color: 'grey',
         fontSize: 17,
         marginTop: 10,
-        marginLeft:8
+        marginLeft: 8
     },
     btnContainer: {
         flex: 1,
         padding: 12,
-        marginHorizontal:10,
+        marginHorizontal: 10,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-evenly',
         borderRadius: 20,
         backgroundColor: '#312e3f',
-        
+
     },
     btn: {
         color: '#fff',

@@ -44,7 +44,7 @@ export default function Create({
     const UUID = Crypto.randomUUID();
     if (selectedDate) {
       let newDate = new Date(selectedDate)
-      reminders.scheduled.push({
+      reminders.push({
         _id: UUID,
         name: name,
         notification: selectedDate,
@@ -53,15 +53,17 @@ export default function Create({
         time: newDate.toLocaleTimeString('en-US'),
         token: expoPushToken,
         priority: false,
-        done: false
+        done: false,
+        isDeleted: false
       })
     } else {
-      reminders.unScheduled.push({
+      reminders.push({
         _id: UUID,
         name: name,
         token: expoPushToken,
         priority: false,
-        done: false
+        done: false,
+        isDeleted: false
       })
     }
       await AsyncStorage.setItem('reminders', JSON.stringify(reminders));
@@ -90,12 +92,12 @@ export default function Create({
 
   const handleDeleteReminder = () => {
     if (editable._id) {
-      deleteMany(editable._id)
-        .then(result => {
-          if (result.success) {
-            resetState()
-          }
-        })
+      // deleteMany(editable._id)
+      //   .then(result => {
+      //     if (result.success) {
+      //       resetState()
+      //     }
+      //   })
     }
   };
 
