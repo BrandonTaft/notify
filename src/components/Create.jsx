@@ -5,7 +5,6 @@ import Icon from 'react-native-vector-icons/AntDesign';
 import { addReminders, storeBackUpData, deleteMany } from '../api';
 import * as SMS from 'expo-sms';
 import * as Crypto from 'expo-crypto';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 export default function Create({
@@ -17,7 +16,7 @@ export default function Create({
   editable,
   setEditable
 }) {
-  const [name, onChangeName] = useState("");
+  const [title, onChangeTitle] = useState("");
   const [action, setAction] = useState('POST');
   const [selectedDate, setSelectedDate] = useState(null);
   const [datePickerVisible, setDatePickerVisible] = useState(false);
@@ -25,8 +24,8 @@ export default function Create({
   const [number, onChangeNumber] = useState("");
 
   useEffect(() => {
-    if (editable.name) {
-      onChangeName(editable.name)
+    if (editable.title) {
+      onChangeTitle(editable.title)
       setAction('PUT')
     }
   }, [editable]);
@@ -34,7 +33,7 @@ export default function Create({
   const resetState = () => {
     onSuccess()
     setSelectedDate()
-    onChangeName("")
+    onChangeTitle("")
     setAction('POST')
     setEditable({})
     setModalVisible(!modalVisible)
@@ -46,27 +45,26 @@ export default function Create({
       let newDate = new Date(selectedDate)
       reminders.push({
         _id: UUID,
-        name: name,
+        title: title,
         notification: selectedDate,
         month: newDate.getMonth(),
         day: newDate.getDate(),
         time: newDate.toLocaleTimeString('en-US'),
         token: expoPushToken,
-        priority: false,
-        done: false,
+        isChecked: false,
+        isCompleted: false,
         isDeleted: false
       })
     } else {
       reminders.push({
         _id: UUID,
-        name: name,
+        title: title,
         token: expoPushToken,
-        priority: false,
-        done: false,
+        isChecked: false,
+        isCompleted: false,
         isDeleted: false
       })
     }
-      await AsyncStorage.setItem('reminders', JSON.stringify(reminders));
     storeBackUpData(reminders)
       resetState()
   };
@@ -87,7 +85,7 @@ export default function Create({
     if (isAvailable) {
       const { result } = await SMS.sendSMSAsync(
         [number],
-        name
+        title
       );
     } else {
       console.log("there's no SMS available on this device")
@@ -160,8 +158,8 @@ export default function Create({
           numberOfLines={6}
           placeholderTextColor="#fff"
           style={styles.input}
-          onChangeText={onChangeName}
-          value={name}
+          onChangeText={onChangeTitle}
+          value={title}
           placeholder=""
         />
         <Pressable
@@ -197,7 +195,7 @@ export default function Create({
             style={styles.round}
             onPress={() => setSendMessage(true)}
           >
-            <Icon name="message1" style={{ color: 'white' }} size={34} />
+            <Icon title="message1" style={{ color: 'white' }} size={34} />
           </Pressable>
           <Pressable
             android_ripple={

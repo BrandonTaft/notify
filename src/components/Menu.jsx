@@ -59,7 +59,7 @@ export default function Menu({
                 <FontAwesome5 name="chevron-circle-right" size={30} color="#fff" style={{ marginLeft: 'auto', marginTop: "auto", marginBottom: 'auto' }} />
             </Pressable>
             <Notes
-            reminders={reminders}
+                reminders={reminders}
                 showNotes={showNotes}
                 setShowNotes={setShowNotes}
                 showDeleted={showDeleted}
@@ -67,14 +67,14 @@ export default function Menu({
                 onSuccess={onSuccess}
             />
             {!showNotes &&
-            <DeletedItems
-            reminders={reminders}
-                showDeleted={showDeleted}
-                setShowDeleted={setShowDeleted}
-                showNotes={showNotes}
-                onSuccess={onSuccess}
-            />
-} 
+                <DeletedItems
+                    reminders={reminders}
+                    showDeleted={showDeleted}
+                    setShowDeleted={setShowDeleted}
+                    showNotes={showNotes}
+                    onSuccess={onSuccess}
+                />
+            }
         </View>
     )
 }
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
     drawerHeader: {
         flexDirection: 'row',
         alignItems: "center",
-        backgroundColor:'#15131d',
+        backgroundColor: '#15131d',
         paddingTop: 10,
         paddingLeft: 20
     },
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
     drawerHeaderIcon: {
         position: 'absolute',
         left: 15,
-        top:20
+        top: 20
     },
     spacer: {
         width: '95%',
@@ -120,8 +120,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         paddingHorizontal: 20,
-        paddingVertical:4,
-        marginHorizontal:4,
+        paddingVertical: 4,
+        marginHorizontal: 4,
     },
     active: {
         borderColor: '#8789f7',
@@ -131,6 +131,6 @@ const styles = StyleSheet.create({
         color: '#8789f7',
         fontSize: 24,
         marginLeft: 20,
-        marginTop:2
+        marginTop: 2
     },
 });

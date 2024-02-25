@@ -3,12 +3,14 @@ import { Pressable, View, Text, StyleSheet, ScrollView } from "react-native";
 import { FontAwesome5 } from '@expo/vector-icons';
 import { CheckBox } from '@rneui/themed';
 import { storeBackUpData } from "../api";
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function DeletedItems({ showDeleted, setShowDeleted, showNotes, onSuccess, reminders }) {
+
     const [deletedItems, setDeletedItems] = useState([]);
     const [selected, setSelected] = useState([]);
+
     useEffect(() => {
+        setSelected([])
         setDeletedItems(reminders.filter((item) => item.isDeleted))
         if (showNotes) setShowDeleted(false)
     }, [reminders, showNotes, showDeleted])
@@ -17,35 +19,32 @@ export default function DeletedItems({ showDeleted, setShowDeleted, showNotes, o
         let temp = deletedItems.map((item) => {
             if (reminder._id === item._id) {
                 setSelected([...selected, item._id])
-                return { ...item, priority: !item.priority };
+                return { ...item, isChecked: !item.isChecked };
             }
             return item;
         });
         setDeletedItems(temp)
     };
 
-    const deleteForGood = async () => {
-        let remaining =  reminders.filter(element => !selected.includes(element._id));
-        await AsyncStorage.setItem('reminders', JSON.stringify(remaining))
+    const destroyReminder = () => {
+        let remaining = reminders.filter(element => !selected.includes(element._id));
         storeBackUpData(remaining)
-        setSelected([])
         onSuccess()
     }
 
-    const restoreDeleted = async () => {
-        for (let i = 0; i < selected.length; i++) {
-            for(let j = 0; j < reminders.length; j++) {
-                if(reminders[j]._id === selected[i]) {
-                    reminders[j].isDeleted = false
-                    break
-                }
+    const restoreDeleted = () => {
+        let i = 0;
+        let x = 0;
+        while (i < reminders.length && x < selected.length) {
+            if (selected.includes(reminders[i]._id)) {
+                reminders[i].isDeleted = false
+                x++
             }
+            i++
         }
-        await AsyncStorage.setItem('reminders', JSON.stringify(reminders));
-        storeBackUpData(reminders)
         setDeletedItems(reminders.filter((item) => item.isDeleted))
+        storeBackUpData(reminders)
         onSuccess()
-        setSelected([])
     }
 
     return (
@@ -61,12 +60,12 @@ export default function DeletedItems({ showDeleted, setShowDeleted, showNotes, o
                 style={[styles.menuBtn, showDeleted && styles.active]}
                 onPress={() => {
                     let cleared = deletedItems.map((item) => {
-                        if (item.priority === true) {
-                            item.priority = false
+                        if (item.isChecked === true) {
+                            item.isChecked = false
                         }
                         return item
                     })
-                    
+
                     setDeletedItems(cleared)
                     setShowDeleted(!showDeleted)
                 }}
@@ -104,7 +103,7 @@ export default function DeletedItems({ showDeleted, setShowDeleted, showNotes, o
                             return (
                                 <View key={reminder._id} style={reminder.notification ? styles.item : styles.altItem}>
                                     <CheckBox
-                                        checked={reminder.priority}
+                                        checked={reminder.isChecked}
                                         onPress={() => { handleCheck(reminder) }}
                                         size={25}
                                         containerStyle={styles.checkBox}
@@ -116,7 +115,7 @@ export default function DeletedItems({ showDeleted, setShowDeleted, showNotes, o
                                     />
                                     <View>
                                         <Text style={styles.itemText} numberOfLines={1}>
-                                            {reminder.name}
+                                            {reminder.title}
                                         </Text>
                                         {reminder.notification &&
                                             <Text style={styles.time}>
@@ -157,7 +156,7 @@ export default function DeletedItems({ showDeleted, setShowDeleted, showNotes, o
                             }
                             style={styles.btn}
                             disabled={!selected.length}
-                            onPress={() => deleteForGood()}
+                            onPress={() => destroyReminder()}
                         >
                             <Text style={styles.btnText}>
                                 Delete

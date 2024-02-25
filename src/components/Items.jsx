@@ -9,7 +9,7 @@ function Items({
     setModalVisible,
     handleCheck
 }) {
-    console.log("ITEMS", list)
+    
     return (
         <>
             {list.length > 0 ?
@@ -33,7 +33,7 @@ function Items({
                                     
                                 >
                                     <CheckBox
-                                        checked={reminder.priority}
+                                        checked={reminder.isChecked}
                                         onPress={() => { handleCheck(reminder, list, type) }}
                                         size={25}
                                         containerStyle={styles.checkBox}
@@ -45,7 +45,7 @@ function Items({
                                     />
                                     <View style={styles.horizontal}>
                                         <Text style={styles.itemText}>
-                                            {reminder.name}
+                                            {reminder.title}
                                         </Text>
                                         {reminder.notification &&
                                         <Text style={styles.time}>

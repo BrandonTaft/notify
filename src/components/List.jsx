@@ -8,7 +8,6 @@ import * as SplashScreen from 'expo-splash-screen';
 import { completeMany, deleteMany, storeBackUpData } from '../api';
 import usePushNotification from '../hooks/usePushNotification';
 import Alarm from './Alarm';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function List({ reminders, onSuccess, isLoading }) {
     const { notification, setSound, showAlarm, setShowAlarm, expoPushToken } = usePushNotification();
@@ -24,13 +23,13 @@ export default function List({ reminders, onSuccess, isLoading }) {
     });
 
     const initialState = {
-        scheduled: reminders.filter((item) => item.notification && !item.done && !item.isDeleted).sort((a, b) => {
+        scheduled: reminders.filter((item) => item.notification && !item.isCompleted && !item.isDeleted).sort((a, b) => {
             if (a.notification !== null && b.notification !== null) {
                 return new Date(a.notification) - new Date(b.notification);
             }
         }),
-        unScheduled: reminders.filter((item) => !item.notification && !item.done && !item.isDeleted && !item.note),
-        completed: reminders.filter((item) => item.done && !item.isDeleted && !item.note),
+        unScheduled: reminders.filter((item) => !item.notification && !item.isCompleted && !item.isDeleted && !item.isNote),
+        completed: reminders.filter((item) => item.isCompleted && !item.isDeleted && !item.isNote),
         deleted: reminders.filter((item) => item.isDeleted),
         selected: [],
     }
@@ -78,56 +77,46 @@ export default function List({ reminders, onSuccess, isLoading }) {
         return null;
     }
 
-    //Marks all checked reminders as priority: true
     const handleCheck = (reminder, list, type) => {
         let temp = list.map((item) => {
             if (reminder._id === item._id) {
-                if (item.priority === false) {
+                if (item.isChecked === false) {
                     dispatch({ type: "UPDATESELECTED", payload: [...selected, item._id] });
-                } else if (item.priority === true) {
+                } else if (item.isChecked === true) {
                     dispatch({ type: "UPDATESELECTED", payload: selected.filter(existing => existing._id !== item._id) });
                 }
-                return { ...item, priority: !item.priority };
+                return { ...item, isChecked: !item.isChecked };
             }
             return item;
         });
         dispatch({ type: type, payload: temp });
     };
-    console.log("SELECTED", selected)
-    //Sends all selected reminders to server to be marked as done
-    const handleCompleted = async () => {
-        // dispatch({ type: 'COMPLETE', payload: selected });
-        // completeMany(selected)
-        //     .then(result => {
-        //         if (result.success) {
-        //             onSuccess()
-        //         }
-        //     })
-        reminders.completed = [...reminders.completed, ...selected]
-        for (let i = 0; i < selected.length; i++) {
 
-            reminders.scheduled = reminders.scheduled.filter(function (el) { return el._id !== selected[i]._id; });
-            reminders.unScheduled = reminders.unScheduled.filter(function (el) { return el._id !== selected[i]._id; });
-
+    const handleCompleted = () => {
+        let i = 0;
+        let x = 0;
+        while (i < reminders.length && x < selected.length) {
+            if (selected.includes(reminders[i]._id)) {
+                reminders[i].isCompleted = true
+                x++
+            }
+            i++
         }
-        await AsyncStorage.setItem('reminders', JSON.stringify(reminders));
         storeBackUpData(reminders)
         onSuccess()
     }
 
-    //Sends all selected reminders to server to be deleted
-    const deleteChecked = async () => {
-        for (let i = 0; i < selected.length; i++) {
-            for(let j = 0; j < reminders.length; j++) {
-                if(reminders[j]._id === selected[i]) {
-                    reminders[j].isDeleted = true
-                    break
-                }
+    const deleteChecked = () => {
+        let i = 0;
+        let x = 0;
+        while (i < reminders.length && x < selected.length) {
+            if (selected.includes(reminders[i]._id)) {
+                reminders[i].isDeleted = true
+                x++
             }
+            i++
         }
-        await AsyncStorage.setItem('reminders', JSON.stringify(reminders));
         storeBackUpData(reminders)
-        console.log("LISRT", reminders)
         onSuccess()
     }
 
@@ -206,7 +195,7 @@ export default function List({ reminders, onSuccess, isLoading }) {
                     disabled={selected.length ? false : true}
                 >
                     <Icon name="check" color="#bb86fa" size={34} />
-                    <Text style={styles.btn}>Done</Text>
+                    <Text style={styles.btn}>Complete</Text>
                 </Pressable>
 
                 <Pressable

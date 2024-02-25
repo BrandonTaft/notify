@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { Pressable, View, Text, StyleSheet, Modal, TextInput, ScrollView } from "react-native";
 import { FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 import { CheckBox } from '@rneui/themed';
-import { addNote, updateNote, fetchNotes, deleteMany } from '../api';
+import * as Crypto from 'expo-crypto';
+import { addNote, updateNote, fetchNotes, deleteMany, storeBackUpData } from '../api';
 
 export default function Notes({
     reminders,
@@ -13,80 +14,97 @@ export default function Notes({
     onSuccess
 }) {
     const [showInput, setShowInput] = useState(false);
-    const [note, setNote] = useState();
+    const [note, setNote] = useState({});
     const [edit, setEdit] = useState(false);
     const [notes, setNotes] = useState([]);
     const [selected, setSelected] = useState([]);
     const [isUpdate, setIsUpdate] = useState(false);
 
     useEffect(() => {
-        setNotes(reminders.filter((item) => item.isDeleted))
+        setSelected([])
+        setNotes(reminders.filter((item) => item.isNote && !item.isDeleted))
         if (showDeleted) setShowNotes(false);
-    }, [showDeleted]);
+    }, [reminders, showDeleted]);
 
-    const handleNote = () => {
+    const handleNewNote = () => {
+        const UUID = Crypto.randomUUID();
+        let newDate = new Date()
         if (note) {
-            addNote(note)
-                .then(result => {
-                    if (result.success) {
-                        setShowInput(false)
-                        setNote()
-                        onSuccess()
-                        setEdit(false)
-                    }
-                })
+            reminders.push({
+                _id: UUID,
+                title: note.title,
+                isChecked: false,
+                isCompleted: false,
+                isDeleted: false,
+                isNote: true,
+                time: newDate,
+            })
+            storeBackUpData(reminders)
+            setShowInput(false)
+            setNote({})
+            onSuccess()
+            setEdit(false)
         }
     };
 
-    const handleUpdate = () => {
-        if (note) {
-            updateNote(note)
-                .then(result => {
-                    if (result.success) {
-                        setIsUpdate(false)
-                        setShowInput(false)
-                        setNote()
-                        onSuccess()
-                        setEdit(false)
-                    }
-                })
-        }
+    const handleNoteEdit = () => {
+        let newDate = new Date()
+
+        let temp = reminders.map((reminder) => {
+            if (reminder._id === note._id) {
+                reminder.title = note.title
+                reminder.time = newDate
+                return reminder
+            }
+            return reminder
+        })
+        storeBackUpData(temp)
+        setIsUpdate(false)
+        setShowInput(false)
+        setNote({})
+        onSuccess()
+        setEdit(false)
     };
 
-    const handleCheck = (reminder) => {
+    const handleCheck = (note) => {
         let temp = notes.map((item) => {
-            if (reminder._id === item._id) {
-                if (item.priority === false) {
+            if (note._id === item._id) {
+                if (item.isCompleted === false) {
                     setSelected([...selected, item._id]);
-                } else if (item.priority === true) {
+                } else if (item.isCompleted === true) {
                     setSelected(selected.filter(existing => existing !== item._id));
                 }
-                return { ...item, priority: !item.priority };
+                return { ...item, isCompleted: !item.isCompleted };
             }
             return item;
         });
         setNotes(temp)
     };
 
-    const deleteChecked = () => {
-        deleteMany(selected)
-            .then(result => {
-                if (result.success) {
-                    onSuccess()
-                }
-            })
-    }
+    // const handleDelete = () => {
+    //     deleteMany(selected)
+    //         .then(result => {
+    //             if (result.success) {
+    //                 onSuccess()
+    //             }
+    //         })
+    // }
 
-    const handleDelete = () => {
-        deleteMany([note._id])
-            .then(result => {
-                if (result.success) {
-                    onSuccess()
-                    setShowInput(false)
-                    setNote()
-                    setEdit(false)
-                }
-            })
+    const handleDelete = (checked) => {
+        let i = 0;
+        let x = 0;
+        while (i < reminders.length && x < checked.length) {
+            if (checked.includes(reminders[i]._id)) {
+                reminders[i].isDeleted = true
+                x++
+            }
+            i++
+        }
+        storeBackUpData(reminders)
+        onSuccess()
+        setShowInput(false)
+        setNote({})
+        setEdit(false)
     }
 
     return (
@@ -102,7 +120,7 @@ export default function Notes({
                 style={[styles.menuBtn, showNotes && styles.active]}
                 onPress={() => {
                     setShowNotes(!showNotes)
-                    if(showNotes) {
+                    if (showNotes) {
                         setShowDeleted(false)
                     }
                 }}
@@ -140,7 +158,7 @@ export default function Notes({
             {showNotes &&
                 <>
                     <ScrollView>
-                        {notes.map((reminder) => {
+                        {notes.map((note) => {
                             return (
                                 <Pressable
                                     android_ripple={
@@ -150,17 +168,17 @@ export default function Notes({
                                             foreground: true
                                         }
                                     }
-                                    key={reminder._id}
+                                    key={note._id}
                                     style={styles.item}
                                     onPress={() => {
                                         setIsUpdate(true)
                                         setShowInput(true)
-                                        setNote(reminder)
+                                        setNote(note)
                                     }}
                                 >
                                     <CheckBox
-                                        checked={reminder.priority}
-                                        onPress={() => handleCheck(reminder)}
+                                        checked={note.isCompleted}
+                                        onPress={() => handleCheck(note)}
                                         size={25}
                                         containerStyle={styles.checkBox}
                                         right={true}
@@ -171,10 +189,10 @@ export default function Notes({
                                     />
                                     <View>
                                         <Text style={styles.itemText} numberOfLines={1}>
-                                            {reminder.name}
+                                            {note.title}
                                         </Text>
                                         <Text style={styles.time}>
-                                            {new Date(reminder.time).toLocaleDateString([], {
+                                            {new Date(note.time).toLocaleDateString([], {
                                                 weekday: 'short', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit'
                                             })}
                                         </Text>
@@ -211,7 +229,7 @@ export default function Notes({
                             }
                             style={[styles.btn]}
                             disabled={!selected.length}
-                            onPress={() => deleteChecked()}
+                            onPress={() => handleDelete(selected)}
                         >
                             <MaterialIcons
                                 name="delete"
@@ -238,11 +256,11 @@ export default function Notes({
                         numberOfLines={6}
                         placeholderTextColor="#fff"
                         style={styles.input}
-                        onChangeText={(value) => setNote({ ...note, "name": value })}
+                        onChangeText={(value) => setNote({ ...note, "title": value })}
                         onFocus={() => setEdit(true)}
-                        value={note ? note.name : ""}
+                        value={note ? note.title : ""}
                     />
-                    <View style={ styles.inputPanel }>
+                    <View style={styles.inputPanel}>
                         {!edit ?
                             <>
                                 <Pressable
@@ -271,7 +289,8 @@ export default function Notes({
                                     style={styles.editBtn}
                                     onPress={() => {
                                         setShowInput(false)
-                                        setNote()
+                                        setNote({})
+                                        setIsUpdate(false)
                                     }}
                                 >
                                     <Text style={[styles.editBtnText]}>
@@ -293,9 +312,9 @@ export default function Notes({
                                     style={[styles.round]}
                                     onPress={() => {
                                         if (isUpdate) {
-                                            handleUpdate(note)
+                                            handleNoteEdit(note)
                                         } else {
-                                            handleNote(note.name)
+                                            handleNewNote(note)
                                         }
                                     }}
                                 >
@@ -313,7 +332,7 @@ export default function Notes({
                                     }
                                     style={[styles.round]}
                                     disabled={!note}
-                                    onPress={() => handleDelete()}
+                                    onPress={() => handleDelete([note._id])}
                                 >
                                     <MaterialIcons
                                         name="delete"
@@ -333,7 +352,7 @@ export default function Notes({
                                     onPress={() => {
                                         setEdit(false)
                                         setShowInput(false)
-                                        setNote()
+                                        setNote({})
                                         setIsUpdate(false)
                                     }}
                                 >
@@ -360,22 +379,22 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingLeft: 22,
         paddingRight: 20,
-        paddingVertical:4,
-        marginHorizontal:4,
+        paddingVertical: 4,
+        marginHorizontal: 4,
         marginTop: 10,
     },
     active: {
         borderColor: '#8789f7',
         borderBottomLeftRadius: 0,
         borderBottomRightRadius: 0,
-        marginBottom:4
+        marginBottom: 4
     },
     menuBtnText: {
         fontFamily: 'Rubik-Medium',
         color: '#8789f7',
         fontSize: 24,
         marginLeft: 25,
-        marginTop:2
+        marginTop: 2
     },
     topHorizontal: {
         flexDirection: 'row',
@@ -385,25 +404,25 @@ const styles = StyleSheet.create({
         backgroundColor: '#15131d',
         borderBottomLeftRadius: 16,
         borderBottomRightRadius: 16,
-        marginHorizontal:4,
+        marginHorizontal: 4,
     },
     btn: {
         flexDirection: 'row',
         justifyContent: 'center',
         width: "35%",
         backgroundColor: "#8789f7",
-        padding:6,
+        padding: 6,
         borderRadius: 50,
-        elevation:3
+        elevation: 3
     },
     item: {
         backgroundColor: '#312e3f',
         flexDirection: 'row',
-        marginHorizontal:4,
-        marginBottom:5,
+        marginHorizontal: 4,
+        marginBottom: 5,
         paddingVertical: 3,
         overflow: 'hidden',
-        paddingRight:'15%'
+        paddingRight: '15%'
     },
     checkBox: {
         backgroundColor: '#312e3f',
@@ -442,7 +461,7 @@ const styles = StyleSheet.create({
         margin: 12,
         marginVertical: 0,
         textAlignVertical: 'top',
-        padding:10
+        padding: 10
     },
     inputPanel: {
         flexDirection: 'row',
@@ -460,7 +479,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         borderRadius: 50,
         paddingVertical: 6,
-        elevation:5
+        elevation: 5
     },
     editBtnText: {
         fontFamily: 'Rubik-Medium',

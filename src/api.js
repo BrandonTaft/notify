@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const BASE_URL = "https://12e2-2600-6c5a-4a7f-463a-7855-4035-8a46-3434.ngrok-free.app";
 
 export const storeBackUpData = async (reminders) => {
+    await AsyncStorage.setItem('reminders', JSON.stringify(reminders));
     const deviceId = await AsyncStorage.getItem('deviceId');
     return await fetch(BASE_URL + '/store', {
         method: 'POST',
