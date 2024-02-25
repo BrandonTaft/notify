@@ -5,30 +5,24 @@ import { CheckBox } from '@rneui/themed';
 import { addNote, updateNote, fetchNotes, deleteMany } from '../api';
 
 export default function Notes({
+    reminders,
     showNotes,
     setShowNotes,
     showDeleted,
     setShowDeleted,
-    refresh,
     onSuccess
 }) {
     const [showInput, setShowInput] = useState(false);
     const [note, setNote] = useState();
     const [edit, setEdit] = useState(false);
-    const [items, setItems] = useState([]);
+    const [notes, setNotes] = useState([]);
     const [selected, setSelected] = useState([]);
     const [isUpdate, setIsUpdate] = useState(false);
 
     useEffect(() => {
-        fetchNotes()
-            .then(result => {
-                if (result.success) {
-                    setItems(result.notes)
-                    setSelected([])
-                }
-            })
+        setNotes(reminders.filter((item) => item.isDeleted))
         if (showDeleted) setShowNotes(false);
-    }, [refresh, showDeleted]);
+    }, [showDeleted]);
 
     const handleNote = () => {
         if (note) {
@@ -60,7 +54,7 @@ export default function Notes({
     };
 
     const handleCheck = (reminder) => {
-        let temp = items.map((item) => {
+        let temp = notes.map((item) => {
             if (reminder._id === item._id) {
                 if (item.priority === false) {
                     setSelected([...selected, item._id]);
@@ -71,7 +65,7 @@ export default function Notes({
             }
             return item;
         });
-        setItems(temp)
+        setNotes(temp)
     };
 
     const deleteChecked = () => {
@@ -146,7 +140,7 @@ export default function Notes({
             {showNotes &&
                 <>
                     <ScrollView>
-                        {items.map((reminder) => {
+                        {notes.map((reminder) => {
                             return (
                                 <Pressable
                                     android_ripple={

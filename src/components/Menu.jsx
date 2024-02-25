@@ -4,14 +4,14 @@ import DeletedItems from "./DeletedItems";
 import Notes from "./Notes";
 
 export default function Menu({
+    reminders,
     setShowPicker,
     close,
-    refresh,
-    setRefresh,
     showDeleted,
     setShowDeleted,
     showNotes,
-    setShowNotes
+    setShowNotes,
+    onSuccess
 }) {
     return (
         <View style={styles.drawer}>
@@ -58,21 +58,21 @@ export default function Menu({
                 </Text>
                 <FontAwesome5 name="chevron-circle-right" size={30} color="#fff" style={{ marginLeft: 'auto', marginTop: "auto", marginBottom: 'auto' }} />
             </Pressable>
-            {/* <Notes
+            <Notes
+            reminders={reminders}
                 showNotes={showNotes}
                 setShowNotes={setShowNotes}
                 showDeleted={showDeleted}
                 setShowDeleted={setShowDeleted}
-                refresh={refresh}
-                setRefresh={setRefresh}
-            />*/}
+                onSuccess={onSuccess}
+            />
             {!showNotes &&
             <DeletedItems
+            reminders={reminders}
                 showDeleted={showDeleted}
                 setShowDeleted={setShowDeleted}
                 showNotes={showNotes}
-                refresh={refresh}
-                setRefresh={setRefresh}
+                onSuccess={onSuccess}
             />
 } 
         </View>

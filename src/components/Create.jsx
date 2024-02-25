@@ -67,27 +67,8 @@ export default function Create({
       })
     }
       await AsyncStorage.setItem('reminders', JSON.stringify(reminders));
-    //   fetch("https://f3d8-2600-6c5a-4a7f-463a-216f-184f-7ee0-9ac.ngrok-free.app/all", {
-    //     method:'POST',
-    //     headers: {
-    //       Accept: 'application/json',
-    //       'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify({
-    //       reminders: reminders
-    //   })
-    //   }).catch((err) => {
-    //     console.log(err);
-    // })
     storeBackUpData(reminders)
       resetState()
-      // addReminders(name, action, selectedDate, editable._id, expoPushToken)
-      //   .then(result => {
-      //     if (result.success) {
-      //       resetState()
-      //     }
-      //   })
-    
   };
 
   const handleDeleteReminder = () => {

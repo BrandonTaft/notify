@@ -2,24 +2,21 @@ import { useState, useEffect } from "react";
 import { Pressable, View, Text, StyleSheet, ScrollView } from "react-native";
 import { FontAwesome5 } from '@expo/vector-icons';
 import { CheckBox } from '@rneui/themed';
-import { fetchBackUpData, wipeAll, restoreMany, storeBackUpData } from "../api";
+import { storeBackUpData } from "../api";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import useFetch from '../../src/hooks/useFetch';
 
-export default function DeletedItems({ showDeleted, setShowDeleted, showNotes}) {
-    const {isLoading, reminders, setRefresh, refresh} = useFetch()
-    // const [showDeleted, setShowDeleted] = useState(false);
+export default function DeletedItems({ showDeleted, setShowDeleted, showNotes, onSuccess, reminders }) {
     const [deletedItems, setDeletedItems] = useState([]);
-    // const [refresh, setRefresh] = useState(false);
+    const [selected, setSelected] = useState([]);
     useEffect(() => {
-        console.log("DELEDDDD", reminders)
         setDeletedItems(reminders.filter((item) => item.isDeleted))
         if (showNotes) setShowDeleted(false)
-    }, [refresh, showNotes, showDeleted])
+    }, [reminders, showNotes, showDeleted])
 
     const handleCheck = (reminder) => {
         let temp = deletedItems.map((item) => {
             if (reminder._id === item._id) {
+                setSelected([...selected, item._id])
                 return { ...item, priority: !item.priority };
             }
             return item;
@@ -28,37 +25,28 @@ export default function DeletedItems({ showDeleted, setShowDeleted, showNotes}) 
     };
 
     const deleteForGood = async () => {
-        let x = reminders.filter((reminder) =>reminder.priority !== true)
-        // let wipedReminders = {
-        //     ...items,
-        //     deleted: items.filter((reminder) => { return reminder.priority !== true; })
-        // }
-        // setDeletedItems(wipedReminders)
-        // await AsyncStorage.setItem('reminders', JSON.stringify(wipedReminders))
-        // storeBackUpData(wipedReminders)
-        console.log(reminders.filter((reminder) =>reminder.priority !== true))
+        let remaining =  reminders.filter(element => !selected.includes(element._id));
+        await AsyncStorage.setItem('reminders', JSON.stringify(remaining))
+        storeBackUpData(remaining)
+        setSelected([])
+        onSuccess()
     }
 
-    // const restoreDeleted = async () => {
-    //     let scheduled = [];
-    //     let unScheduled = [];
-    //     for (let i = 0; i < items.length; i++) {
-    //         if (items[i].priority === true && items[i].notification === undefined) {
-    //             unScheduled.push({ ...items[i], priority: false })
-    //         } else if (items[i].priority === true && items[i].notification) {
-    //             scheduled.push({ ...items[i], priority: false })
-    //         }
-    //     }
-    //     let updatedList = {
-    //         completed: [...items.completed],
-    //         scheduled: [...items.scheduled, ...scheduled],
-    //         unScheduled: [...items.unScheduled, ...unScheduled],
-    //         deleted: items.filter((reminder) => reminder.priority !== true)
-    //     }
-    //     setDeletedItems(updatedList)
-    //     await AsyncStorage.setItem('reminders', JSON.stringify(updatedList))
-    //     setRefresh(!refresh)
-    // }
+    const restoreDeleted = async () => {
+        for (let i = 0; i < selected.length; i++) {
+            for(let j = 0; j < reminders.length; j++) {
+                if(reminders[j]._id === selected[i]) {
+                    reminders[j].isDeleted = false
+                    break
+                }
+            }
+        }
+        await AsyncStorage.setItem('reminders', JSON.stringify(reminders));
+        storeBackUpData(reminders)
+        setDeletedItems(reminders.filter((item) => item.isDeleted))
+        onSuccess()
+        setSelected([])
+    }
 
     return (
         <>
@@ -78,7 +66,8 @@ export default function DeletedItems({ showDeleted, setShowDeleted, showNotes}) 
                         }
                         return item
                     })
-                   setDeletedItems(cleared)
+                    
+                    setDeletedItems(cleared)
                     setShowDeleted(!showDeleted)
                 }}
             >
@@ -151,7 +140,7 @@ export default function DeletedItems({ showDeleted, setShowDeleted, showNotes}) 
                                 }
                             }
                             style={styles.btn}
-                            // disabled={!selected.length}
+                            disabled={!selected.length}
                             onPress={() => restoreDeleted()}
                         >
                             <Text style={styles.btnText}>
@@ -167,7 +156,7 @@ export default function DeletedItems({ showDeleted, setShowDeleted, showNotes}) 
                                 }
                             }
                             style={styles.btn}
-                            // disabled={!selected.length}
+                            disabled={!selected.length}
                             onPress={() => deleteForGood()}
                         >
                             <Text style={styles.btnText}>

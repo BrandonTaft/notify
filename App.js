@@ -11,6 +11,7 @@ export default function App() {
   return (
     <Layout
       setShowPicker={setShowPicker}
+      reminders={reminders}
       onSuccess={() => setRefresh(!refresh)}
     >
       {isLoading ? <Loader /> :

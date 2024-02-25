@@ -117,34 +117,18 @@ export default function List({ reminders, onSuccess, isLoading }) {
 
     //Sends all selected reminders to server to be deleted
     const deleteChecked = async () => {
-        let x = 0
-        for (let i = 0; i < reminders.length; i++) {
-            if (reminders[i]._id === selected[x]) {
-                reminders[i].isDeleted = true
-                x++
+        for (let i = 0; i < selected.length; i++) {
+            for(let j = 0; j < reminders.length; j++) {
+                if(reminders[j]._id === selected[i]) {
+                    reminders[j].isDeleted = true
+                    break
+                }
             }
-            if (x > selected.length) {
-                break
-            }
-            console.log(reminders)
         }
-        // reminders.deleted = [ ...reminders.deleted, ...selected ]
-        // for (let i = 0; i < selected.length;  i++) {
-
-        //  reminders.scheduled = reminders.scheduled.filter(function(el) { return el._id !== selected[i]._id; });
-        //  reminders.unScheduled = reminders.unScheduled.filter(function(el) { return el._id !== selected[i]._id; });
-        //  reminders.completed = reminders.completed.filter(function(el) { return el._id !== selected[i]._id; });
-
-        // }
         await AsyncStorage.setItem('reminders', JSON.stringify(reminders));
         storeBackUpData(reminders)
+        console.log("LISRT", reminders)
         onSuccess()
-        // deleteMany(selected)
-        //     .then(result => {
-        //         if (result.success) {
-        //             onSuccess()
-        //         }
-        //     })
     }
 
     return (

@@ -7,8 +7,8 @@ import * as SplashScreen from 'expo-splash-screen';
 import Header from "./Header";
 import Menu from "./Menu";
 
-export default function Layout({ setShowPicker, children, onSuccess }) {
-    const [refresh, setRefresh] = useState(false);
+export default function Layout({ setShowPicker, children, reminders, onSuccess }) {
+    // const [refresh, setRefresh] = useState(false);
     const [showDeleted, setShowDeleted] = useState(false);
     const [showNotes, setShowNotes] = useState(false);
     const drawer = useRef(null);
@@ -30,8 +30,7 @@ export default function Layout({ setShowPicker, children, onSuccess }) {
 
     const navigationView = () => (
         <Menu
-            refresh={refresh}
-            setRefresh={setRefresh}
+        reminders={reminders}
             setShowPicker={setShowPicker}
             showDeleted={showDeleted}
             setShowDeleted={setShowDeleted}
@@ -50,7 +49,7 @@ export default function Layout({ setShowPicker, children, onSuccess }) {
             drawerPosition={'left'}
             renderNavigationView={navigationView}
             drawerBackgroundColor="rgba(21,19,29,0.75)"
-            onDrawerOpen={() => setRefresh(!refresh)}
+            // onDrawerOpen={() => setRefresh(!refresh)}
             onDrawerClose={() => {
                 setShowNotes(false)
                 setShowDeleted(false)
