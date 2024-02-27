@@ -3,7 +3,7 @@ import { Pressable, View, Text, StyleSheet, Modal, TextInput, ScrollView } from 
 import { FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 import { CheckBox } from '@rneui/themed';
 import * as Crypto from 'expo-crypto';
-import { addNote, updateNote, fetchNotes, deleteMany, storeBackUpData } from '../api';
+import { storeBackUpData } from '../api';
 
 export default function Notes({
     reminders,
@@ -23,7 +23,7 @@ export default function Notes({
     useEffect(() => {
         setSelected([])
         setNotes(reminders.filter((item) => item.isNote && !item.isDeleted))
-        if (showDeleted) setShowNotes(false);
+        //if (showDeleted) setShowDeleted(false);
     }, [reminders, showDeleted]);
 
     const handleNewNote = () => {
@@ -80,15 +80,6 @@ export default function Notes({
         });
         setNotes(temp)
     };
-
-    // const handleDelete = () => {
-    //     deleteMany(selected)
-    //         .then(result => {
-    //             if (result.success) {
-    //                 onSuccess()
-    //             }
-    //         })
-    // }
 
     const handleDelete = (checked) => {
         let i = 0;

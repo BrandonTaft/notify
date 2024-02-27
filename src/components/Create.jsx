@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { StyleSheet, TextInput, View, Modal, Text, Pressable } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import Icon from 'react-native-vector-icons/AntDesign';
-import { addReminders, storeBackUpData, deleteMany } from '../api';
+import { storeBackUpData } from '../api';
 import * as SMS from 'expo-sms';
 import * as Crypto from 'expo-crypto';
 
@@ -17,7 +17,6 @@ export default function Create({
   setEditable
 }) {
   const [title, onChangeTitle] = useState("");
-  const [action, setAction] = useState('POST');
   const [selectedDate, setSelectedDate] = useState(null);
   const [datePickerVisible, setDatePickerVisible] = useState(false);
   const [sendMessage, setSendMessage] = useState(false);
@@ -26,7 +25,6 @@ export default function Create({
   useEffect(() => {
     if (editable.title) {
       onChangeTitle(editable.title)
-      setAction('PUT')
     }
   }, [editable]);
 
@@ -34,49 +32,63 @@ export default function Create({
     onSuccess()
     setSelectedDate()
     onChangeTitle("")
-    setAction('POST')
     setEditable({})
     setModalVisible(!modalVisible)
   };
 
-  const postReminder = async() => {
+  const postReminder = async () => {
     const UUID = Crypto.randomUUID();
-    if (selectedDate) {
-      let newDate = new Date(selectedDate)
-      reminders.push({
-        _id: UUID,
-        title: title,
-        notification: selectedDate,
-        month: newDate.getMonth(),
-        day: newDate.getDate(),
-        time: newDate.toLocaleTimeString('en-US'),
-        token: expoPushToken,
-        isChecked: false,
-        isCompleted: false,
-        isDeleted: false
-      })
+    if (!editable._id) {
+      if (selectedDate) {
+        let newDate = new Date(selectedDate)
+        reminders.push({
+          _id: UUID,
+          title: title,
+          notification: selectedDate,
+          month: newDate.getMonth(),
+          day: newDate.getDate(),
+          time: newDate.toLocaleTimeString('en-US'),
+          token: expoPushToken,
+          isChecked: false,
+          isCompleted: false,
+          isDeleted: false
+        })
+      } else {
+        reminders.push({
+          _id: UUID,
+          title: title,
+          token: expoPushToken,
+          isChecked: false,
+          isCompleted: false,
+          isDeleted: false
+        })
+      }
     } else {
-      reminders.push({
-        _id: UUID,
-        title: title,
-        token: expoPushToken,
-        isChecked: false,
-        isCompleted: false,
-        isDeleted: false
+      let temp = reminders.map((reminder) => {
+        let newDate
+        if (reminder._id === editable._id) {
+          if (selectedDate) {
+            newDate = new Date(selectedDate)
+            reminder.notification = selectedDate,
+              reminder.month = newDate.getMonth(),
+              reminder.day = newDate.getDate(),
+              reminder.time = newDate.toLocaleTimeString('en-US')
+          }
+          reminder.title = title
+          return reminder
+        }
+        return reminder
       })
+      reminders = [...temp]
     }
     storeBackUpData(reminders)
-      resetState()
+    resetState()
   };
 
   const handleDeleteReminder = () => {
     if (editable._id) {
-      // deleteMany(editable._id)
-      //   .then(result => {
-      //     if (result.success) {
-      //       resetState()
-      //     }
-      //   })
+      storeBackUpData(reminders.filter((reminder) => reminder._id !== editable._id))
+      resetState()
     }
   };
 
@@ -195,7 +207,7 @@ export default function Create({
             style={styles.round}
             onPress={() => setSendMessage(true)}
           >
-            <Icon title="message1" style={{ color: 'white' }} size={34} />
+            <Icon title="message" style={{ color: 'white' }} size={34} />
           </Pressable>
           <Pressable
             android_ripple={

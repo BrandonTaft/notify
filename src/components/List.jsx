@@ -1,22 +1,18 @@
-import { useState, useCallback, useReducer, useEffect } from 'react';
+import { useState, useCallback, useReducer } from 'react';
 import { StyleSheet, Text, View, Pressable, ScrollView } from 'react-native';
 import Create from './Create';
 import Items from './Items';
 import { Icon } from "@rneui/base";
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-import { completeMany, deleteMany, storeBackUpData } from '../api';
+import { storeBackUpData } from '../api';
 import usePushNotification from '../hooks/usePushNotification';
 import Alarm from './Alarm';
 
-export default function List({ reminders, onSuccess, isLoading }) {
+export default function List({ reminders, onSuccess }) {
     const { notification, setSound, showAlarm, setShowAlarm, expoPushToken } = usePushNotification();
     const [editable, setEditable] = useState({});
     const [modalVisible, setModalVisible] = useState(false);
-
-    const [allReminders, setAllReminders] = useState([]);
-
-    console.log("REMINDERS", reminders)
     const [fontsLoaded] = useFonts({
         'Rubik-Medium': require('../../assets/fonts/Rubik-Medium.ttf'),
         'Rubik-Regular': require('../../assets/fonts/Rubik-Regular.ttf'),
