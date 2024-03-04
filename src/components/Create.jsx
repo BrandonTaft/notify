@@ -68,19 +68,23 @@ export default function Create({
         let newDate
         if (reminder._id === editable._id) {
           if (selectedDate) {
+            
             newDate = new Date(selectedDate)
             reminder.notification = selectedDate,
               reminder.month = newDate.getMonth(),
               reminder.day = newDate.getDate(),
-              reminder.time = newDate.toLocaleTimeString('en-US')
+              reminder.time = newDate.setSeconds(0)
           }
+          
           reminder.title = title
           return reminder
         }
         return reminder
       })
+      console.log("DATTTTT",[...temp])
       reminders = [...temp]
     }
+    
     storeBackUpData(reminders)
     resetState()
   };

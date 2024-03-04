@@ -1,11 +1,21 @@
 import { Modal, StyleSheet, View, Pressable, Text } from 'react-native';
+import useAlarmSound from '../hooks/useAlarmSound';
+import { useEffect } from 'react';
 
 function Alarm({
   notification,
-  setSound,
   showAlarm,
   setShowAlarm
 }) {
+
+  const { playSound, setSound } = useAlarmSound();
+
+  useEffect(() => {
+    if (showAlarm) {
+      playSound()
+    }
+  }, [showAlarm]);
+
   return (
     <Modal
       animationType="slide"
@@ -13,7 +23,7 @@ function Alarm({
       visible={showAlarm}
       style={styles.alarmContainer}
       onRequestClose={() => {
-        setShowAlarm(!showAlarm);
+        setShowAlarm(false);
       }}>
       <View style={styles.alarm}>
         <Text numberOfLines={3} style={styles.alarmText}>
@@ -28,7 +38,8 @@ function Alarm({
         }
           style={styles.alarmBtn}
           onPress={() => {
-            setSound()
+           // playSound()
+           setSound()
             setShowAlarm(false)
           }}
         >

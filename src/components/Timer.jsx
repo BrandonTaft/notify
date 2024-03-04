@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Text, StyleSheet, View, Pressable } from "react-native";
-import { Audio } from 'expo-av';
+ import { Audio } from 'expo-av';
 import { FontAwesome } from '@expo/vector-icons';
 
 export default function Timer({ setShowTimer, stopTime }) {

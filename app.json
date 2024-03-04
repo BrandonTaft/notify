@@ -39,7 +39,7 @@
       "package": "com.notify.notify"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/N.png"
     },
     "plugins": [
       "@react-native-voice/voice"
@@ -50,7 +50,8 @@
       }
     },
     "notification": {
-      "color":"#b804d1de",
+      "icon":"./assets/N.png",
+      "color":"#b804d1de"
     },
     "owner": "btaft6278"
   }

@@ -10,7 +10,7 @@ import usePushNotification from '../hooks/usePushNotification';
 import Alarm from './Alarm';
 
 export default function List({ reminders, onSuccess }) {
-    const { notification, setSound, showAlarm, setShowAlarm, expoPushToken } = usePushNotification();
+    const { notification, showAlarm, setShowAlarm, expoPushToken, sendPushNotification } = usePushNotification();
     const [editable, setEditable] = useState({});
     const [modalVisible, setModalVisible] = useState(false);
     const [fontsLoaded] = useFonts({
@@ -120,7 +120,6 @@ export default function List({ reminders, onSuccess }) {
         <View style={styles.container}>
             <Alarm
                 notification={notification}
-                setSound={setSound}
                 showAlarm={showAlarm}
                 setShowAlarm={setShowAlarm}
             />
@@ -195,7 +194,13 @@ export default function List({ reminders, onSuccess }) {
                 </Pressable>
 
                 <Pressable
-                    onPress={() => setModalVisible(true)}
+                    // onPress={() => setModalVisible(true)}
+                    onPress={() => sendPushNotification(expoPushToken,'hello')}
+
+                    // onPress={() => {
+                    //     //setShowAlarm(true)
+                    //     playSound()
+                    // }}
                     android_ripple={
                         RippleConfig = {
                             color: "#bb86fa",

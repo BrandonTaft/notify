@@ -2,7 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
-import { Audio } from 'expo-av';
+//import useAlarmSound from './useAlarmSound';
+//import { Audio } from 'expo-av';
 
 Notifications.setNotificationHandler({
     handleNotification: async () => ({
@@ -45,17 +46,14 @@ async function registerForPushNotificationsAsync() {
 const usePushNotification = () => {
     const [expoPushToken, setExpoPushToken] = useState('');
     const [notification, setNotification] = useState("")
-    const [sound, setSound] = useState();
     const [showAlarm, setShowAlarm] = useState(false);
     const notificationListener = useRef();
     const responseListener = useRef();
-
+    
     useEffect(() => {
-
         registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
         notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
             setNotification(notification.request.content.body)
-            playSound()
             setShowAlarm(true)
         });
         responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
@@ -67,26 +65,12 @@ const usePushNotification = () => {
         };
     }, []);
 
-    async function playSound() {
-        const { sound } = await Audio.Sound.createAsync(require('../../assets/alarm.wav')
-        );
-        setSound(sound);
-        await sound.playAsync();
-    }
 
-    useEffect(() => {
-        return sound
-            ? () => {
-                sound.unloadAsync();
-            }
-            : undefined;
-    }, [sound]);
-
-    async function sendPushNotification(expoPushToken) {
+    
+    async function sendPushNotification(expoPushToken, notification) {
         const message = {
             to: expoPushToken,
-            title: 'TIME',
-            body: 'IS UP',
+            body: notification,
             data: { someData: 'goes here' },
         };
 
@@ -101,7 +85,7 @@ const usePushNotification = () => {
         });
     }
 
-    return { expoPushToken, notification, setSound, showAlarm, setShowAlarm };
+    return { expoPushToken, notification, sendPushNotification, showAlarm, setShowAlarm };
 };
 
 export default usePushNotification

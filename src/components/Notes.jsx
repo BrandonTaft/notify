@@ -23,7 +23,6 @@ export default function Notes({
     useEffect(() => {
         setSelected([])
         setNotes(reminders.filter((item) => item.isNote && !item.isDeleted))
-        //if (showDeleted) setShowDeleted(false);
     }, [reminders, showDeleted]);
 
     const handleNewNote = () => {
