@@ -1,33 +1,18 @@
 import { useState, useEffect } from "react";
 import { Text, StyleSheet, View, Pressable } from "react-native";
- import { Audio } from 'expo-av';
+import useAlarmSound from '../hooks/useAlarmSound';
 import { FontAwesome } from '@expo/vector-icons';
 
 export default function Timer({ setShowTimer, stopTime }) {
+    const { playSound, setSound } = useAlarmSound();
     const [started, setStarted] = useState(false);
     const [timeIsUp, setTimeIsUp] = useState(false)
     const [difference, setDifference] = useState(0);
-    const [sound, setSound] = useState(null);
     const [timeUnits, setTimeUnits] = useState({
         hours: 0,
         minutes: 0,
         seconds: 0,
     });
-
-    async function playSound() {
-        const { sound } = await Audio.Sound.createAsync(require('../../assets/alarm.wav')
-        );
-        setSound(sound);
-        await sound.playAsync();
-    };
-
-    useEffect(() => {
-        return sound
-            ? () => {
-                sound.unloadAsync();
-            }
-            : undefined;
-    }, [sound]);
 
     useEffect(() => {
         var d = new Date();
@@ -97,7 +82,6 @@ export default function Timer({ setShowTimer, stopTime }) {
                         </Pressable>
                     </View>
                 </>
-                // </Modal>
                 :
                 <>
                     <View style={styles.timer}>

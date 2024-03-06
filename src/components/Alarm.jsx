@@ -7,13 +7,9 @@ function Alarm({
   showAlarm,
   setShowAlarm
 }) {
-
   const { playSound, setSound } = useAlarmSound();
-
   useEffect(() => {
-    if (showAlarm) {
-      playSound()
-    }
+    if (showAlarm) playSound()
   }, [showAlarm]);
 
   return (
@@ -38,7 +34,6 @@ function Alarm({
         }
           style={styles.alarmBtn}
           onPress={() => {
-           // playSound()
            setSound()
             setShowAlarm(false)
           }}

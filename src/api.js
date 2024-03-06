@@ -5,7 +5,6 @@ const BASE_URL = "https://57bb-2600-6c5a-4a7f-463a-b548-d98d-5c05-b498.ngrok-fre
 export const storeBackUpData = async (reminders) => {
     await AsyncStorage.setItem('reminders', JSON.stringify(reminders));
     const deviceId = await AsyncStorage.getItem('deviceId');
-    console.log("TESST",reminders)
     return await fetch(BASE_URL + '/store', {
         method: 'POST',
         headers: {
@@ -36,3 +35,7 @@ export const fetchBackUpData = async () => {
     .then(response => response.json())
     .catch((error) => console.log("Server did not respond"))
 };
+
+// export const handleChat = () => {
+
+// }
