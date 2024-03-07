@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/AntDesign';
 import { storeBackUpData } from '../api';
 import * as SMS from 'expo-sms';
 import * as Crypto from 'expo-crypto';
-import useWebSocket from 'react-use-websocket';
+
 
 
 export default function Create({
@@ -22,282 +22,265 @@ export default function Create({
   const [datePickerVisible, setDatePickerVisible] = useState(false);
   const [sendMessage, setSendMessage] = useState(false);
   const [number, onChangeNumber] = useState("");
-  const WS_URL = 'https://57bb-2600-6c5a-4a7f-463a-b548-d98d-5c05-b498.ngrok-free.app';
 
-  // useEffect(() => {
-  //   if (editable.title) {
-  //     onChangeTitle(editable.title)
-  //   }
-  // }, [editable]);
 
-  // const resetState = () => {
-  //   onSuccess()
-  //   setSelectedDate()
-  //   onChangeTitle("")
-  //   setEditable({})
-  //   setModalVisible(!modalVisible)
-  // };
-
-  // const postReminder = async () => {
-  //   const UUID = Crypto.randomUUID();
-  //   if (!editable._id) {
-  //     if (selectedDate) {
-  //       let newDate = new Date(selectedDate)
-  //       reminders.push({
-  //         _id: UUID,
-  //         title: title,
-  //         notification: selectedDate,
-  //         month: newDate.getMonth(),
-  //         day: newDate.getDate(),
-  //         time: newDate.toLocaleTimeString('en-US'),
-  //         token: expoPushToken,
-  //         isChecked: false,
-  //         isCompleted: false,
-  //         isDeleted: false
-  //       })
-  //     } else {
-  //       reminders.push({
-  //         _id: UUID,
-  //         title: title,
-  //         token: expoPushToken,
-  //         isChecked: false,
-  //         isCompleted: false,
-  //         isDeleted: false
-  //       })
-  //     }
-  //   } else {
-  //     let temp = reminders.map((reminder) => {
-  //       let newDate
-  //       if (reminder._id === editable._id) {
-  //         if (selectedDate) {
-            
-  //           newDate = new Date(selectedDate)
-  //           reminder.notification = selectedDate,
-  //             reminder.month = newDate.getMonth(),
-  //             reminder.day = newDate.getDate(),
-  //             reminder.time = newDate.setSeconds(0)
-  //         }
-          
-  //         reminder.title = title
-  //         return reminder
-  //       }
-  //       return reminder
-  //     })
-  //     console.log("DATTTTT",[...temp])
-  //     reminders = [...temp]
-  //   }
-    
-  //   storeBackUpData(reminders)
-  //   resetState()
-  // };
-
-  // const handleDeleteReminder = () => {
-  //   if (editable._id) {
-  //     storeBackUpData(reminders.filter((reminder) => reminder._id !== editable._id))
-  //     resetState()
-  //   }
-  // };
-
-  // const sendText = async () => {
-  //   const isAvailable = await SMS.isAvailableAsync();
-  //   if (isAvailable) {
-  //     const { result } = await SMS.sendSMSAsync(
-  //       [number],
-  //       title
-  //     );
-  //   } else {
-  //     console.log("there's no SMS available on this device")
-  //   }
-  // }
-  useWebSocket(WS_URL, {
-    onOpen: () => {
-      console.log('WebSocket connection established.');
+  useEffect(() => {
+    if (editable.title) {
+      onChangeTitle(editable.title)
     }
-  });
-return(
-  <Modal
+  }, [editable]);
+
+  const resetState = () => {
+    onSuccess()
+    setSelectedDate()
+    onChangeTitle("")
+    setEditable({})
+    setModalVisible(!modalVisible)
+  };
+
+  const postReminder = async () => {
+    const UUID = Crypto.randomUUID();
+    if (!editable._id) {
+      if (selectedDate) {
+        let newDate = new Date(selectedDate)
+        reminders.push({
+          _id: UUID,
+          title: title,
+          notification: selectedDate,
+          month: newDate.getMonth(),
+          day: newDate.getDate(),
+          time: newDate.toLocaleTimeString('en-US'),
+          token: expoPushToken,
+          isChecked: false,
+          isCompleted: false,
+          isDeleted: false
+        })
+      } else {
+        reminders.push({
+          _id: UUID,
+          title: title,
+          token: expoPushToken,
+          isChecked: false,
+          isCompleted: false,
+          isDeleted: false
+        })
+      }
+    } else {
+      let temp = reminders.map((reminder) => {
+        let newDate
+        if (reminder._id === editable._id) {
+          if (selectedDate) {
+            
+            newDate = new Date(selectedDate)
+            reminder.notification = selectedDate,
+              reminder.month = newDate.getMonth(),
+              reminder.day = newDate.getDate(),
+              reminder.time = newDate.setSeconds(0)
+          }
+          
+          reminder.title = title
+          return reminder
+        }
+        return reminder
+      })
+      console.log("DATTTTT",[...temp])
+      reminders = [...temp]
+    }
+    
+    storeBackUpData(reminders)
+    resetState()
+  };
+
+  const handleDeleteReminder = () => {
+    if (editable._id) {
+      storeBackUpData(reminders.filter((reminder) => reminder._id !== editable._id))
+      resetState()
+    }
+  };
+
+  const sendText = async () => {
+    const isAvailable = await SMS.isAvailableAsync();
+    if (isAvailable) {
+      const { result } = await SMS.sendSMSAsync(
+        [number],
+        title
+      );
+    } else {
+      console.log("there's no SMS available on this device")
+    }
+  }
+ 
+  return (
+    <Modal
       animationType="slide"
       transparent={true}
       visible={modalVisible}
       onRequestClose={() => {
         setModalVisible(!modalVisible);
       }}>
-        <View style={styles.modalView}>
-        <Text>Hello WebSockets!</Text>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={sendMessage}
+        onRequestClose={() => {
+          sendMessage(false);
+        }}>
+        <View style={styles.messageModal}>
+          <TextInput
+            autoFocus={true}
+            multiline={true}
+            numberOfLines={2}
+            placeholderTextColor="#fff"
+            style={styles.input}
+            onChangeText={onChangeNumber}
+            value={number}
+            placeholder="number"
+          />
+          <Pressable
+            android_ripple={
+              RippleConfig = {
+                color: "#8789f7",
+                borderless: false,
+                foreground: false
+              }
+            }
+            style={styles.addTime}
+            onPress={() => sendText()}
+          >
+            <Text style={{ fontSize: 18, color: 'white', fontWeight: 'bold' }}>
+              Send
+            </Text>
+          </Pressable>
+          <Pressable
+            android_ripple={
+              RippleConfig = {
+                color: "#8789f7",
+                borderless: false,
+                foreground: false
+              }
+            }
+            style={styles.addTime}
+            onPress={() => setSendMessage(false)}
+          >
+            <Text style={{ fontSize: 18, color: 'white', fontWeight: 'bold' }}>
+              Cancel
+            </Text>
+          </Pressable>
         </View>
-        </Modal>
-)
-  // return (
-  //   <Modal
-  //     animationType="slide"
-  //     transparent={true}
-  //     visible={modalVisible}
-  //     onRequestClose={() => {
-  //       setModalVisible(!modalVisible);
-  //     }}>
-  //     <Modal
-  //       animationType="slide"
-  //       transparent={true}
-  //       visible={sendMessage}
-  //       onRequestClose={() => {
-  //         sendMessage(false);
-  //       }}>
-  //       <View style={styles.messageModal}>
-  //         <TextInput
-  //           autoFocus={true}
-  //           multiline={true}
-  //           numberOfLines={2}
-  //           placeholderTextColor="#fff"
-  //           style={styles.input}
-  //           onChangeText={onChangeNumber}
-  //           value={number}
-  //           placeholder="number"
-  //         />
-  //         <Pressable
-  //           android_ripple={
-  //             RippleConfig = {
-  //               color: "#8789f7",
-  //               borderless: false,
-  //               foreground: false
-  //             }
-  //           }
-  //           style={styles.addTime}
-  //           onPress={() => sendText()}
-  //         >
-  //           <Text style={{ fontSize: 18, color: 'white', fontWeight: 'bold' }}>
-  //             Send
-  //           </Text>
-  //         </Pressable>
-  //         <Pressable
-  //           android_ripple={
-  //             RippleConfig = {
-  //               color: "#8789f7",
-  //               borderless: false,
-  //               foreground: false
-  //             }
-  //           }
-  //           style={styles.addTime}
-  //           onPress={() => setSendMessage(false)}
-  //         >
-  //           <Text style={{ fontSize: 18, color: 'white', fontWeight: 'bold' }}>
-  //             Cancel
-  //           </Text>
-  //         </Pressable>
-  //       </View>
-  //     </Modal>
+      </Modal>
 
-  //     <View style={styles.modalView}>
-  //       <TextInput
-  //         autoFocus={true}
-  //         multiline={true}
-  //         numberOfLines={6}
-  //         placeholderTextColor="#fff"
-  //         style={styles.input}
-  //         onChangeText={onChangeTitle}
-  //         value={title}
-  //         placeholder=""
-  //       />
-  //       <Pressable
-  //         android_ripple={
-  //           RippleConfig = {
-  //             color: "#8789f7",
-  //             borderless: false,
-  //             foreground: false
-  //           }
-  //         }
-  //         style={styles.addTime}
-  //         onPress={() => setDatePickerVisible(true)}
-  //       >
-  //         <Text style={styles.mainText}>
-  //           {
-  //             (selectedDate || editable.notification)
-  //               ?
-  //               new Date((selectedDate || editable.notification)).toLocaleDateString([], { weekday: 'short', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })
-  //               :
-  //               'Add Time'
-  //           }
-  //         </Text>
-  //       </Pressable>
-  //       <View style={styles.horizontalView}>
-  //         <Pressable
-  //           android_ripple={
-  //             RippleConfig = {
-  //               color: "#312e3f",
-  //               borderless: true,
-  //               foreground: false
-  //             }
-  //           }
-  //           style={styles.round}
-  //           onPress={() => setSendMessage(true)}
-  //         >
-  //           <Icon title="message" style={{ color: 'white' }} size={34} />
-  //         </Pressable>
-  //         <Pressable
-  //           android_ripple={
-  //             RippleConfig = {
-  //               color: "#312e3f",
-  //               borderless: true,
-  //               foreground: false
-  //             }
-  //           }
-  //           style={styles.round}
-  //           onPress={() => postReminder()}
-  //         >
-  //           <Text style={{ fontSize: 18, color: 'white', fontWeight: 'bold' }}>
-  //             Save
-  //           </Text>
-  //         </Pressable>
-  //         <Pressable
-  //           android_ripple={
-  //             RippleConfig = {
-  //               color: "#312e3f",
-  //               borderless: true,
-  //               foreground: false
-  //             }
-  //           }
-  //           style={styles.round}
-  //           onPress={() => {
-  //             resetState()
-  //           }}
-  //         >
-  //           <Text style={{ fontSize: 18, color: 'white', fontWeight: 'bold' }}>
-  //             Cancel
-  //           </Text>
-  //         </Pressable>
-  //       </View>
-  //       <DateTimePickerModal
-  //         date={new Date()}
-  //         isVisible={datePickerVisible}
-  //         mode="datetime"
-  //         onConfirm={(selectedDate) => {
-  //           setDatePickerVisible(false)
-  //           setSelectedDate(selectedDate)
-  //         }}
-  //         onCancel={() => {
-  //           setDatePickerVisible(false)
-  //         }}
-  //       />
-  //       <View style={styles.horizontalView}>
-  //         <Pressable
-  //           android_ripple={
-  //             RippleConfig = {
-  //               color: "#312e3f",
-  //               borderless: true,
-  //               foreground: false
-  //             }
-  //           }
-  //           style={styles.deleteBtn}
-  //           onPress={handleDeleteReminder}
-  //         >
-  //           <Text style={{ fontSize: 22, color: 'white', fontWeight: 'bold' }}>
-  //             Delete
-  //           </Text>
-  //         </Pressable>
-  //       </View>
-  //     </View>
+      <View style={styles.modalView}>
+        <TextInput
+          autoFocus={true}
+          multiline={true}
+          numberOfLines={6}
+          placeholderTextColor="#fff"
+          style={styles.input}
+          onChangeText={onChangeTitle}
+          value={title}
+          placeholder=""
+        />
+        <Pressable
+          android_ripple={
+            RippleConfig = {
+              color: "#8789f7",
+              borderless: false,
+              foreground: false
+            }
+          }
+          style={styles.addTime}
+          onPress={() => setDatePickerVisible(true)}
+        >
+          <Text style={styles.mainText}>
+            {
+              (selectedDate || editable.notification)
+                ?
+                new Date((selectedDate || editable.notification)).toLocaleDateString([], { weekday: 'short', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+                :
+                'Add Time'
+            }
+          </Text>
+        </Pressable>
+        <View style={styles.horizontalView}>
+          <Pressable
+            android_ripple={
+              RippleConfig = {
+                color: "#312e3f",
+                borderless: true,
+                foreground: false
+              }
+            }
+            style={styles.round}
+            onPress={() => setSendMessage(true)}
+          >
+            <Icon title="message" style={{ color: 'white' }} size={34} />
+          </Pressable>
+          <Pressable
+            android_ripple={
+              RippleConfig = {
+                color: "#312e3f",
+                borderless: true,
+                foreground: false
+              }
+            }
+            style={styles.round}
+            onPress={() => postReminder()}
+          >
+            <Text style={{ fontSize: 18, color: 'white', fontWeight: 'bold' }}>
+              Save
+            </Text>
+          </Pressable>
+          <Pressable
+            android_ripple={
+              RippleConfig = {
+                color: "#312e3f",
+                borderless: true,
+                foreground: false
+              }
+            }
+            style={styles.round}
+            onPress={() => {
+              resetState()
+            }}
+          >
+            <Text style={{ fontSize: 18, color: 'white', fontWeight: 'bold' }}>
+              Cancel
+            </Text>
+          </Pressable>
+        </View>
+        <DateTimePickerModal
+          date={new Date()}
+          isVisible={datePickerVisible}
+          mode="datetime"
+          onConfirm={(selectedDate) => {
+            setDatePickerVisible(false)
+            setSelectedDate(selectedDate)
+          }}
+          onCancel={() => {
+            setDatePickerVisible(false)
+          }}
+        />
+        <View style={styles.horizontalView}>
+          <Pressable
+            android_ripple={
+              RippleConfig = {
+                color: "#312e3f",
+                borderless: true,
+                foreground: false
+              }
+            }
+            style={styles.deleteBtn}
+            onPress={handleDeleteReminder}
+          >
+            <Text style={{ fontSize: 22, color: 'white', fontWeight: 'bold' }}>
+              Delete
+            </Text>
+          </Pressable>
+        </View>
+      </View>
 
-  //   </Modal>
-  // );
+    </Modal>
+  );
 };
 
 const styles = StyleSheet.create({

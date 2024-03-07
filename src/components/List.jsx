@@ -8,7 +8,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { storeBackUpData } from '../api';
 import usePushNotification from '../hooks/usePushNotification';
 import Alarm from './Alarm';
-import Chat from './Chat';
+
 
 export default function List({ reminders, onSuccess }) {
     const { notification, showAlarm, setShowAlarm, expoPushToken, sendPushNotification } = usePushNotification();
@@ -164,10 +164,7 @@ export default function List({ reminders, onSuccess }) {
                     setModalVisible={setModalVisible}
                     modalVisible={modalVisible}
                 />
-                <Chat
-                    showChat={showChat}
-                    setShowChat={setShowChat}
-                />
+                
             </View>
             <View style={styles.btnContainer}>
                 <Pressable
