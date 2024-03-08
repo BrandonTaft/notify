@@ -2,8 +2,8 @@
   "cli": {
     "version": ">= 7.3.0"
   },
+  "image":{"image":"default"},
   "build": {
-    "image":{"image":"default"},
     "development": {
       "developmentClient": true,
       "distribution": "internal"
