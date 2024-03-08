@@ -3,7 +3,7 @@
     "version": ">= 7.3.0"
   },
   "build": {
-    "android":{"image":"default"},
+    "image":{"image":"default"},
     "development": {
       "developmentClient": true,
       "distribution": "internal"
