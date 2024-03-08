@@ -24,7 +24,7 @@ useEffect(() => {
   console.log("SOCKET", socket)
   socket.on("roomsList", (rooms) => {
       setRooms(rooms);
-  });visible
+  });
 }, [socket]);
     //👇🏻 Dummy list of rooms
     // const rooms = [
@@ -71,8 +71,6 @@ useEffect(() => {
             <View style={styles.chattopContainer}>
                 <View style={styles.chatheader}>
                     <Text style={styles.chatheading}>Chats</Text>
-
-            {/* 👇🏻 Logs "ButtonPressed" to the console when the icon is clicked */}
             <Pressable onPress={() => setVisible(true)}>
                         <Feather name='edit' size={49} color='green' />
                     </Pressable>
@@ -97,5 +95,4 @@ useEffect(() => {
         </SafeAreaView>
     );
 };
-
 export default Chat;
