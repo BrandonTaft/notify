@@ -18,9 +18,10 @@ useLayoutEffect(() => {
   }
   fetchGroups();
 }, []);
-
+console.log("CHAT-rooms",rooms)
 //👇🏻 Runs whenever there is new trigger from the backend
 useEffect(() => {
+  console.log("SOCKET", socket)
   socket.on("roomsList", (rooms) => {
       setRooms(rooms);
   });visible
