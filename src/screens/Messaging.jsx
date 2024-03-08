@@ -37,7 +37,6 @@ const Messaging = ({ route, navigation }) => {
         socket.on("foundRoom", (roomChats) => setChatMessages(roomChats));
     }, [socket])
 
-//👇🏻 This function gets the username saved on AsyncStorage
     const getUsername = async () => {
         try {
             const value = await AsyncStorage.getItem("username");
