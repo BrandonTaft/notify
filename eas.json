@@ -12,7 +12,8 @@
     },
     "production": {
       "android": {
-        "image": "latest"
+        "image": "latest",
+        "distribution": "internal"
       },
       "ios": {
         "image": "latest"
