@@ -2,7 +2,6 @@
   "cli": {
     "version": ">= 7.3.0"
   },
-  "image":{"image":"default"},
   "build": {
     "development": {
       "developmentClient": true,
@@ -11,7 +10,10 @@
     "preview": {
       "distribution": "internal"
     },
-    "production": {}
+    "production": {},
+    "android": {
+      "image": "latest"
+    }
   },
   "submit": {
     "production": {}
