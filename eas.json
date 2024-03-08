@@ -2,11 +2,11 @@
   "cli": {
     "version": ">= 7.3.0"
   },
+  "image": "default",
   "build": {
     "development": {
       "developmentClient": true,
-      "distribution": "internal",
-      "image": "default"
+      "distribution": "internal"
     },
     "preview": {
       "distribution": "internal"
