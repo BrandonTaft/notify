@@ -20,7 +20,7 @@ export default function MessageComponent({ item, user }) {
                         name='person-circle-outline'
                         size={30}
                         color='black'
-                        style={styles.mavatar}
+                        style={styles.avatar}
                     />
                     <View
                         style={

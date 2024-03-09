@@ -10,15 +10,7 @@
     "preview": {
       "distribution": "internal"
     },
-    "production": {
-      "android": {
-        "image": "latest",
-        "distribution": "internal"
-      },
-      "ios": {
-        "image": "latest"
-      }
-    }
+    "production": {}
   },
   "submit": {
     "production": {}
