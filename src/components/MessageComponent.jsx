@@ -1,11 +1,11 @@
 import { View, Text } from "react-native";
 import React from "react";
-import { Ionicons } from "@expo/vector-icons";
+import { Avatar } from '@rneui/themed';
 import { styles } from "../utils/styles";
 
 export default function MessageComponent({ item, user }) {
+    console.log(user)
     const status = item.user !== user;
-
     return (
         <View>
             <View
@@ -16,20 +16,43 @@ export default function MessageComponent({ item, user }) {
                 }
             >
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <Ionicons
-                        name='person-circle-outline'
-                        size={30}
-                        color='black'
-                        style={styles.avatar}
-                    />
+                    {status
+                        ?
+                        <Avatar
+                            size={35}
+                            rounded
+                            title={Array.from(user)[0]}
+                            containerStyle={{ backgroundColor: "blue", marginTop:'auto', zIndex:100 }}
+                        />
+                        :
+                        ""
+                    }
                     <View
                         style={
                             status
                                 ? styles.mmessage
-                                : [styles.mmessage, { backgroundColor: "rgb(194, 243, 194)" }]
+                                : [styles.mmessage, { backgroundColor: "aqua", marginRight:5 }]
                         }
                     >
-                        <Text>{item.text}</Text>
+                        <Text style={styles.mmessageText}>
+                            {item.text}
+                        </Text>
+                        <View
+                            style={
+                                status
+                                    ? styles.leftArrow
+                                    : styles.rightArrow
+                            }
+                        >
+                        </View>
+                        <View
+                            style={
+                                status
+                                    ? styles.leftArrowOverlap
+                                    : styles.rightArrowOverlap
+                            }
+                        >
+                        </View>
                     </View>
                 </View>
                 <Text style={{ marginLeft: 40 }}>{item.time}</Text>

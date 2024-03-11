@@ -10,7 +10,7 @@ import usePushNotification from '../hooks/usePushNotification';
 import Alarm from './Alarm';
 
 
-export default function List({ reminders, onSuccess }) {
+export default function List({ reminders, onSuccess, navigation }) {
     const { notification, showAlarm, setShowAlarm, expoPushToken, sendPushNotification } = usePushNotification();
     const [editable, setEditable] = useState({});
     const [showChat, setShowChat] = useState(false)
@@ -198,7 +198,7 @@ export default function List({ reminders, onSuccess }) {
 
                 <Pressable
                     // onPress={() => setModalVisible(true)}
-                    onPress={() => setShowChat(true)}
+                    onPress={() => navigation.navigate("Chat")}
 
                     // onPress={() => {
                     //     //setShowAlarm(true)

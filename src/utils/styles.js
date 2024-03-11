@@ -1,6 +1,13 @@
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
+    headerAvatarIcon: {
+        marginRight: 20
+    },
+    headerEditIcon: {
+        marginRight: 5,
+        bottom: 1
+    },
     loginscreen: {
         flex: 1,
         backgroundColor: "#EEF1FF",
@@ -86,12 +93,16 @@ export const styles = StyleSheet.create({
     },
     messaginginput: {
         borderWidth: 1,
-        padding: 15,
+        padding: 10,
         flex: 1,
         marginRight: 10,
         borderRadius: 20,
+        fontSize:17,
+        maxHeight:200
     },
     messagingbuttonContainer: {
+        margin:'auto',
+        maxHeight:50,
         width: "30%",
         backgroundColor: "green",
         borderRadius: 3,
@@ -145,12 +156,59 @@ export const styles = StyleSheet.create({
         marginBottom: 15,
     },
     mmessage: {
-        maxWidth: "50%",
-        backgroundColor: "#f5ccc2",
-        padding: 15,
-        borderRadius: 10,
-        marginBottom: 2,
+        backgroundColor: "#dedede",
+        paddingHorizontal: 15,
+        paddingVertical:10,
+        borderRadius: 20,
+        marginTop: 5,
+        marginLeft: 10,
+        maxWidth: '50%',
+        minWidth:"25%",
+        alignSelf: 'flex-start',
     },
+    mmessageText: {
+        fontSize:17
+    },
+    leftArrow: {
+        position: "absolute",
+        backgroundColor: "#dedede",
+        width: 20,
+        height: 25,
+        bottom: 0,
+        borderBottomRightRadius: 25,
+        left: -10
+    },
+    
+    leftArrowOverlap: {
+        position: "absolute",
+        backgroundColor: "#eeeeee",
+        width: 20,
+        height: 35,
+        bottom: -6,
+        borderBottomRightRadius: 18,
+        left: -20
+    
+    },
+    rightArrow: {
+        position: "absolute",
+        backgroundColor: "aqua",
+        width: 20,
+        height: 25,
+        bottom: 0,
+        borderBottomLeftRadius: 25,
+        right: -10
+      },
+      
+      rightArrowOverlap: {
+        position: "absolute",
+        backgroundColor: "#eeeeee",
+        width: 20,
+        height: 35,
+        bottom: -6,
+        borderBottomLeftRadius: 18,
+        right: -20
+      
+      },
     mvatar: {
         marginRight: 5,
     },

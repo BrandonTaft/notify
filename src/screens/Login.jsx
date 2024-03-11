@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
     Text,
     SafeAreaView,
@@ -8,33 +8,45 @@ import {
     Alert,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
-//👇🏻 Import the app styles
 import { styles } from "../utils/styles";
 
 const Login = ({ navigation }) => {
     const [username, setUsername] = useState("");
 
+    useEffect(() => {
+        const checkForExistingUser = async () => {
+            //await AsyncStorage.clear()
+            const existingUser = await AsyncStorage.getItem("username");
+            if (existingUser) navigation.navigate("Home");
+        }
+        checkForExistingUser()
+    }, []);
+
     const storeUsername = async () => {
         try {
-            //👇🏻 async function - saves the username to AsyncStorage
-            //   redirecting to the Chat page
             await AsyncStorage.setItem("username", username);
-            navigation.navigate("Chat");
+            navigation.navigate("Home");
         } catch (e) {
             Alert.alert("Error! While saving username");
         }
     };
 
-
-    //👇🏻 checks if the input field is empty
     const handleSignIn = () => {
         if (username.trim()) {
-            //👇🏻 Logs the username to the console
             storeUsername();
-            console.log({ username });
         } else {
-            Alert.alert("Username is required.");
+            Alert.alert(
+                "TRY AGAIN",
+                "Username is required to chat.",
+                [
+                    {
+                        "text": "OK"
+                    }
+                ],
+                {
+                    cancelable: true
+                }
+            );
         }
     };
 
