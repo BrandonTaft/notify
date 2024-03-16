@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const BASE_URL = "https://64e3-75-131-25-248.ngrok-free.app";
+const BASE_URL = "https://3acd-2600-6c5a-4a7f-463a-2937-190f-5be3-36f5.ngrok-free.app";
 
 export const storeBackUpData = async (reminders) => {
     await AsyncStorage.setItem('reminders', JSON.stringify(reminders));
@@ -36,6 +36,8 @@ export const fetchBackUpData = async () => {
     .catch((error) => console.log("Server did not respond"))
 };
 
-// export const handleChat = () => {
-
-// }
+export const fetchGroups = async () => {
+    return await fetch("https://3acd-2600-6c5a-4a7f-463a-2937-190f-5be3-36f5.ngrok-free.app/api")
+      .then((res) => res.json())
+      .catch((error) => console.log(error))
+  }

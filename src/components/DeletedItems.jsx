@@ -3,17 +3,36 @@ import { Pressable, View, Text, StyleSheet, ScrollView } from "react-native";
 import { FontAwesome5 } from '@expo/vector-icons';
 import { CheckBox } from '@rneui/themed';
 import { storeBackUpData } from "../api";
+import useFetch from '../hooks/useFetch';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function DeletedItems({ showDeleted, setShowDeleted, showNotes, onSuccess, reminders }) {
+export default function DeletedItems({ showDeleted, setShowDeleted, showNotes, onSuccess }) {
 
     const [deletedItems, setDeletedItems] = useState([]);
     const [selected, setSelected] = useState([]);
+    // const { reminders, isLoading } = useFetch();
 
     useEffect(() => {
         setSelected([])
-        setDeletedItems(reminders.filter((item) => item.isDeleted))
+        const getDeletedReminders = async () => {
+            const jsonValue = await AsyncStorage.getItem('reminders');
+            setDeletedItems(JSON.parse(jsonValue))
+        }
+        getDeletedReminders()
         if (showNotes) setShowDeleted(false)
-    }, [reminders, showNotes, showDeleted])
+
+        if(!showDeleted) {
+            let cleared = deletedItems.map((item) => {
+                if (item.isChecked === true) {
+                    item.isChecked = false
+                }
+                return item
+            })
+            console.log("CLEARED", cleared)
+            setDeletedItems(cleared)
+        }
+
+    }, [showNotes, showDeleted])
 
     const handleCheck = (reminder) => {
         let temp = deletedItems.map((item) => {
@@ -23,27 +42,34 @@ export default function DeletedItems({ showDeleted, setShowDeleted, showNotes, o
             }
             return item;
         });
+        
         setDeletedItems(temp)
     };
 
     const destroyReminder = () => {
-        let remaining = reminders.filter(element => !selected.includes(element._id));
+        let remaining = deletedItems.filter(element => !selected.includes(element._id));
         storeBackUpData(remaining)
+        .then(() => {
+        setDeletedItems(remaining)
+        
+        setSelected([])
         onSuccess()
+        })
     }
-
+// console.log(deletedItems)
     const restoreDeleted = () => {
         let i = 0;
         let x = 0;
-        while (i < reminders.length && x < selected.length) {
-            if (selected.includes(reminders[i]._id)) {
-                reminders[i].isDeleted = false
+        while (i < deletedItems.length && x < selected.length) {
+            if (selected.includes(deletedItems[i]._id)) {
+                deletedItems[i].isDeleted = false
+                deletedItems[i].isChecked = false
                 x++
             }
             i++
         }
-        setDeletedItems(reminders.filter((item) => item.isDeleted))
-        storeBackUpData(reminders)
+        storeBackUpData(deletedItems)
+        setSelected([])
         onSuccess()
     }
 
@@ -59,14 +85,7 @@ export default function DeletedItems({ showDeleted, setShowDeleted, showNotes, o
                 }
                 style={[styles.menuBtn, showDeleted && styles.active]}
                 onPress={() => {
-                    let cleared = deletedItems.map((item) => {
-                        if (item.isChecked === true) {
-                            item.isChecked = false
-                        }
-                        return item
-                    })
-
-                    setDeletedItems(cleared)
+                    
                     setShowDeleted(!showDeleted)
                 }}
             >
@@ -99,7 +118,7 @@ export default function DeletedItems({ showDeleted, setShowDeleted, showNotes, o
             {showDeleted &&
                 <>
                     <ScrollView >
-                        {deletedItems.map((reminder) => {
+                        {deletedItems.filter((item) => item.isDeleted).map((reminder) => {
                             return (
                                 <View key={reminder._id} style={reminder.notification ? styles.item : styles.altItem}>
                                     <CheckBox

@@ -5,19 +5,16 @@ import ChatComponent from "../components/ChatComponent";
 import { styles } from "../utils/styles";
 import Modal from "../components/Modal";
 import { EditButton, AvatarButton } from "../components/Buttons";
+import { fetchGroups } from "../api";
 
-const Chat = ({ navigation }) => {
+const ChatScreen = ({ navigation }) => {
   const [rooms, setRooms] = useState([]);
   const [visible, setVisible] = useState(false);
 
   useLayoutEffect(() => {
-    function fetchGroups() {
-      fetch("https://64e3-75-131-25-248.ngrok-free.app/api")
-        .then((res) => res.json())
-        .then((data) => setRooms(data))
-        .catch((err) => console.error(err));
-    }
-    fetchGroups();
+    fetchGroups()
+      .then((data) => setRooms(data))
+      .catch((err) => console.error(err));
   }, []);
 
   useEffect(() => {
@@ -26,20 +23,24 @@ const Chat = ({ navigation }) => {
     });
   }, [socket]);
 
-  useEffect(() => {
-    navigation.setOptions({
-      headerRight: () => (
-        <>
-          <AvatarButton setVisible={setVisible} />
-          <EditButton setVisible={setVisible} />
-        </>
-      )
-    });
-  }, [])
+  // useEffect(() => {
+  //   navigation.setOptions({
+  //     headerRight: () => (
+  //       <>
+  //         <AvatarButton setVisible={setVisible} />
+  //         <EditButton setVisible={setVisible} />
+  //       </>
+  //     )
+  //   });
+  // }, [])
 
   return (
     <SafeAreaView style={styles.chatscreen}>
       <View style={styles.chatlistContainer}>
+      <>
+        {/* <AvatarButton setVisible={setVisible} /> */}
+         <EditButton setVisible={setVisible} />
+       </>
         {rooms.length > 0 ? (
           <FlatList
             data={rooms}
@@ -57,4 +58,4 @@ const Chat = ({ navigation }) => {
     </SafeAreaView>
   );
 };
-export default Chat;
+export default ChatScreen;

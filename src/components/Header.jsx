@@ -1,8 +1,11 @@
 import { Pressable, View, Text, StyleSheet, DrawerLayoutAndroid, ScrollView } from "react-native";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { AvatarButton } from "./Buttons";
+import { styles } from "../utils/styles";
 
 
-export default function ({ open }) {
+
+export default function ({ open, navigation }) {
     return (
         <View style={styles.header}>
             <Pressable
@@ -18,26 +21,8 @@ export default function ({ open }) {
             >
                 <MaterialCommunityIcons name="menu" color="white" size={44} />
             </Pressable >
-            <Text style={styles.headerTitle}>NOTIFY</Text>
+            <AvatarButton styles={styles.headerAvatarIcon} handlePress={() => navigation.navigate("Messaging")} />
+            {/* <Text style={styles.headerTitle}>NOTIFY</Text> */}
         </View>
     )
-}
-
-const styles = StyleSheet.create({
-    header: {
-        flex: 1,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent:'center'
-    },
-    headerTitle: {
-        fontFamily: "Rubik-Black",
-        color: '#8789f7',
-        fontSize: 32,
-    },
-    menuIcon : {
-        position:'absolute',
-        left:15,
-        top:12
-    }
-});
+};

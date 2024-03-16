@@ -1,8 +1,26 @@
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
+    header: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent:'center',
+        paddingTop:5,
+        paddingHorizontal:20
+    },
+    headerTitle: {
+        fontFamily: "Rubik-Black",
+        color: '#8789f7',
+        fontSize: 32,
+    },
+    menuIcon : {
+        position:'absolute',
+        left:15
+    },
     headerAvatarIcon: {
-        marginRight: 20
+        color:"#fff",
+        marginLeft:'auto'
     },
     headerEditIcon: {
         marginRight: 5,
@@ -44,8 +62,14 @@ export const styles = StyleSheet.create({
         color: "#fff",
         fontWeight: "600",
     },
+    // chatscreen: {
+    //     backgroundColor: "#F7F7F7",
+    //     flex: 1,
+    //     padding: 10,
+    //     position: "relative",
+    // },
     chatscreen: {
-        backgroundColor: "#F7F7F7",
+        backgroundColor: "#15131d",
         flex: 1,
         padding: 10,
         position: "relative",
@@ -212,13 +236,23 @@ export const styles = StyleSheet.create({
     mvatar: {
         marginRight: 5,
     },
+    // cchat: {
+    //     width: "100%",
+    //     flexDirection: "row",
+    //     alignItems: "center",
+    //     borderRadius: 5,
+    //     paddingHorizontal: 15,
+    //     backgroundColor: "#fff",
+    //     height: 80,
+    //     marginBottom: 10,
+    // },
     cchat: {
         width: "100%",
         flexDirection: "row",
         alignItems: "center",
-        borderRadius: 5,
+        borderRadius: 20,
         paddingHorizontal: 15,
-        backgroundColor: "#fff",
+        backgroundColor: "#312e3f",
         height: 80,
         marginBottom: 10,
     },
@@ -242,4 +276,35 @@ export const styles = StyleSheet.create({
     ctime: {
         opacity: 0.5,
     },
+    upcomingContainer: {
+        flex: 1,
+        backgroundColor: '#15131d',
+        padding: 6,
+        backgroundColor: 'blue'
+    },
+    title: {
+        fontFamily: "Rubik-Medium",
+        color: 'grey',
+        fontSize: 17,
+        marginLeft: 8
+    },
+    btnContainer: {
+
+        flex: 3,
+        marginHorizontal: 10,
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'space-evenly',
+        borderRadius: 20,
+        backgroundColor: '#312e3f',
+
+    },
+    round: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#bb86fa',
+        borderRadius: 50,
+        width: 60,
+        height: 60
+    }
 });

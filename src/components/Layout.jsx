@@ -1,13 +1,15 @@
 import { useRef, useCallback, useState } from "react";
 import { View, StyleSheet, DrawerLayoutAndroid } from "react-native";
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+
+
 import { StatusBar } from 'react-native';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import Header from "./Header";
 import Menu from "./Menu";
 
-export default function Layout({ setShowPicker, children, reminders, onSuccess }) {
+export default function Layout({ setShowPicker, children, reminders, onSuccess}) {
+    
     // const [refresh, setRefresh] = useState(false);
     const [showDeleted, setShowDeleted] = useState(false);
     const [showNotes, setShowNotes] = useState(false);
@@ -17,20 +19,21 @@ export default function Layout({ setShowPicker, children, reminders, onSuccess }
         'Rubik-Bold': require('../../assets/fonts/Rubik-ExtraBold.ttf'),
         'Rubik-Medium': require('../../assets/fonts/Rubik-Medium.ttf'),
         'Rubik-Light': require('../../assets/fonts/Rubik-Light.ttf'),
-      });
-      const onLayoutRootView = useCallback(async () => {
+        'Rubik-Regular': require('../../assets/fonts/Rubik-Regular.ttf'),
+    });
+    const onLayoutRootView = useCallback(async () => {
         if (fontsLoaded) {
-          await SplashScreen.hideAsync();
+            await SplashScreen.hideAsync();
         }
-      }, [fontsLoaded]);
-    
-      if (!fontsLoaded) {
-        return null;
-      }
+    }, [fontsLoaded]);
 
+    if (!fontsLoaded) {
+        return null;
+    }
+   
     const navigationView = () => (
         <Menu
-        reminders={reminders}
+            reminders={reminders}
             setShowPicker={setShowPicker}
             showDeleted={showDeleted}
             setShowDeleted={setShowDeleted}
@@ -42,28 +45,31 @@ export default function Layout({ setShowPicker, children, reminders, onSuccess }
     );
 
     return (
-        <SafeAreaProvider>
-        <DrawerLayoutAndroid
-            ref={drawer}
-            drawerWidth={300}
-            drawerPosition={'left'}
-            renderNavigationView={navigationView}
-            drawerBackgroundColor="rgba(21,19,29,0.75)"
-            // onDrawerOpen={() => setRefresh(!refresh)}
-            onDrawerClose={() => {
-                setShowNotes(false)
-                setShowDeleted(false)
-            }}
-        >
-            <View style={styles.container}>
-                <Header open={() => drawer.current.openDrawer()} />
-                <View style={styles.listContainer}>
-                    {children}
+        
+            <DrawerLayoutAndroid
+                ref={drawer}
+                drawerWidth={300}
+                drawerPosition={'left'}
+                renderNavigationView={navigationView}
+                drawerBackgroundColor="rgba(21,19,29,0.75)"
+                // onDrawerOpen={() => setRefresh(!refresh)}
+                onDrawerClose={() => {
+                    setShowNotes(false)
+                    setShowDeleted(false)
+                }}
+            >
+                <View style={styles.container}>
+                    {/* <Header
+                        navigation={navigation}
+                        open={() => drawer.current.openDrawer()}
+                    /> */}
+                    <View style={styles.listContainer}>
+                        {children}
+                    </View>
                 </View>
-            </View>
-            <StatusBar />
-        </DrawerLayoutAndroid>
-        </SafeAreaProvider>
+                <StatusBar />
+            </DrawerLayoutAndroid>
+       
     );
 };
 
@@ -74,7 +80,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     listContainer: {
-        flex: 10,
+        flex: 20,
         justifyContent: 'center',
     },
 });

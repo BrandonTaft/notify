@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { fetchBackUpData } from '../api';
 import usePushNotification from '../hooks/usePushNotification';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as Crypto from 'expo-crypto';
+
 
 const useFetch = () => {
     const [reminders, setReminders] = useState([]);
@@ -10,7 +10,7 @@ const useFetch = () => {
     const [refresh, setRefresh] = useState(false);
     const { expoPushToken } = usePushNotification();
     useEffect(() => {
-        console.log("fetch")
+        
         setIsLoading(true);
         const getReminders = async () => {
             //await AsyncStorage.clear()

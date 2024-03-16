@@ -6,7 +6,7 @@ import { AvatarButton } from "../components/Buttons";
 import { styles } from "../utils/styles";
 import socket from "../utils/socket";
 
-const Messaging = ({ route, navigation }) => {
+const ChatRoomScreen = ({ route, navigation }) => {
     const [user, setUser] = useState("");
     const { name, id } = route.params;
 
@@ -111,4 +111,4 @@ const Messaging = ({ route, navigation }) => {
     );
 };
 
-export default Messaging;
+export default ChatRoomScreen;

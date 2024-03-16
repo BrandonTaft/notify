@@ -10,14 +10,14 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { styles } from "../utils/styles";
 
-const Login = ({ navigation }) => {
+const LoginScreen = ({ navigation }) => {
     const [username, setUsername] = useState("");
 
     useEffect(() => {
         const checkForExistingUser = async () => {
             //await AsyncStorage.clear()
             const existingUser = await AsyncStorage.getItem("username");
-            if (existingUser) navigation.navigate("Home");
+            if (existingUser) navigation.navigate("HomeScreen");
         }
         checkForExistingUser()
     }, []);
@@ -25,7 +25,7 @@ const Login = ({ navigation }) => {
     const storeUsername = async () => {
         try {
             await AsyncStorage.setItem("username", username);
-            navigation.navigate("Home");
+            navigation.navigate("HomeScreen");
         } catch (e) {
             Alert.alert("Error! While saving username");
         }
@@ -73,4 +73,4 @@ const Login = ({ navigation }) => {
     );
 };
 
-export default Login;
+export default LoginScreen;

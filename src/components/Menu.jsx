@@ -58,14 +58,14 @@ export default function Menu({
                 </Text>
                 <FontAwesome5 name="chevron-circle-right" size={30} color="#fff" style={{ marginLeft: 'auto', marginTop: "auto", marginBottom: 'auto' }} />
             </Pressable>
-            <Notes
+            {/* <Notes
                 reminders={reminders}
                 showNotes={showNotes}
                 setShowNotes={setShowNotes}
                 showDeleted={showDeleted}
                 setShowDeleted={setShowDeleted}
                 onSuccess={onSuccess}
-            />
+            /> */}
             {!showNotes &&
                 <DeletedItems
                     reminders={reminders}

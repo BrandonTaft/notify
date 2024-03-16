@@ -3,9 +3,10 @@ import List from '../components/List';
 import Layout from '../components/Layout';
 import TimePicker from "../components/TimePicker";
 import useFetch from '../hooks/useFetch';
+import Chat from './ChatScreen';
 import Loader from '../components/Loader';
 
-const Home = ({ route, navigation }) => {
+const ReminderHomeScreen = ({ route, navigation }) => {
     const { isLoading, reminders, setRefresh, refresh } = useFetch()
     const [showPicker, setShowPicker] = useState(false);
     console.log("PARAMS", route.params)
@@ -14,7 +15,9 @@ const Home = ({ route, navigation }) => {
             setShowPicker={setShowPicker}
             reminders={reminders}
             onSuccess={() => setRefresh(!refresh)}
+            navigation={navigation}
         >
+            
             {isLoading ? <Loader /> :
                 <List
                     reminders={reminders}
@@ -22,6 +25,7 @@ const Home = ({ route, navigation }) => {
                     navigation={navigation}
                 />
             }
+            <Chat />
             <TimePicker
                 setShowPicker={setShowPicker}
                 showPicker={showPicker}
@@ -30,4 +34,4 @@ const Home = ({ route, navigation }) => {
     )
 }
 
-export default Home
+export default ReminderHomeScreen

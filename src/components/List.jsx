@@ -238,20 +238,19 @@ export default function List({ reminders, onSuccess, navigation }) {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        flex: 2,
         backgroundColor: '#15131d'
     },
     listContainer: {
         flex: 10,
         padding: 10,
-        paddingTop: 0,
+        paddingTop: 5,
         width: '100%'
     },
     title: {
         fontFamily: "Rubik-Medium",
         color: 'grey',
         fontSize: 17,
-        marginTop: 10,
         marginLeft: 8
     },
     btnContainer: {
@@ -265,11 +264,11 @@ const styles = StyleSheet.create({
         backgroundColor: '#312e3f',
 
     },
-    btn: {
-        color: '#fff',
-        fontSize: 18,
-        fontFamily: "Rubik-Regular"
-    },
+    // btn: {
+    //     color: '#fff',
+    //     fontSize: 18,
+    //     fontFamily: "Rubik-Regular"
+    // },
     round: {
         justifyContent: 'center',
         alignItems: 'center',
