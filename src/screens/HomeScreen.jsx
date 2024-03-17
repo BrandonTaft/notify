@@ -1,17 +1,23 @@
 import { useState } from 'react';
-import List from '../components/List';
-import Layout from '../components/Layout';
-import TimePicker from "../components/TimePicker";
-import useFetch from '../hooks/useFetch';
-import ChatScreen from './ChatScreen';
-import UpcomingReminders from '../components/UpcomingReminders';
-import Loader from '../components/Loader';
 import { Text } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux'
+import useFetch from '../hooks/useFetch';
+
+import UpcomingReminders from '../components/UpcomingReminders';
+import Loader from '../oldcomponents/Loader';
+
+// import List from '../components/List';
+// import Layout from '../components/Layout';
+// import TimePicker from "../components/TimePicker";
+// import ChatScreen from './ChatScreen';
+
+
+
 const HomeScreen = ({ route, navigation }) => {
     const { isLoading, reminders, setRefresh, refresh } = useFetch()
     const [showPicker, setShowPicker] = useState(false);
-    const count = useSelector(state => state.reminder.value)
+    const count = useSelector(state => state.reminders.value)
+    const notes = useSelector(state => state.notes.value)
    
     return (
         // <Layout
@@ -28,7 +34,8 @@ const HomeScreen = ({ route, navigation }) => {
                 //     navigation={navigation}
                 // />
                 <>
-                <UpcomingReminders reminders={reminders} handleRefresh={() => setRefresh(!refresh)} />
+                <UpcomingReminders />
+                {/* <UpcomingReminders reminders={reminders} handleRefresh={() => setRefresh(!refresh)} /> */}
                 {/* <UpcomingReminders reminders={reminders} /> */}
                 {/* <ChatScreen /> */}
                 {/* <UpcomingReminders reminders={reminders} /> */}
@@ -40,6 +47,7 @@ const HomeScreen = ({ route, navigation }) => {
                 showPicker={showPicker}
             /> */}
             <Text style={{color:'white', fontSize:33}}>{count}</Text>
+            <Text style={{color:'white', fontSize:33}}>{notes}</Text>
             </>
         // </Layout>
     )

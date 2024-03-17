@@ -10,12 +10,13 @@ function Items({
     setModalVisible,
     deleteReminder
 }) {
-
+console.log(list)
     return (
         <>
             {list.length > 0 ?
                 <>
-                    {list.filter((item) => item.notification && !item.isCompleted && !item.isDeleted).map((item) => {
+                    {/* {list.filter((item) => item.selectedDate && !item.isCompleted && !item.isDeleted).map((item) => { */}
+                   { list.map((item) => {
                         return (
                             //             <Pressable
                             //                android_ripple={
@@ -26,7 +27,7 @@ function Items({
                             //                 }
                             //             }
                             //             key={item._id}
-                            //             style={[styles.item, item.notification ? null : styles.unscheduledItem]}
+                            //             style={[styles.item, item.selectedDate ? null : styles.unscheduledItem]}
                             //                 onPress={() => {
                             //                     setEditable(item)
                             //                     setModalVisible(!modalVisible)
@@ -48,9 +49,9 @@ function Items({
                             //                     <Text style={styles.itemText}>
                             //                         {item.title}
                             //                     </Text>
-                            //                     {item.notification &&
+                            //                     {item.selectedDate &&
                             //                     <Text style={styles.time}>
-                            //                         {new Date(item.notification).toLocaleDateString([], {
+                            //                         {new Date(item.selectedDate).toLocaleDateString([], {
                             //                             weekday: 'short', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit'
                             //                         })}
                             //                     </Text>
@@ -89,7 +90,7 @@ function Items({
                                     </ListItem.Title>
                                     <ListItem.Subtitle style={styles.time}>
 
-                                        {new Date(item.notification).toLocaleDateString([], {
+                                        {new Date(item.selectedDate).toLocaleDateString([], {
                                             weekday: 'short', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit'
                                         })}
 
@@ -128,7 +129,7 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     emptyText: {
-        fontFamily: "Rubik-Medium",
+        // fontFamily: "Rubik-Medium",
         color: '#8789f7',
         fontSize: 18,
         marginVertical: 44
@@ -143,12 +144,12 @@ const styles = StyleSheet.create({
         padding: 0,
     },
     itemText: {
-        fontFamily: "Rubik-Regular",
+        // fontFamily: "Rubik-Regular",
         color: '#f0edf3',
         fontSize: 18
     },
     time: {
-        fontFamily: "Rubik-Regular",
+        // fontFamily: "Rubik-Regular",
         color: 'grey',
         fontSize: 15
     }

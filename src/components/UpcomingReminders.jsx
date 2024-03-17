@@ -1,29 +1,38 @@
 import { useState, useCallback, useReducer, useEffect } from 'react';
+import { useSelector } from 'react-redux'
 import { Text, View, Pressable, ScrollView } from 'react-native';
-import Create from './Create';
-import Items from './Items';
-import { Icon } from "@rneui/base";
-import { ButtonGroup, Button, ListItem } from '@rneui/themed';
-import { AddButton } from './Buttons';
-import { storeBackUpData, fetchBackUpData } from '../api';
+
+
 import usePushNotification from '../hooks/usePushNotification';
 import useFetch from '../hooks/useFetch';
-import { styles } from '../utils/styles';
+import CreateReminder from './CreateReminder';
+import Items from './Items';
+
+// import { Icon } from "@rneui/base";
+// import { ButtonGroup, Button, ListItem } from '@rneui/themed';
+// import { AddButton } from './Buttons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function Upcomingitems({ handleRefresh }) {
-    const { reminders, isLoading, setRefresh, refresh } = useFetch();
+import { storeBackUpData, fetchBackUpData } from '../api';
+
+import { styles } from '../utils/styles';
+
+
+export default function UpcomingReminders({ handleRefresh }) {
+    const { isLoading, setRefresh, refresh } = useFetch();
     const { expoPushToken, sendPushNotification } = usePushNotification();
     const [editable, setEditable] = useState({});
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedIndex, setSelectedIndex] = useState(0);
     const [items, setItems] = useState([]);
 
-    useEffect(() => {
-        if(!isLoading) {
-        setItems(reminders)
-        }
-    },[isLoading])
+    const reminders = useSelector(state => state.reminders)
+
+    // useEffect(() => {
+    //     if(!isLoading) {
+    //     setItems(reminders)
+    //     }
+    // },[isLoading])
 
     const handleCheck = (reminder, list, type) => {
         let temp = list.map((item) => {
@@ -73,7 +82,7 @@ export default function Upcomingitems({ handleRefresh }) {
                 <ScrollView>
                     <Text style={styles.title} >Scheduled</Text>
                     <Items
-                        list={items}
+                        list={reminders}
                         type={"UPDATESCHEDULED"}
                         setEditable={setEditable}
                         modalVisible={modalVisible}
@@ -82,7 +91,7 @@ export default function Upcomingitems({ handleRefresh }) {
                         deleteReminder={deleteReminder}
                     />
                 </ScrollView>
-                <Create
+                {/* <CreateReminder
                     handleRefresh={handleRefresh}
                     items={items}
                     expoPushToken={expoPushToken}
@@ -90,7 +99,8 @@ export default function Upcomingitems({ handleRefresh }) {
                     setEditable={setEditable}
                     setModalVisible={setModalVisible}
                     modalVisible={modalVisible}
-                />
-        </View>
+                />*/}
+                {/* <CreateReminder /> */}
+        </View> 
     )
 };

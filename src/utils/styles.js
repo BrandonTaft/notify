@@ -10,7 +10,7 @@ export const styles = StyleSheet.create({
         paddingHorizontal:20
     },
     headerTitle: {
-        fontFamily: "Rubik-Black",
+        // fontFamily: "Rubik-Black",
         color: '#8789f7',
         fontSize: 32,
     },
@@ -283,7 +283,7 @@ export const styles = StyleSheet.create({
         backgroundColor: 'blue'
     },
     title: {
-        fontFamily: "Rubik-Medium",
+        // fontFamily: "Rubik-Medium",
         color: 'grey',
         fontSize: 17,
         marginLeft: 8
@@ -306,5 +306,57 @@ export const styles = StyleSheet.create({
         borderRadius: 50,
         width: 60,
         height: 60
-    }
+    },
+
+        horizontalView: {
+          width: '100%',
+          flexDirection: 'row',
+          justifyContent: "space-evenly",
+          alignItems: 'center',
+          flex: 1
+        },
+        modalView: {
+          width: '100%',
+          flex: 1,
+      
+          backgroundColor: '#15131d',
+          borderRadius: 20,
+          padding: 15,
+          alignItems: 'center',
+          shadowColor: '#000',
+          shadowOffset: {
+            width: 0,
+            height: 2,
+          },
+          shadowOpacity: 0.25,
+          shadowRadius: 4,
+          elevation: 5,
+        },
+      
+        mainText: {
+          fontSize: 18,
+          // fontFamily: 'Rubik-Regular',
+          color: '#fff'
+        },
+        input: {
+          width: '100%',
+          fontSize: 19,
+          // fontFamily: 'Rubik-Light',
+          flex: 4,
+          color: '#fff',
+          backgroundColor: '#312e3f',
+          borderRadius: 10,
+          margin: 12,
+          marginVertical: 0,
+          textAlignVertical: 'top',
+          padding: 10
+        },
+        addTime: {
+          width: '100%',
+          color: '#fff',
+          backgroundColor: '#312e3f',
+          borderRadius: 10,
+          margin: 5,
+          padding: 10
+        },
 });

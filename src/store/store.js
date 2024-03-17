@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
-import reminderReducer from "../features/reminder/reminderSlice";
+import reminderReducer from "../redux/reminderSlice";
+import noteReducer from '../redux/noteSlice';
 
 export default configureStore({
   reducer: {
-    reminder: reminderReducer
+    reminders: reminderReducer,
+    notes: noteReducer
   }
 })
 

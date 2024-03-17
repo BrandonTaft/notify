@@ -8,7 +8,7 @@ import * as Crypto from 'expo-crypto';
 
 
 
-export default function Create({
+export default function Creater({
   reminders,
   onSuccess,
   expoPushToken,
@@ -312,13 +312,13 @@ const styles = StyleSheet.create({
 
   mainText: {
     fontSize: 18,
-    fontFamily: 'Rubik-Regular',
+    // fontFamily: 'Rubik-Regular',
     color: '#fff'
   },
   input: {
     width: '100%',
     fontSize: 19,
-    fontFamily: 'Rubik-Light',
+    // fontFamily: 'Rubik-Light',
     flex: 4,
     color: '#fff',
     backgroundColor: '#312e3f',
