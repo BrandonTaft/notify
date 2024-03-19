@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux'
 import useFetch from '../hooks/useFetch';
 
@@ -46,8 +46,7 @@ const HomeScreen = ({ route, navigation }) => {
                 setShowPicker={setShowPicker}
                 showPicker={showPicker}
             /> */}
-            <Text style={{color:'white', fontSize:33}}>{count}</Text>
-            <Text style={{color:'white', fontSize:33}}>{notes}</Text>
+            
             </>
         // </Layout>
     )

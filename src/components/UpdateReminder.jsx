@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { nanoid } from '@reduxjs/toolkit';
 import { useDispatch } from 'react-redux';
-import { createReminder, updateReminder } from '../redux/reminderSlice';
+import {  updateReminder, deleteReminder } from '../redux/reminderSlice';
 import { Text, View, TextInput, Pressable, Modal } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { IconButton, MD3Colors } from 'react-native-paper';
@@ -11,58 +10,39 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
-export default function CreateReminder() {
+export default function UpdateReminder({showUpdateModal, setShowUpdateModal, itemToEdit}) {
   const dispatch = useDispatch()
-  const [title, setTitle] = useState("");
+  const [title, setTitle] = useState();
   const [selectedDate, setSelectedDate] = useState(null);
   const [datePickerVisible, setDatePickerVisible] = useState(false);
-  const [token, setToken] = useState();
 
-  const [modalVisible, setModalVisible] = useState(false)
-  
-
-  useEffect(() => {
-    const getToken = async() => {
-      const pushToken = await AsyncStorage.getItem('token')
-      setToken(pushToken)
+  useEffect(()=> {
+    if(itemToEdit) {
+    setTitle(itemToEdit.title || "")
+    setSelectedDate(itemToEdit.selectedDate || null)
     }
-    getToken()
-  },[])
+  },[showUpdateModal])
 
-  const onSaveReminderPress = () => {
-    if (title ) {
+  const onUpdateReminderPress = () => {
       dispatch(
-        createReminder({
-          _id: nanoid(),
+        updateReminder({
+          _id: itemToEdit._id,
           title,
-          selectedDate,
-          token,
-          isChecked: false,
-          isCompleted: false,
-          isDeleted: false
+          selectedDate
         })
       )
-
       setTitle('')
       setSelectedDate("")
-      setModalVisible(false)
-    }
+      setShowUpdateModal (false)
   }
 
   return (
-    <>
-      <IconButton
-        icon="pencil-plus"
-        iconColor={MD3Colors.primary100}
-        size={40}
-        onPress={() => setModalVisible(true)}
-      />
       <Modal
         animationType="slide"
         transparent={true}
-        visible={modalVisible}
+        visible={showUpdateModal}
         onRequestClose={() => {
-          setModalVisible(false);
+          setShowUpdateModal(false);
         }}>
         <View style={styles.modalView}>
           <Text>Add a New Reminder</Text>
@@ -106,7 +86,10 @@ export default function CreateReminder() {
                 }
               }
               style={styles.round}
-              onPress={() => console.log("PRESSED")}
+              onPress={() => {
+                dispatch(deleteReminder(itemToEdit._id))
+                setShowUpdateModal(false)
+            }}
             >
              
             </Pressable>
@@ -119,7 +102,7 @@ export default function CreateReminder() {
                 }
               }
               style={styles.round}
-              onPress={() => onSaveReminderPress()}
+              onPress={() => onUpdateReminderPress()}
             >
               <Text style={{ fontSize: 18, color: 'white', fontWeight: 'bold' }}>
                 Save
@@ -135,7 +118,7 @@ export default function CreateReminder() {
               }
               style={styles.round}
               onPress={() => {
-                setModalVisible(false)
+                setShowUpdateModal(false)
               }}
             >
               <Text style={{ fontSize: 18, color: 'white', fontWeight: 'bold' }}>
@@ -157,6 +140,6 @@ export default function CreateReminder() {
           />
         </View>
       </Modal>
-    </>
+   
   )
 }

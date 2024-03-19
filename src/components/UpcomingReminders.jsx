@@ -1,11 +1,13 @@
 import { useState, useCallback, useReducer, useEffect } from 'react';
 import { useSelector } from 'react-redux'
 import { Text, View, Pressable, ScrollView } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 
 import usePushNotification from '../hooks/usePushNotification';
 import useFetch from '../hooks/useFetch';
 import CreateReminder from './CreateReminder';
+
 import Items from './Items';
 
 // import { Icon } from "@rneui/base";
@@ -19,20 +21,18 @@ import { styles } from '../utils/styles';
 
 
 export default function UpcomingReminders({ handleRefresh }) {
-    const { isLoading, setRefresh, refresh } = useFetch();
-    const { expoPushToken, sendPushNotification } = usePushNotification();
-    const [editable, setEditable] = useState({});
-    const [modalVisible, setModalVisible] = useState(false);
-    const [selectedIndex, setSelectedIndex] = useState(0);
-    const [items, setItems] = useState([]);
+    const [upcomingReminders, setUpcomingReminders] = useState([]);
 
     const reminders = useSelector(state => state.reminders)
 
-    // useEffect(() => {
-    //     if(!isLoading) {
-    //     setItems(reminders)
-    //     }
-    // },[isLoading])
+    useEffect(() => {
+        setUpcomingReminders(reminders.filter((item) => item.selectedDate && !item.isCompleted && !item.isDeleted).sort((a, b) => {
+            if (a.selectedDate !== null && b.selectedDate !== null) {
+                return new Date(JSON.parse(a.selectedDate)) - new Date(JSON.parse(b.selectedDate));
+            }
+        })
+       )
+    },[reminders])
 
     const handleCheck = (reminder, list, type) => {
         let temp = list.map((item) => {
@@ -64,43 +64,30 @@ export default function UpcomingReminders({ handleRefresh }) {
     }
 
     const deleteReminder = (id) => {
-       items.find((reminder, i) => {
+        items.find((reminder, i) => {
             if (reminder._id === id) {
                 items[i].isDeleted = true
                 setItems(items)
             }
-            
+
         });
-        
+
         storeBackUpData(items)
         setRefresh(!refresh)
-        
+
     }
 
     return (
+        <GestureHandlerRootView style={{ flex: 1 }}>
         <View style={styles.upcomingContainer}>
-                <ScrollView>
-                    <Text style={styles.title} >Scheduled</Text>
-                    <Items
-                        list={reminders}
-                        type={"UPDATESCHEDULED"}
-                        setEditable={setEditable}
-                        modalVisible={modalVisible}
-                        setModalVisible={setModalVisible}
-                        handleCheck={handleCheck}
-                        deleteReminder={deleteReminder}
-                    />
-                </ScrollView>
-                {/* <CreateReminder
-                    handleRefresh={handleRefresh}
-                    items={items}
-                    expoPushToken={expoPushToken}
-                    editable={editable}
-                    setEditable={setEditable}
-                    setModalVisible={setModalVisible}
-                    modalVisible={modalVisible}
-                />*/}
-                {/* <CreateReminder /> */}
-        </View> 
+            <CreateReminder />
+            <ScrollView keyboardShouldPersistTaps="handled">
+                <Text style={styles.title} >Scheduled</Text>
+                <Items
+                    list={upcomingReminders}
+                />
+            </ScrollView>
+        </View>
+        </GestureHandlerRootView>
     )
 };

@@ -118,7 +118,7 @@ export default function Creater({
       onRequestClose={() => {
         setModalVisible(!modalVisible);
       }}>
-      <Modal
+      {/* <Modal
         animationType="slide"
         transparent={true}
         visible={sendMessage}
@@ -167,7 +167,7 @@ export default function Creater({
             </Text>
           </Pressable>
         </View>
-      </Modal>
+      </Modal> */}
 
       <View style={styles.modalView}>
         <TextInput

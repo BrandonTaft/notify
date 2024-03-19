@@ -3,6 +3,7 @@ import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 import { Platform } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 //import useAlarmSound from './useAlarmSound';
 //import { Audio } from 'expo-av';
 
@@ -52,7 +53,10 @@ const usePushNotification = () => {
     const responseListener = useRef();
     
     useEffect(() => {
-        registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
+        registerForPushNotificationsAsync().then(async(token) => {
+            await AsyncStorage.setItem('token', token)
+            setExpoPushToken(token)
+        });
         notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
             setNotification(notification.request.content.body)
             setShowAlarm(true)

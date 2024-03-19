@@ -1,22 +1,97 @@
-import { StyleSheet, Text, View, Pressable } from 'react-native';
-import { CheckBox, ListItem, Icon, Button } from '@rneui/themed';
+import { StyleSheet, Text, View, Animated } from 'react-native';
+import { List, MD3Colors } from 'react-native-paper';
+import { useDispatch, useSelector } from 'react-redux';
+import UpdateReminder from './UpdateReminder';
+import { useState, useRef } from 'react';
+import Swipeable from 'react-native-gesture-handler/Swipeable';
+import { RectButton } from 'react-native-gesture-handler';
+
 
 function Items({
     list,
-    deleteChecked,
-    type,
-    setEditable,
-    modalVisible,
-    setModalVisible,
-    deleteReminder
+
 }) {
-console.log(list)
+    const [showUpdateModal, setShowUpdateModal] = useState(false);
+    const itemToEditRef = useRef({});
+    const dispatch = useDispatch()
+    console.log("ITEMS: LIST: ", list)
+
+
+    const renderRightActions = (progress, dragX) => {
+        const trans = dragX.interpolate({
+            inputRange: [0, 50, 100, 101],
+            outputRange: [-20, 0, 0, 1],
+        });
+        return (
+            <RectButton style={{backgroundColor:'blue'}} onPress={() => {
+                    setShowUpdateModal(true)
+               }}>
+                <Text>Delete</Text>
+            </RectButton>
+        );
+    };
+
+    const renderLeftActions = (progress, dragX) => {
+        // const trans = dragX.interpolate({
+        //     inputRange: [0, 50, 100, 101],
+        //     outputRange: [-20, 0, 0, 1],
+        // });
+        return (
+            <RectButton style={{
+                backgroundColor:'yellow',
+                borderTopLeftRadius:22}} onPress={() => {
+                    setShowUpdateModal(true)
+               }}>
+                <Text>Delete</Text>
+            </RectButton>
+        );
+    };
+
+    function ListItem({ item }) {
+        return (
+            <Swipeable
+            renderLeftActions={renderLeftActions}
+            renderRightActions={renderRightActions}
+            onSwipeableWillOpen={() => itemToEditRef.current = item}
+             containerStyle={{ flex:1, flexDirection:'row'}}
+            childrenContainerStyle={{backgroundColor:"orange", flexDirection:'row', flex:1, borderRadius:22}}
+            >
+           
+                
+           <List.Icon color={MD3Colors.tertiary70} icon="chevron-left" />
+           <View style={{flexDirection:'column', flex:1}}>
+                        <Text style={styles.itemText}>
+
+                            {item.title}
+
+                        </Text>
+                   
+                   
+                        {item.selectedDate &&
+                            <Text style={styles.time}>
+                                {new Date(JSON.parse(item.selectedDate)).toLocaleDateString([], {
+                                    weekday: 'short', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit'
+                                })}
+                            </Text>
+                        } 
+                        </View>
+                    <List.Icon color={MD3Colors.tertiary70} icon="chevron-right" />
+                  
+           </Swipeable>    
+        )
+    }
     return (
         <>
             {list.length > 0 ?
                 <>
+                    <UpdateReminder
+                        showUpdateModal={showUpdateModal}
+                        setShowUpdateModal={setShowUpdateModal}
+                        itemToEdit={itemToEditRef.current}
+                        // setItemToEdit={setItemToEdit}
+                    />
                     {/* {list.filter((item) => item.selectedDate && !item.isCompleted && !item.isDeleted).map((item) => { */}
-                   { list.map((item) => {
+                    {list.filter((item) => item.selectedDate && !item.isCompleted && !item.isDeleted).map((item) => {
                         return (
                             //             <Pressable
                             //                android_ripple={
@@ -58,67 +133,51 @@ console.log(list)
                             // }
                             //                 </View>
                             //             </Pressable>
+
+                            // <List.Item
+                            //     key={item._id}
+                            //     mode='elevated'
+                            //     style={[styles.item, item.selectedDate ? null : styles.unscheduledItem]}
+                            //     //contentStyle={styles.itemContent}
+                            //     // onPress={() => {
+                            //     //     setShowUpdateModal(true)
+                            //     //     }
+                            //     // }}
+                            // //    left={() => <List.Icon color={MD3Colors.tertiary70} icon="chevron-left" />}
+                            // //     right={() => <List.Icon color={MD3Colors.tertiary70} icon="chevron-right" style={{ left:25}} />}
+                            //     title={() => <ListItem item={item} />}
+                            // />
                            
-                            <ListItem.Swipeable
-                                key={item._id}
-                                containerStyle={styles.item}
-                                leftWidth={75}
-                                animation={{ duration: 500, type: 'timing' }}
-                                leftContent={(reset) => (
-                                    <Button
-                                        title="Info"
-                                        onPress={() => deleteReminder(item._id)}
-                                        icon={{ name: 'info', color: 'white' }}
-                                        buttonStyle={styles.leftButton}
-                                    />
-                                )}
-                            // rightContent={(reset) => (
-                            //     <Button
-                            //         title="Delete"
-                            //         onPress={() => reset()}
-                            //         icon={{ name: 'delete', color: 'white' }}
-                            //        // buttonStyle={ backgroundColor: 'red' }}
-                            //     />
-                            // )}
-                            >
-                                {/* <ListItem.CheckBox /> */}
-                                <ListItem.Content>
-                                    <ListItem.Title style={styles.itemText}>
-
-                                        {item.title}
-
-                                    </ListItem.Title>
-                                    <ListItem.Subtitle style={styles.time}>
-
-                                        {new Date(item.selectedDate).toLocaleDateString([], {
-                                            weekday: 'short', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit'
-                                        })}
-
-                                    </ListItem.Subtitle>
-                                </ListItem.Content>
-                                <ListItem.Chevron />
-                            </ListItem.Swipeable>
-                                    
+                                
+                                <ListItem item={item} />
+                                
+                              
                         );
-                    })}
+                    }
+                    )
+                    }
                 </>
                 :
                 <View style={[styles.item, styles.empty]}>
                     <Text style={styles.emptyText} >YOU ARE ALL CAUGHT UP</Text>
-                </View>}
+                </View>
+            }
         </>
     )
 }
 
 const styles = StyleSheet.create({
     item: {
-        backgroundColor: 'red',
-        flexDirection: 'row',
-        borderRadius: 22,
-        paddingVertical: 0,
-        paddingHorizontal: 15,
-        marginBottom: 5
+        backgroundColor: 'green',
+       
+        
     },
+    itemContent: {
+        backgroundColor:'black',
+        marginHorizontal:'auto',
+        height:22
+    },
+    
     leftButton: {
         borderRadius: 22,
 
@@ -146,7 +205,8 @@ const styles = StyleSheet.create({
     itemText: {
         // fontFamily: "Rubik-Regular",
         color: '#f0edf3',
-        fontSize: 18
+        fontSize: 18,
+       
     },
     time: {
         // fontFamily: "Rubik-Regular",

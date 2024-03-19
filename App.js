@@ -3,10 +3,10 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createMaterialBottomTabNavigator } from "react-native-paper/react-navigation";
 import { Provider } from 'react-redux';
 import store from './src/store/store';
-import { Provider as PaperProvider } from 'react-native-paper';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import LoginScreen from './src/screens/LoginScreen';
 import HomeScreen from './src/screens/HomeScreen';
-import CreateReminder from './src/components/CreateReminder';
+import { StatusBar } from 'react-native';
 
 // import ChatScreen from './src/screens/ChatScreen';
 // import ProfileScreen from './src/screens/ProfileScreen';
@@ -19,11 +19,13 @@ export default function App() {
 
     return (
         <Provider store={store} >
-            <PaperProvider>
+            <StatusBar/>
+            <SafeAreaProvider>
                 <NavigationContainer>
                     <Tab.Navigator
                         initialRouteName="LoginScreen"
                         screenOptions={{ headerShown: false }}
+                        barStyle={{ backgroundColor: '#121212' }}
                         swipeEnabled
                     >
                         <Tab.Screen
@@ -34,12 +36,6 @@ export default function App() {
                         <Tab.Screen
                             name='HomeScreen'
                             component={HomeScreen}
-                            initialParams={{ itemId: 42 }}
-                        />
-
-                        <Tab.Screen
-                            name='Add Reminder'
-                            component={CreateReminder}
                             initialParams={{ itemId: 42 }}
                         />
 
@@ -74,7 +70,7 @@ export default function App() {
                 /> */}
                     </Tab.Navigator>
                 </NavigationContainer>
-            </PaperProvider>
+            </SafeAreaProvider>
         </Provider>
     );
 }
