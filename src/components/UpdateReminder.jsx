@@ -23,7 +23,7 @@ export default function UpdateReminder({showUpdateModal, setShowUpdateModal, ite
     }
   },[showUpdateModal])
 
-  const onUpdateReminderPress = () => {
+  const onSaveReminderPress = () => {
       dispatch(
         updateReminder({
           _id: itemToEdit._id,
@@ -102,7 +102,7 @@ export default function UpdateReminder({showUpdateModal, setShowUpdateModal, ite
                 }
               }
               style={styles.round}
-              onPress={() => onUpdateReminderPress()}
+              onPress={() => onSaveReminderPress()}
             >
               <Text style={{ fontSize: 18, color: 'white', fontWeight: 'bold' }}>
                 Save

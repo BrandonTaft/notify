@@ -15,6 +15,12 @@ const reminderSlice = createSlice({
                 existingPost.selectedDate = selectedDate
             }
         },
+        completeReminder: (state, action) => {
+            const existingPost = state.find(post => post._id === action.payload)
+            if (existingPost) {
+                existingPost.isCompleted = true
+            }
+        },
         deleteReminder: (state, action) => {
             const existingPost = state.find(post => post._id === action.payload)
             if (existingPost) {
@@ -24,6 +30,6 @@ const reminderSlice = createSlice({
     }
 });
 
-export const { createReminder, updateReminder, deleteReminder } = reminderSlice.actions;
+export const { createReminder, updateReminder, deleteReminder, completeReminder } = reminderSlice.actions;
 
 export default reminderSlice.reducer

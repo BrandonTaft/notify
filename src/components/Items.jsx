@@ -1,85 +1,93 @@
-import { StyleSheet, Text, View, Animated } from 'react-native';
-import { List, MD3Colors } from 'react-native-paper';
-import { useDispatch, useSelector } from 'react-redux';
+import { StyleSheet, Text, View, Pressable } from 'react-native';
+import { List, MD3Colors, Icon } from 'react-native-paper';
+import { useDispatch } from 'react-redux';
 import UpdateReminder from './UpdateReminder';
+import { completeReminder, deleteReminder } from '../redux/reminderSlice';
 import { useState, useRef } from 'react';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
-import { RectButton } from 'react-native-gesture-handler';
 
-
-function Items({
-    list,
-
-}) {
+function Items({ list }) {
     const [showUpdateModal, setShowUpdateModal] = useState(false);
     const itemToEditRef = useRef({});
+    const listItemRef = useRef([]);
+    const prevOpenedRow = useRef();
     const dispatch = useDispatch()
-    console.log("ITEMS: LIST: ", list)
-
-
-    const renderRightActions = (progress, dragX) => {
-        const trans = dragX.interpolate({
-            inputRange: [0, 50, 100, 101],
-            outputRange: [-20, 0, 0, 1],
-        });
+ 
+    const renderRightActions = (item) => {
         return (
-            <RectButton style={{backgroundColor:'blue'}} onPress={() => {
-                    setShowUpdateModal(true)
-               }}>
-                <Text>Delete</Text>
-            </RectButton>
+            <View style={{ flexDirection: 'row' }} >
+                <Pressable
+                    android_ripple={
+                        RippleConfig = {
+                            color: "#15131d",
+                            borderless: false,
+                            foreground: true
+                        }
+                    }
+                    style={styles.listItemRightInsideButton}
+                    onPress={() => {
+                        itemToEditRef.current = item
+                        setShowUpdateModal(true)
+                        prevOpenedRow.current.close();
+                    }}>
+                    <Icon
+                        source="note-edit"
+                        color={MD3Colors.primary0}
+                        size={30}
+                    />
+                </Pressable>
+                <Pressable
+                    android_ripple={
+                        RippleConfig = {
+                            color: "#15131d",
+                            borderless: false,
+                            foreground: true
+                        }
+                    }
+                    style={styles.listItemRightButton}
+                    onPress={() => {
+                        dispatch(completeReminder(item._id))
+                    }}>
+                    <Icon
+                        source="check-outline"
+                        color={MD3Colors.primary100}
+                        size={30}
+                    />
+                </Pressable>
+            </View>
         );
     };
 
-    const renderLeftActions = (progress, dragX) => {
-        // const trans = dragX.interpolate({
-        //     inputRange: [0, 50, 100, 101],
-        //     outputRange: [-20, 0, 0, 1],
-        // });
+    const renderLeftActions = (item) => {
         return (
-            <RectButton style={{
-                backgroundColor:'yellow',
-                borderTopLeftRadius:22}} onPress={() => {
-                    setShowUpdateModal(true)
-               }}>
-                <Text>Delete</Text>
-            </RectButton>
+            <Pressable
+                android_ripple={
+                    RippleConfig = {
+                        color: "#15131d",
+                        borderless: false,
+                        foreground: true
+                    }
+                }
+                style={styles.listItemLeftButton}
+                onPress={() => {
+                    dispatch(deleteReminder(item._id))
+                }}>
+                <Icon
+                    source="delete"
+                    color={MD3Colors.primary100}
+                    size={30}
+                />
+            </Pressable>
         );
     };
 
-    function ListItem({ item }) {
-        return (
-            <Swipeable
-            renderLeftActions={renderLeftActions}
-            renderRightActions={renderRightActions}
-            onSwipeableWillOpen={() => itemToEditRef.current = item}
-             containerStyle={{ flex:1, flexDirection:'row'}}
-            childrenContainerStyle={{backgroundColor:"orange", flexDirection:'row', flex:1, borderRadius:22}}
-            >
-           
-                
-           <List.Icon color={MD3Colors.tertiary70} icon="chevron-left" />
-           <View style={{flexDirection:'column', flex:1}}>
-                        <Text style={styles.itemText}>
-
-                            {item.title}
-
-                        </Text>
-                   
-                   
-                        {item.selectedDate &&
-                            <Text style={styles.time}>
-                                {new Date(JSON.parse(item.selectedDate)).toLocaleDateString([], {
-                                    weekday: 'short', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit'
-                                })}
-                            </Text>
-                        } 
-                        </View>
-                    <List.Icon color={MD3Colors.tertiary70} icon="chevron-right" />
-                  
-           </Swipeable>    
-        )
+    const closeRow = (index) => {
+        if (prevOpenedRow.current && prevOpenedRow.current !== listItemRef.current[index]) {
+            prevOpenedRow.current.close();
+        }
+        prevOpenedRow.current = listItemRef.current[index];
     }
+
     return (
         <>
             {list.length > 0 ?
@@ -88,74 +96,35 @@ function Items({
                         showUpdateModal={showUpdateModal}
                         setShowUpdateModal={setShowUpdateModal}
                         itemToEdit={itemToEditRef.current}
-                        // setItemToEdit={setItemToEdit}
                     />
-                    {/* {list.filter((item) => item.selectedDate && !item.isCompleted && !item.isDeleted).map((item) => { */}
-                    {list.filter((item) => item.selectedDate && !item.isCompleted && !item.isDeleted).map((item) => {
+                    {list.filter((item) => item.selectedDate && !item.isCompleted && !item.isDeleted).map((item, index) => {
                         return (
-                            //             <Pressable
-                            //                android_ripple={
-                            //                 RippleConfig = {
-                            //                     color: "#15131d",
-                            //                     borderless: false,
-                            //                     foreground: true
-                            //                 }
-                            //             }
-                            //             key={item._id}
-                            //             style={[styles.item, item.selectedDate ? null : styles.unscheduledItem]}
-                            //                 onPress={() => {
-                            //                     setEditable(item)
-                            //                     setModalVisible(!modalVisible)
-                            //                 }}
-
-                            //             >
-                            //                 <CheckBox
-                            //                     checked={item.isChecked}
-                            //                     onPress={() => { deleteitem(item, list, type) }}
-                            //                     size={25}
-                            //                     containerStyle={styles.checkBox}
-                            //                     right={true}
-                            //                     checkedIcon='check'
-                            //                     checkedColor='#8789f7'
-                            //                     uncheckedIcon='circle-o'
-                            //                     uncheckedColor='#8789f7'
-                            //                 />
-                            //                 <View style={styles.horizontal}>
-                            //                     <Text style={styles.itemText}>
-                            //                         {item.title}
-                            //                     </Text>
-                            //                     {item.selectedDate &&
-                            //                     <Text style={styles.time}>
-                            //                         {new Date(item.selectedDate).toLocaleDateString([], {
-                            //                             weekday: 'short', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit'
-                            //                         })}
-                            //                     </Text>
-                            // }
-                            //                 </View>
-                            //             </Pressable>
-
-                            // <List.Item
-                            //     key={item._id}
-                            //     mode='elevated'
-                            //     style={[styles.item, item.selectedDate ? null : styles.unscheduledItem]}
-                            //     //contentStyle={styles.itemContent}
-                            //     // onPress={() => {
-                            //     //     setShowUpdateModal(true)
-                            //     //     }
-                            //     // }}
-                            // //    left={() => <List.Icon color={MD3Colors.tertiary70} icon="chevron-left" />}
-                            // //     right={() => <List.Icon color={MD3Colors.tertiary70} icon="chevron-right" style={{ left:25}} />}
-                            //     title={() => <ListItem item={item} />}
-                            // />
-                           
-                                
-                                <ListItem item={item} />
-                                
-                              
+                            <Swipeable
+                                renderLeftActions={() => renderLeftActions(item)}
+                                renderRightActions={() => renderRightActions(item)}
+                                onSwipeableWillOpen={() => closeRow(index)}
+                                containerStyle={styles.swipeableContainerBack}
+                                childrenContainerStyle={styles.swipeableContainerFront}
+                                key={item._id}
+                                ref={ref => listItemRef.current[index] = ref}
+                            >
+                                <List.Icon color={MD3Colors.tertiary70} icon="chevron-left" />
+                                <View style={styles.listItemContents}>
+                                    <Text style={styles.listItemTitle}>
+                                        {item.title}
+                                    </Text>
+                                    {item.selectedDate &&
+                                        <Text style={styles.listItemTime}>
+                                            {new Date(JSON.parse(item.selectedDate)).toLocaleDateString([], {
+                                                weekday: 'short', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit'
+                                            })}
+                                        </Text>
+                                    }
+                                </View>
+                                <List.Icon color={MD3Colors.tertiary70} icon="chevron-right" />
+                            </Swipeable>
                         );
-                    }
-                    )
-                    }
+                    })}
                 </>
                 :
                 <View style={[styles.item, styles.empty]}>
@@ -167,20 +136,57 @@ function Items({
 }
 
 const styles = StyleSheet.create({
-    item: {
-        backgroundColor: 'green',
-       
-        
+    swipeableContainerBack: {
+        flex: 1,
+        flexDirection: 'row',
+        backgroundColor: "black",
+        borderRadius: 15,
+        overflow: 'hidden',
+        margin: 1
     },
-    itemContent: {
-        backgroundColor:'black',
-        marginHorizontal:'auto',
-        height:22
+    swipeableContainerFront: {
+        flex: 1,
+        flexDirection: 'row',
+        backgroundColor: "black",
+        overflow: 'hidden'
     },
-    
-    leftButton: {
-        borderRadius: 22,
-
+    listItemContents: {
+        flexDirection: 'column',
+        flex: 1,
+        padding: 5
+    },
+    listItemTitle: {
+        // fontFamily: "Rubik-Regular",
+        color: '#f0edf3',
+        fontSize: 18,
+    },
+    listItemTime: {
+        // fontFamily: "Rubik-Regular",
+        color: 'grey',
+        fontSize: 15
+    },
+    listItemLeftButton: {
+        backgroundColor: 'red',
+        borderRadius: 15,
+        borderBottomRightRadius: 0,
+        borderTopRightRadius: 0,
+        justifyContent: 'center',
+        paddingHorizontal: 15
+    },
+    listItemRightButton: {
+        backgroundColor: 'grey',
+        borderRadius: 15,
+        borderBottomLeftRadius: 0,
+        borderTopLeftRadius: 0,
+        justifyContent: 'center',
+        paddingHorizontal: 15
+    },
+    listItemRightInsideButton: {
+        backgroundColor: 'white',
+        borderBottomLeftRadius: 0,
+        borderTopLeftRadius: 0,
+        justifyContent: 'center',
+        paddingHorizontal: 15
     },
     empty: {
         textAlign: 'center',
@@ -192,26 +198,6 @@ const styles = StyleSheet.create({
         color: '#8789f7',
         fontSize: 18,
         marginVertical: 44
-    },
-
-    // horizontal: {
-    //     flexDirection: 'column',
-    //     alignItems: 'stat',
-    // },
-    checkBox: {
-        backgroundColor: '#312e3f',
-        padding: 0,
-    },
-    itemText: {
-        // fontFamily: "Rubik-Regular",
-        color: '#f0edf3',
-        fontSize: 18,
-       
-    },
-    time: {
-        // fontFamily: "Rubik-Regular",
-        color: 'grey',
-        fontSize: 15
     }
 });
 
