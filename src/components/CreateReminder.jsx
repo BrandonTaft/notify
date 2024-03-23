@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { nanoid } from '@reduxjs/toolkit';
 import { useDispatch } from 'react-redux';
 import { createReminder, updateReminder } from '../redux/reminderSlice';
 import { Text, View, TextInput, Pressable, Modal } from 'react-native';
@@ -18,7 +17,7 @@ export default function CreateReminder() {
   const [datePickerVisible, setDatePickerVisible] = useState(false);
   const [token, setToken] = useState();
 
-  const [modalVisible, setModalVisible] = useState(false)
+  const [showCreateReminderModal, setShowCreateReminderModal] = useState(false)
   
 
   useEffect(() => {
@@ -31,21 +30,10 @@ export default function CreateReminder() {
 
   const onSaveReminderPress = () => {
     if (title ) {
-      dispatch(
-        createReminder({
-          _id: nanoid(),
-          title,
-          selectedDate,
-          token,
-          isChecked: false,
-          isCompleted: false,
-          isDeleted: false
-        })
-      )
-
+      dispatch(createReminder(title, selectedDate, token))
       setTitle('')
       setSelectedDate("")
-      setModalVisible(false)
+      setShowCreateReminderModal(false)
     }
   }
 
@@ -55,14 +43,14 @@ export default function CreateReminder() {
         icon="pencil-plus"
         iconColor={MD3Colors.primary100}
         size={40}
-        onPress={() => setModalVisible(true)}
+        onPress={() => setShowCreateReminderModal(true)}
       />
       <Modal
         animationType="slide"
         transparent={true}
-        visible={modalVisible}
+        visible={showCreateReminderModal}
         onRequestClose={() => {
-          setModalVisible(false);
+          setShowCreateReminderModal(false);
         }}>
         <View style={styles.modalView}>
           <Text>Add a New Reminder</Text>
@@ -135,7 +123,7 @@ export default function CreateReminder() {
               }
               style={styles.round}
               onPress={() => {
-                setModalVisible(false)
+                setShowCreateReminderModal(false)
               }}
             >
               <Text style={{ fontSize: 18, color: 'white', fontWeight: 'bold' }}>

@@ -1,8 +1,8 @@
 import React, { useLayoutEffect, useState, useEffect } from "react";
 import { View, TextInput, Text, FlatList, Pressable } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import MessageComponent from "../components/messageComponent";
-import { AvatarButton } from "../components/Buttons";
+import ChatRoomMessages from "../components/ChatRoomMessages";
+import { AvatarButton } from "../components/buttons/AvatarButton";
 import { styles } from "../utils/styles";
 import socket from "../utils/socket";
 
@@ -58,14 +58,6 @@ const ChatRoomScreen = ({ route, navigation }) => {
         socket.on("newMessage", (roomChats) => setChatMessages(roomChats));
     }, [socket]);
 
-    useEffect(() => {
-        navigation.setOptions({
-            headerRight: () => (
-                <AvatarButton />
-            )
-        });
-    }, []);
-
 
     return (
         <View style={styles.messagingscreen}>
@@ -75,11 +67,12 @@ const ChatRoomScreen = ({ route, navigation }) => {
                     { paddingVertical: 5, paddingHorizontal: 10 },
                 ]}
             >
+                <AvatarButton styles={{color:"black"}} handlePress={() => navigation.navigate("HomeScreen")} />
                 {chatMessages[0] ? (
                     <FlatList
                         //data={chatMessages}
                         renderItem={({ item }) => (
-                            <MessageComponent item={item} user={user} />
+                            <ChatRoomMessages item={item} user={user} />
                         )}
                         inverted
                         data={[...chatMessages].reverse()}

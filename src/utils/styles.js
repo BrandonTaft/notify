@@ -62,17 +62,12 @@ export const styles = StyleSheet.create({
         color: "#fff",
         fontWeight: "600",
     },
-    // chatscreen: {
-    //     backgroundColor: "#F7F7F7",
-    //     flex: 1,
-    //     padding: 10,
-    //     position: "relative",
-    // },
-    chatscreen: {
-        backgroundColor: "#15131d",
-        flex: 1,
-        padding: 10,
-        position: "relative",
+    chatList: {
+        flex:1,
+        border: 'solid',
+        borderWidth:1,
+        borderColor:'grey',
+        borderRadius:20
     },
     chatheading: {
         fontSize: 24,
@@ -278,9 +273,11 @@ export const styles = StyleSheet.create({
     },
     upcomingContainer: {
         flex: 1,
-        backgroundColor: '#15131d',
         padding: 6,
-        backgroundColor: 'blue'
+        border: 'solid',
+        borderWidth:1,
+        borderColor:'grey',
+        borderRadius:20
     },
     title: {
         // fontFamily: "Rubik-Medium",

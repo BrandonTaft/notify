@@ -4,7 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { styles } from "../utils/styles";
 
-const ChatComponent = ({ item }) => {
+const ChatItem = ({ item }) => {
     const navigation = useNavigation();
     const [messages, setMessages] = useState({});
 
@@ -15,7 +15,7 @@ const ChatComponent = ({ item }) => {
 
     ///👇🏻 Navigates to the Messaging screen
     const handleNavigation = () => {
-        navigation.navigate("Messaging", {
+        navigation.navigate("ChatRoomScreen", {
             id: item.id,
             name: item.name,
         });
@@ -48,4 +48,4 @@ const ChatComponent = ({ item }) => {
     );
 };
 
-export default ChatComponent;
+export default ChatItem;

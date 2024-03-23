@@ -1,18 +1,20 @@
 import { StyleSheet, Text, View, Pressable } from 'react-native';
 import { List, MD3Colors, Icon } from 'react-native-paper';
 import { useDispatch } from 'react-redux';
-import UpdateReminder from './UpdateReminder';
-import { completeReminder, deleteReminder } from '../redux/reminderSlice';
+import { ElapsedTime } from './ElapsedTime';
+import { deleteNote } from '../redux/noteSlice';
 import { useState, useRef } from 'react';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
+import UpdateNote from './UpdateNote';
+import { ReactionButtons } from './buttons/ReactionButtons';
 
-function Items({ list }) {
-    const [showUpdateModal, setShowUpdateModal] = useState(false);
+function NoteItems({ list }) {
+    const [showUpdateNoteModal, setShowUpdateNoteModal] = useState(false);
     const itemToEditRef = useRef({});
     const listItemRef = useRef([]);
     const prevOpenedRow = useRef();
     const dispatch = useDispatch()
- 
+ console.log(list)
     const renderRightActions = (item) => {
         return (
             <View style={{ flexDirection: 'row' }} >
@@ -27,7 +29,7 @@ function Items({ list }) {
                     style={styles.listItemRightInsideButton}
                     onPress={() => {
                         itemToEditRef.current = item
-                        setShowUpdateModal(true)
+                        setShowUpdateNoteModal(true)
                         prevOpenedRow.current.close();
                     }}>
                     <Icon
@@ -36,24 +38,7 @@ function Items({ list }) {
                         size={30}
                     />
                 </Pressable>
-                <Pressable
-                    android_ripple={
-                        RippleConfig = {
-                            color: "#15131d",
-                            borderless: false,
-                            foreground: true
-                        }
-                    }
-                    style={styles.listItemRightButton}
-                    onPress={() => {
-                        dispatch(completeReminder(item._id))
-                    }}>
-                    <Icon
-                        source="check-outline"
-                        color={MD3Colors.primary100}
-                        size={30}
-                    />
-                </Pressable>
+                
             </View>
         );
     };
@@ -70,7 +55,7 @@ function Items({ list }) {
                 }
                 style={styles.listItemLeftButton}
                 onPress={() => {
-                    dispatch(deleteReminder(item._id))
+                    dispatch(deleteNote(item.id))
                 }}>
                 <Icon
                     source="delete"
@@ -89,15 +74,13 @@ function Items({ list }) {
     }
 
     return (
-        <>
-            {list.length > 0 ?
                 <>
-                    <UpdateReminder
-                        showUpdateModal={showUpdateModal}
-                        setShowUpdateModal={setShowUpdateModal}
+                    <UpdateNote
+                        showUpdateNoteModal={showUpdateNoteModal}
+                        setShowUpdateNoteModal={setShowUpdateNoteModal}
                         itemToEdit={itemToEditRef.current}
                     />
-                    {list.filter((item) => item.selectedDate && !item.isCompleted && !item.isDeleted).map((item, index) => {
+                    {list.filter((item) => item.isNote && !item.isCompleted && !item.isDeleted).map((item, index) => {
                         return (
                             <Swipeable
                                 renderLeftActions={() => renderLeftActions(item)}
@@ -105,33 +88,24 @@ function Items({ list }) {
                                 onSwipeableWillOpen={() => closeRow(index)}
                                 containerStyle={styles.swipeableContainerBack}
                                 childrenContainerStyle={styles.swipeableContainerFront}
-                                key={item._id}
+                                key={item.id}
                                 ref={ref => listItemRef.current[index] = ref}
                             >
                                 <List.Icon color={MD3Colors.tertiary70} icon="chevron-left" />
                                 <View style={styles.listItemContents}>
                                     <Text style={styles.listItemTitle}>
-                                        {item.title}
+                                        {item.content}
                                     </Text>
-                                    {item.selectedDate &&
-                                        <Text style={styles.listItemTime}>
-                                            {new Date(JSON.parse(item.selectedDate)).toLocaleDateString([], {
-                                                weekday: 'short', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit'
-                                            })}
-                                        </Text>
-                                    }
+                                    <ElapsedTime timestamp={item.timeStamp} />
+                                    <View style={{flexDirection:'row', justifyContent:'space-evenly'}}>
+                                    <ReactionButtons note={item} />
+                                    </View>
                                 </View>
                                 <List.Icon color={MD3Colors.tertiary70} icon="chevron-right" />
                             </Swipeable>
                         );
                     })}
                 </>
-                :
-                <View style={[styles.item, styles.empty]}>
-                    <Text style={styles.emptyText} >YOU ARE ALL CAUGHT UP</Text>
-                </View>
-            }
-        </>
     )
 }
 
@@ -153,7 +127,7 @@ const styles = StyleSheet.create({
     listItemContents: {
         flexDirection: 'column',
         flex: 1,
-        padding: 5
+        padding: 10
     },
     listItemTitle: {
         // fontFamily: "Rubik-Regular",
@@ -201,4 +175,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default Items
+export default NoteItems

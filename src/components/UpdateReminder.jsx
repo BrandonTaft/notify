@@ -26,7 +26,7 @@ export default function UpdateReminder({showUpdateModal, setShowUpdateModal, ite
   const onSaveReminderPress = () => {
       dispatch(
         updateReminder({
-          _id: itemToEdit._id,
+          id: itemToEdit.id,
           title,
           selectedDate
         })
@@ -87,7 +87,7 @@ export default function UpdateReminder({showUpdateModal, setShowUpdateModal, ite
               }
               style={styles.round}
               onPress={() => {
-                dispatch(deleteReminder(itemToEdit._id))
+                dispatch(deleteReminder(itemToEdit.id))
                 setShowUpdateModal(false)
             }}
             >

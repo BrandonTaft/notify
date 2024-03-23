@@ -1,10 +1,8 @@
 import { View, Text } from "react-native";
-import React from "react";
-import { Avatar } from '@rneui/themed';
+import { Avatar } from 'react-native-paper';
 import { styles } from "../utils/styles";
 
-export default function MessageComponent({ item, user }) {
-    console.log(user)
+export default function ChatRoomMessages({ item, user }) {
     const status = item.user !== user;
     return (
         <View>
@@ -18,11 +16,13 @@ export default function MessageComponent({ item, user }) {
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
                     {status
                         ?
-                        <Avatar
+                        <Avatar.Icon
                             size={35}
-                            rounded
-                            title={Array.from(user)[0]}
-                            containerStyle={{ backgroundColor: "blue", marginTop:'auto', zIndex:100 }}
+                            color="#fff"
+                            icon="account-circle"
+                            style={{position:'relative', zIndex:9}}
+                            // title={Array.from(user)[0]}
+                            
                         />
                         :
                         ""

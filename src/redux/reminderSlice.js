@@ -1,30 +1,45 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, nanoid } from "@reduxjs/toolkit";
 
 const reminderSlice = createSlice({
     name: "reminders",
     initialState: [],
     reducers: {
-        createReminder: (state, action) => {
-            state.push(action.payload)
+        createReminder: {
+            reducer(state, action) {
+                state.push(action.payload)
+            },
+            prepare(title, selectedDate, token) {
+                return {
+                    payload: {
+                        id: nanoid(),
+                        title,
+                        selectedDate,
+                        token,
+                        isChecked: false,
+                        isCompleted: false,
+                        isDeleted: false
+                    }
+                }
+            }
         },
         updateReminder: (state, action) => {
-            const { _id, title, selectedDate } = action.payload
-            const existingPost = state.find(post => post._id === _id)
-            if (existingPost) {
-                existingPost.title = title
-                existingPost.selectedDate = selectedDate
+            const { id, title, selectedDate } = action.payload
+            const existingReminder = state.find(reminder => reminder.id === id)
+            if (existingReminder) {
+                existingReminder.title = title
+                existingReminder.selectedDate = selectedDate
             }
         },
         completeReminder: (state, action) => {
-            const existingPost = state.find(post => post._id === action.payload)
-            if (existingPost) {
-                existingPost.isCompleted = true
+            const existingReminder = state.find(reminder => reminder.id === action.payload)
+            if (existingReminder) {
+                existingReminder.isCompleted = true
             }
         },
         deleteReminder: (state, action) => {
-            const existingPost = state.find(post => post._id === action.payload)
-            if (existingPost) {
-                existingPost.isDeleted = true
+            const existingReminder = state.find(reminder => reminder.id === action.payload)
+            if (existingReminder) {
+                existingReminder.isDeleted = true
             }
         }
     }

@@ -1,11 +1,12 @@
-import { useState } from 'react';
-import { Text, View } from 'react-native';
-import { useSelector, useDispatch } from 'react-redux'
-import useFetch from '../hooks/useFetch';
-
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import ButtonStrip from '../components/buttons/ButtonStrip';
 import UpcomingReminders from '../components/UpcomingReminders';
-import Loader from '../oldcomponents/Loader';
+import Notes from '../components/Notes';
+import ChatListScreen from './ChatListScreen';
 
+// import { useState } from 'react';
+// import useFetch from '../hooks/useFetch';
+// import Loader from '../oldcomponents/Loader';
 // import List from '../components/List';
 // import Layout from '../components/Layout';
 // import TimePicker from "../components/TimePicker";
@@ -14,10 +15,8 @@ import Loader from '../oldcomponents/Loader';
 
 
 const HomeScreen = ({ route, navigation }) => {
-    const { isLoading, reminders, setRefresh, refresh } = useFetch()
-    const [showPicker, setShowPicker] = useState(false);
-    const count = useSelector(state => state.reminders.value)
-    const notes = useSelector(state => state.notes.value)
+    // const { isLoading, reminders, setRefresh, refresh } = useFetch()
+    // const [showPicker, setShowPicker] = useState(false);
    
     return (
         // <Layout
@@ -26,28 +25,26 @@ const HomeScreen = ({ route, navigation }) => {
         //     onSuccess={() => setRefresh(!refresh)}
         //     navigation={navigation}
         // >
-            <>
-            {isLoading ? <Loader /> :
-                // <List
-                //     reminders={reminders}
-                //     onSuccess={() => setRefresh(!refresh)}
-                //     navigation={navigation}
-                // />
-                <>
+        <>
+
+
+            <GestureHandlerRootView style={{ flex: 1, backgroundColor: '#000' }}>
+                <ButtonStrip />
                 <UpcomingReminders />
-                {/* <UpcomingReminders reminders={reminders} handleRefresh={() => setRefresh(!refresh)} /> */}
-                {/* <UpcomingReminders reminders={reminders} /> */}
-                {/* <ChatScreen /> */}
-                {/* <UpcomingReminders reminders={reminders} /> */}
-                </>
-            }
+                <Notes />
+                <ChatListScreen />
+            </GestureHandlerRootView>
+            
+
+
+
             {/* <Chat />
             <TimePicker
                 setShowPicker={setShowPicker}
                 showPicker={showPicker}
             /> */}
-            
-            </>
+
+        </>
         // </Layout>
     )
 }
