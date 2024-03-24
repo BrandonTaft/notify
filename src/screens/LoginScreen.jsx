@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import { useDispatch } from 'react-redux';
+import { createUser } from "../redux/userSlice";
 import {
     Text,
     SafeAreaView,
@@ -10,34 +12,38 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { styles } from "../utils/styles";
 
-const LoginScreen = ({ navigation }) => {
+const LoginScreen = () => {
     const [username, setUsername] = useState("");
+    const [organization, setOrganization] = useState("");
+    const dispatch = useDispatch();
+//     useEffect(() => {
+//         const checkForExistingUser = async () => {
+//    await AsyncStorage.clear()
+//             const existingUser = await AsyncStorage.getItem("username");
+//             if (existingUser) navigation.navigate("HomeScreen");
+//         }
+//         checkForExistingUser()
+//     }, []);
 
-    useEffect(() => {
-        const checkForExistingUser = async () => {
-            //await AsyncStorage.clear()
-            const existingUser = await AsyncStorage.getItem("username");
-            if (existingUser) navigation.navigate("HomeScreen");
-        }
-        checkForExistingUser()
-    }, []);
-
-    const storeUsername = async () => {
+    const storeCredentials = async () => {
         try {
-            await AsyncStorage.setItem("username", username);
-            navigation.navigate("HomeScreen");
+            // await AsyncStorage.setItem("username", username);
+            // await AsyncStorage.setItem("organization", organization);
+            dispatch( createUser({userName:username, organization: organization}))
+            
         } catch (e) {
+            console.log(e.message)
             Alert.alert("Error! While saving username");
         }
     };
 
     const handleSignIn = () => {
-        if (username.trim()) {
-            storeUsername();
+        if (username.trim() && organization.trim()) {
+            storeCredentials();
         } else {
             Alert.alert(
                 "TRY AGAIN",
-                "Username is required to chat.",
+                "Username and Organization are required to chat.",
                 [
                     {
                         "text": "OK"
@@ -60,6 +66,12 @@ const LoginScreen = ({ navigation }) => {
                         placeholder='Enter your username'
                         style={styles.logininput}
                         onChangeText={(value) => setUsername(value)}
+                    />
+                     <TextInput
+                        autoCorrect={false}
+                        placeholder='Enter your organization'
+                        style={styles.logininput}
+                        onChangeText={(value) => setOrganization(value)}
                     />
                 </View>
 

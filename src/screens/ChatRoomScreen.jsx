@@ -67,7 +67,7 @@ const ChatRoomScreen = ({ route, navigation }) => {
                     { paddingVertical: 5, paddingHorizontal: 10 },
                 ]}
             >
-                <AvatarButton styles={{color:"black"}} handlePress={() => navigation.navigate("HomeScreen")} />
+                <AvatarButton styles={{color:"black"}} handlePress={() => navigation.navigate("ChatListScreen")} />
                 {chatMessages[0] ? (
                     <FlatList
                         //data={chatMessages}

@@ -7,49 +7,44 @@ import Modal from "../components/Modal";
 import { fetchGroups } from "../api";
 import { IconButton, MD3Colors } from 'react-native-paper';
 import { useSelector, useDispatch } from 'react-redux'
-import { fetchChats } from "../redux/chatSlice";
-
+import { addChatRoom } from "../redux/chatRoomSlice";
+import Loader from "../components/Loader";
 const ChatListScreen = () => {
-  const [rooms, setRooms] = useState([]);
+  const [isLoading, setIsLoading] = useState(false)
+  const [chatRooms, setChatRooms] = useState([]);
   const [visible, setVisible] = useState(false);
   const dispatch = useDispatch()
-  const chats = useSelector(state => state.chats.chats)
-  
-  const chatStatus = useSelector(state => state.chats.status)
 
-  // useLayoutEffect(() => {
-  //   fetchGroups()
-  //     .then((data) => setRooms(data))
-  //     .catch((err) => console.error(err));
-  // }, []);
 
-  useEffect(() => {
-    if (chatStatus === 'idle') {
-      dispatch(fetchChats())
-    }
-    setRooms(chats)
-  }, [chatStatus, dispatch])
+  useLayoutEffect(() => {
+    setIsLoading(true)
+    fetchGroups()
+      .then((data) => {
+        setIsLoading(false)
+        setChatRooms(data)
+        dispatch(addChatRoom(data))
+      })
+      .catch((err) => {
+        console.error(err)
+      });
+  }, []);
 
-console.log("ROOMS",rooms)
   useEffect(() => {
     socket.on("roomsList", (rooms) => {
-      setRooms(rooms);
+      setChatRooms(rooms)
+      dispatch(addChatRoom(rooms))
     });
   }, [socket]);
 
-
-  return (
-    <View style={styles.chatList}>
-       <IconButton
-        icon="pencil-plus"
-        iconColor={MD3Colors.primary100}
-        size={40}
-        onPress={() => setVisible(true)}
-      />
+  let chatScreenData;
+  if (isLoading) {
+    chatScreenData = <Loader />
+  } else {
+    chatScreenData = (
       <View style={styles.chatlistContainer}>
-        {rooms.length > 0 ? (
+        {chatRooms.length > 0 ? (
           <FlatList
-            data={rooms}
+            data={chatRooms}
             renderItem={({ item }) => <ChatItem item={item} />}
             keyExtractor={(item) => item.id}
           />
@@ -60,7 +55,15 @@ console.log("ROOMS",rooms)
           </View>
         )}
       </View>
-      {visible ? <Modal setVisible={setVisible} /> : ""}
+    )
+  }
+  return (
+    <View style={styles.chatList}>
+      
+      {chatScreenData}
+      {visible &&
+        <Modal setVisible={setVisible} />
+      }
     </View>
   );
 };
