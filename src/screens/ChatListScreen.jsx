@@ -59,7 +59,7 @@ const ChatListScreen = () => {
   }
   return (
     <View style={styles.chatList}>
-      
+
       {chatScreenData}
       {visible &&
         <Modal setVisible={setVisible} />

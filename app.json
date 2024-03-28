@@ -32,9 +32,6 @@
         "foregroundImage": "./assets/notify-icon.png",
         "backgroundColor": "#000"
       },
-      "permissions": [
-        "android.permission.RECORD_AUDIO"
-      ],
       "googleServicesFile": "./google-services.json",
       "package": "com.notify.notify"
     },
@@ -50,6 +47,8 @@
       "icon":"./assets/N.png",
       "color":"#b804d1de"
     },
+    
     "owner": "btaft6278"
   }
+
 }

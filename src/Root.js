@@ -8,30 +8,14 @@ import LoginScreen from './screens/LoginScreen';
 import HomeScreen from './screens/HomeScreen';
 import ChatRoomScreen from './screens/ChatRoomScreen';
 import ChatListScreen from './screens/ChatListScreen';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import ProfileScreen from './screens/ProfileScreen';
 
 const Tab = createMaterialBottomTabNavigator();
 const Stack = createStackNavigator();
 
 export default function Root() {
     const isLoggedIn = useSelector(state => state.user.isLoggedIn)
-    const user = useSelector(state => state.user)
-    useEffect(() => {
-        // const checkForExistingUser = async () => {
-        //     await AsyncStorage.clear()
-        // }  
-        // checkForExistingUser()
-        console.log("USER",user)
-    },[isLoggedIn]);
 
-    useEffect(() => {
-        const checkForExistingUser = async () => {
-   await AsyncStorage.clear()
-            const existingUser = await AsyncStorage.getItem("username");
-            if (existingUser) navigation.navigate("HomeScreen");
-        }
-        checkForExistingUser()
-    }, []);
     function ChatListTab() {
         return (
             <Stack.Navigator initialRouteName="ChatListScreen">
@@ -54,17 +38,15 @@ export default function Root() {
                 barStyle={{ backgroundColor: '#121212' }}
                 swipeEnabled
             >
-                {/* <Tab.Screen
-                            name='LoginScreen'
-                            component={LoginScreen}
-                            options={{
-                                barStyle: { display: "none" },
-                              }}
-                        /> */}
-
                 <Tab.Screen
                     name='HomeScreen'
                     component={HomeScreen}
+                    initialParams={{ itemId: 42 }}
+                />
+
+                <Tab.Screen
+                    name='ProfileScreen'
+                    component={ProfileScreen}
                     initialParams={{ itemId: 42 }}
                 />
 
@@ -81,31 +63,31 @@ export default function Root() {
     }
 
     return (
-            
-                <NavigationContainer>
-                        <Stack.Navigator
-                            initialRouteName="LoginScreen"
-                        >
-                            {!isLoggedIn ? (
 
-                                <Stack.Screen
-                                    name='LoginScreen'
-                                    component={LoginScreen}
-                                    options={{
-                                        headerShown: false
-                                    }}
-                                />
-                            ) : (
-                                <Stack.Screen
-                                    name='TabNavigator'
-                                    component={TabNavigator}
-                                    options={{
-                                        headerShown: false
-                                    }}
-                                />
-                            )}
-                        </Stack.Navigator>
-                    {/* <Tab.Navigator
+        <NavigationContainer>
+            <Stack.Navigator
+                initialRouteName="LoginScreen"
+            >
+                {!isLoggedIn ? (
+
+                    <Stack.Screen
+                        name='LoginScreen'
+                        component={LoginScreen}
+                        options={{
+                            headerShown: false
+                        }}
+                    />
+                ) : (
+                    <Stack.Screen
+                        name='TabNavigator'
+                        component={TabNavigator}
+                        options={{
+                            headerShown: false
+                        }}
+                    />
+                )}
+            </Stack.Navigator>
+            {/* <Tab.Navigator
                         initialRouteName="LoginScreen"
                         barStyle={{ backgroundColor: '#121212' }}
                         swipeEnabled
@@ -134,7 +116,7 @@ export default function Root() {
                         />
                     </Tab.Navigator> */}
 
-                </NavigationContainer>
-           
+        </NavigationContainer>
+
     );
 }

@@ -1,31 +1,9 @@
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
-    header: {
-        flex: 1,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent:'center',
-        paddingTop:5,
-        paddingHorizontal:20
-    },
-    headerTitle: {
-        // fontFamily: "Rubik-Black",
-        color: '#8789f7',
-        fontSize: 32,
-    },
-    menuIcon : {
-        position:'absolute',
-        left:15
-    },
-    headerAvatarIcon: {
-        color:"#fff",
-        marginLeft:'auto'
-    },
-    headerEditIcon: {
-        marginRight: 5,
-        bottom: 1
-    },
+   
+
+    /************LOGIN***********/
     loginscreen: {
         flex: 1,
         backgroundColor: "#EEF1FF",
@@ -62,6 +40,56 @@ export const styles = StyleSheet.create({
         color: "#fff",
         fontWeight: "600",
     },
+
+    /*********HEADER*********/
+    header: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent:'center',
+        paddingTop:5,
+        paddingHorizontal:20
+    },
+    headerTitle: {
+        // fontFamily: "Rubik-Black",
+        color: '#8789f7',
+        fontSize: 32,
+    },
+    menuIcon : {
+        position:'absolute',
+        left:15
+    },
+    headerAvatarIcon: {
+        color:"#fff",
+        marginLeft:'auto'
+    },
+    headerEditIcon: {
+        marginRight: 5,
+        bottom: 1
+    },
+/**********AVATAR*********/
+avatarContainer: {
+    elevation: 2,
+    height: 200,
+    width: 200,
+    backgroundColor: '#efefef',
+    position: 'relative',
+    borderRadius: 999,
+    overflow: 'hidden',
+},
+uploadBtnContainer: {
+    opacity: 0.7,
+    
+    backgroundColor: 'lightgrey',
+    width: '100%',
+    height: '25%',
+},
+uploadBtn: {
+    display: 'flex',
+    alignItems: "center",
+    justifyContent: 'center'
+},
+
     chatList: {
         flex:1,
         border: 'solid',

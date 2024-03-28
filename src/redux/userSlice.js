@@ -1,32 +1,42 @@
-import { createSlice, nanoid } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
 export const userSlice = createSlice({
-    name: "user",
-    initialState: {
-        isLoggedIn: false,
+  name: "user",
+  initialState: {
+    isLoggedIn: false,
+  },
+  reducers: {
+    createUser: {
+      reducer(state, action) {
+        return action.payload
       },
-    reducers: {
-        createUser: (state, action) => {
-            return {
-              isLoggedIn: true,
-              ...action.payload,
-            }
-          },
-            // prepare(userName, organization, isLoggedIn) {
-            //     console.log("RAN", userName, organization, isLoggedIn)
-            //     return {
-            //         payload: {
-            //             id: nanoid(),
-            //             userName:userName,
-            //             organization: organization,
-            //             isLoggedIn: isLoggedIn
-            //         }
-            //     }
-            // }
-       // }
-    }
-})
+      prepare(notifyUser) {
+        const {id, userName, organization, profileImage} = notifyUser
+        return {
+          payload: {
+            id,
+            userName,
+            organization,
+            profileImage,
+            isLoggedIn: true
+          }
+        }
+      }
+    },
+    editUserProfileImage: (state, action) => {
+      return {
+        ...state,
+        profileImage: action.payload
+      }
+    },
+    logOutUser: () => {
+      return {
+        isLoggedIn: false
+      }
+    },
+  }
+});
 
-export const { createUser } = userSlice.actions;
+export const { createUser, logOutUser, editUserProfileImage } = userSlice.actions;
 
 export default userSlice.reducer; 
