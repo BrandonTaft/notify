@@ -68,23 +68,55 @@ export const styles = StyleSheet.create({
         bottom: 1
     },
     /**********PROFILE SCREEN*********/
-    profileScreenContainer: {
+    profileScreen: {
         flex: 1,
+        backgroundColor:'#000'
+    },
+    profileImageContainer: {
+        position:'relative',
+        flex: 3
     },
     profileImage: {
-        
-        flex:1
+        position:'absolute',
+        top:'50%'
     },
     profileImageBtnContainer: {
         flexDirection: 'row',
-        width:'100%',
-       justifyContent:'space-evenly',
-       backgroundColor:'red',
-     flex:1
+        width: '100%',
+        justifyContent: 'space-evenly',
+        backgroundColor: 'red',
+        position:'relative'
     },
     profileData: {
-        flex:1,
-        backgroundColor:'blue'
+        flex: 1,
+        alignItems:'center'
+    },
+    fab: {
+    position: 'absolute',
+    margin: 16,
+    right: 0,
+    top: 0,
+    zIndex:99
+  },
+  profileText: {
+    fontSize:20,
+    color:"#fff"
+  },
+  profileNotesContainer : {
+    flex:4
+  },
+    /**********PROFILE FORM MODAL *********/
+    profileFormModal: {
+        backgroundColor: '#fff',
+        marginTop:'auto',
+        flex:.75,
+        alignItems: "center",
+       
+    },
+    profileFormModalBtnContainer: {
+        flexDirection: 'column',
+        width: '100%',
+        justifyContent: 'space-evenly',
     },
     /**********AVATAR*********/
     avatarContainer: {
@@ -321,10 +353,7 @@ export const styles = StyleSheet.create({
     upcomingContainer: {
         flex: 1,
         padding: 6,
-        border: 'solid',
-        borderWidth: 1,
-        borderColor: 'grey',
-        borderRadius: 20
+        
     },
     title: {
         // fontFamily: "Rubik-Medium",

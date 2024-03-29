@@ -74,10 +74,7 @@ export default function Notes() {
 const styles = StyleSheet.create({
     notesContainer:{
         flex:1,
-        border: 'solid',
-        borderWidth:1,
-        borderColor:'grey',
-        borderRadius:20
+        position:"absolute"
     },
     menuBtn: {
         

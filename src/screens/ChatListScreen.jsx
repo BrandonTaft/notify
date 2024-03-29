@@ -59,7 +59,12 @@ const ChatListScreen = () => {
   }
   return (
     <View style={styles.chatList}>
-
+      <IconButton
+        icon="comment-edit"
+        iconColor={MD3Colors.primary0}
+        size={40}
+        onPress={() => setVisible(true)}
+      />
       {chatScreenData}
       {visible &&
         <Modal setVisible={setVisible} />

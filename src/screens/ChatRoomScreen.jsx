@@ -5,6 +5,7 @@ import ChatRoomMessages from "../components/ChatRoomMessages";
 import { AvatarButton } from "../components/buttons/AvatarButton";
 import { styles } from "../utils/styles";
 import socket from "../utils/socket";
+import { useSelector } from "react-redux";
 
 const ChatRoomScreen = ({ route, navigation }) => {
     const [user, setUser] = useState("");
@@ -12,6 +13,7 @@ const ChatRoomScreen = ({ route, navigation }) => {
 
     const [chatMessages, setChatMessages] = useState([]);
     const [message, setMessage] = useState("");
+    const notifyUser = useSelector(state => state.user)
 
     const getUsername = async () => {
         try {
@@ -35,7 +37,7 @@ const ChatRoomScreen = ({ route, navigation }) => {
                 ? `0${new Date().getMinutes()}`
                 : `${new Date().getMinutes()}`;
 
-        if (user) {
+        if (notifyUser.userName) {
             socket.emit("newMessage", {
                 message,
                 room_id: id,
@@ -54,8 +56,9 @@ const ChatRoomScreen = ({ route, navigation }) => {
     }, []);
 
     useEffect(() => {
-        console.log("IRAN")
+        
         socket.on("newMessage", (roomChats) => setChatMessages(roomChats));
+        console.log("IRAN",chatMessages)
     }, [socket]);
 
 
