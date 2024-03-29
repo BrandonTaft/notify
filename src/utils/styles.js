@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
-   
+
 
     /************LOGIN***********/
     loginscreen: {
@@ -46,56 +46,75 @@ export const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent:'center',
-        paddingTop:5,
-        paddingHorizontal:20
+        justifyContent: 'center',
+        paddingTop: 5,
+        paddingHorizontal: 20
     },
     headerTitle: {
         // fontFamily: "Rubik-Black",
         color: '#8789f7',
         fontSize: 32,
     },
-    menuIcon : {
-        position:'absolute',
-        left:15
+    menuIcon: {
+        position: 'absolute',
+        left: 15
     },
     headerAvatarIcon: {
-        color:"#fff",
-        marginLeft:'auto'
+        color: "#fff",
+        marginLeft: 'auto'
     },
     headerEditIcon: {
         marginRight: 5,
         bottom: 1
     },
-/**********AVATAR*********/
-avatarContainer: {
-    elevation: 2,
-    height: 200,
-    width: 200,
-    backgroundColor: '#efefef',
-    position: 'relative',
-    borderRadius: 999,
-    overflow: 'hidden',
-},
-uploadBtnContainer: {
-    opacity: 0.7,
-    
-    backgroundColor: 'lightgrey',
-    width: '100%',
-    height: '25%',
-},
-uploadBtn: {
-    display: 'flex',
-    alignItems: "center",
-    justifyContent: 'center'
-},
+    /**********PROFILE SCREEN*********/
+    profileScreenContainer: {
+        flex: 1,
+    },
+    profileImage: {
+        
+        flex:1
+    },
+    profileImageBtnContainer: {
+        flexDirection: 'row',
+        width:'100%',
+       justifyContent:'space-evenly',
+       backgroundColor:'red',
+     flex:1
+    },
+    profileData: {
+        flex:1,
+        backgroundColor:'blue'
+    },
+    /**********AVATAR*********/
+    avatarContainer: {
+        elevation: 2,
+        height: 200,
+        width: 200,
+        backgroundColor: '#efefef',
+        position: 'relative',
+        borderRadius: 999,
+        overflow: 'hidden',
+    },
+    uploadBtnContainer: {
+        opacity: 0.7,
+
+        backgroundColor: 'lightgrey',
+        width: '100%',
+        height: '25%',
+    },
+    uploadBtn: {
+        display: 'flex',
+        alignItems: "center",
+        justifyContent: 'center'
+    },
 
     chatList: {
-        flex:1,
+        flex: 1,
         border: 'solid',
-        borderWidth:1,
-        borderColor:'grey',
-        borderRadius:20
+        borderWidth: 1,
+        borderColor: 'grey',
+        borderRadius: 20
     },
     chatheading: {
         fontSize: 24,
@@ -144,12 +163,12 @@ uploadBtn: {
         flex: 1,
         marginRight: 10,
         borderRadius: 20,
-        fontSize:17,
-        maxHeight:200
+        fontSize: 17,
+        maxHeight: 200
     },
     messagingbuttonContainer: {
-        margin:'auto',
-        maxHeight:50,
+        margin: 'auto',
+        maxHeight: 50,
         width: "30%",
         backgroundColor: "green",
         borderRadius: 3,
@@ -205,16 +224,16 @@ uploadBtn: {
     mmessage: {
         backgroundColor: "#dedede",
         paddingHorizontal: 15,
-        paddingVertical:10,
+        paddingVertical: 10,
         borderRadius: 20,
         marginTop: 5,
         marginLeft: 10,
         maxWidth: '50%',
-        minWidth:"25%",
+        minWidth: "25%",
         alignSelf: 'flex-start',
     },
     mmessageText: {
-        fontSize:17
+        fontSize: 17
     },
     leftArrow: {
         position: "absolute",
@@ -225,7 +244,7 @@ uploadBtn: {
         borderBottomRightRadius: 25,
         left: -10
     },
-    
+
     leftArrowOverlap: {
         position: "absolute",
         backgroundColor: "#eeeeee",
@@ -234,7 +253,7 @@ uploadBtn: {
         bottom: -6,
         borderBottomRightRadius: 18,
         left: -20
-    
+
     },
     rightArrow: {
         position: "absolute",
@@ -244,9 +263,9 @@ uploadBtn: {
         bottom: 0,
         borderBottomLeftRadius: 25,
         right: -10
-      },
-      
-      rightArrowOverlap: {
+    },
+
+    rightArrowOverlap: {
         position: "absolute",
         backgroundColor: "#eeeeee",
         width: 20,
@@ -254,8 +273,8 @@ uploadBtn: {
         bottom: -6,
         borderBottomLeftRadius: 18,
         right: -20
-      
-      },
+
+    },
     mvatar: {
         marginRight: 5,
     },
@@ -303,9 +322,9 @@ uploadBtn: {
         flex: 1,
         padding: 6,
         border: 'solid',
-        borderWidth:1,
-        borderColor:'grey',
-        borderRadius:20
+        borderWidth: 1,
+        borderColor: 'grey',
+        borderRadius: 20
     },
     title: {
         // fontFamily: "Rubik-Medium",
@@ -333,55 +352,55 @@ uploadBtn: {
         height: 60
     },
 
-        horizontalView: {
-          width: '100%',
-          flexDirection: 'row',
-          justifyContent: "space-evenly",
-          alignItems: 'center',
-          flex: 1
-        },
-        modalView: {
-          width: '100%',
-          flex: 1,
-      
-          backgroundColor: '#15131d',
-          borderRadius: 20,
-          padding: 15,
-          alignItems: 'center',
-          shadowColor: '#000',
-          shadowOffset: {
+    horizontalView: {
+        width: '100%',
+        flexDirection: 'row',
+        justifyContent: "space-evenly",
+        alignItems: 'center',
+        flex: 1
+    },
+    modalView: {
+        width: '100%',
+        flex: 1,
+
+        backgroundColor: '#15131d',
+        borderRadius: 20,
+        padding: 15,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: {
             width: 0,
             height: 2,
-          },
-          shadowOpacity: 0.25,
-          shadowRadius: 4,
-          elevation: 5,
         },
-      
-        mainText: {
-          fontSize: 18,
-          // fontFamily: 'Rubik-Regular',
-          color: '#fff'
-        },
-        input: {
-          width: '100%',
-          fontSize: 19,
-          // fontFamily: 'Rubik-Light',
-          flex: 4,
-          color: '#fff',
-          backgroundColor: '#312e3f',
-          borderRadius: 10,
-          margin: 12,
-          marginVertical: 0,
-          textAlignVertical: 'top',
-          padding: 10
-        },
-        addTime: {
-          width: '100%',
-          color: '#fff',
-          backgroundColor: '#312e3f',
-          borderRadius: 10,
-          margin: 5,
-          padding: 10
-        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+    },
+
+    mainText: {
+        fontSize: 18,
+        // fontFamily: 'Rubik-Regular',
+        color: '#fff'
+    },
+    input: {
+        width: '100%',
+        fontSize: 19,
+        // fontFamily: 'Rubik-Light',
+        flex: 4,
+        color: '#fff',
+        backgroundColor: '#312e3f',
+        borderRadius: 10,
+        margin: 12,
+        marginVertical: 0,
+        textAlignVertical: 'top',
+        padding: 10
+    },
+    addTime: {
+        width: '100%',
+        color: '#fff',
+        backgroundColor: '#312e3f',
+        borderRadius: 10,
+        margin: 5,
+        padding: 10
+    },
 });

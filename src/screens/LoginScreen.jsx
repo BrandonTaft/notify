@@ -24,7 +24,8 @@ const LoginScreen = () => {
         const checkForExistingUser = async () => {
             const existingUser = await AsyncStorage.getItem("notify_user");
             if (existingUser !== null) {
-                dispatch(createUser(notifyUser))
+                const persistedUser = JSON.parse(existingUser)
+                dispatch(createUser({...persistedUser, isLoggedIn: true}))
             } else {
                 setIsLoading(false)
             }
@@ -36,7 +37,7 @@ const LoginScreen = () => {
         try {
             const jsonValue = JSON.stringify(notifyUser)
             await AsyncStorage.setItem("notify_user", jsonValue);
-            dispatch(createUser(notifyUser))
+            dispatch(createUser({...notifyUser, isLoggedIn: true}))
         } catch (e) {
             Alert.alert("Error! While saving userName");
         }

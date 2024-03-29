@@ -11,14 +11,15 @@ export const userSlice = createSlice({
         return action.payload
       },
       prepare(notifyUser) {
-        const {id, userName, organization, profileImage} = notifyUser
+        const {id, userName, organization, profileImage, bannerImage, isLoggedIn} = notifyUser
         return {
           payload: {
             id,
             userName,
             organization,
             profileImage,
-            isLoggedIn: true
+            bannerImage,
+            isLoggedIn: isLoggedIn,
           }
         }
       }
@@ -29,6 +30,12 @@ export const userSlice = createSlice({
         profileImage: action.payload
       }
     },
+    editUserBanner: (state, action) => {
+      return {
+        ...state,
+        bannerImage: action.payload
+      }
+    },
     logOutUser: () => {
       return {
         isLoggedIn: false
@@ -37,6 +44,6 @@ export const userSlice = createSlice({
   }
 });
 
-export const { createUser, logOutUser, editUserProfileImage } = userSlice.actions;
+export const { createUser, logOutUser, editUserProfileImage, editUserBanner } = userSlice.actions;
 
 export default userSlice.reducer; 

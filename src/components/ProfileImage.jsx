@@ -9,17 +9,17 @@ export default function ProfileImage() {
     const navigation = useNavigation();
 
     return (
-        <View style={styles.container}>
+        <View style={styles.profileImageContainer}>
             <TouchableOpacity onPress={() => navigation.navigate('ProfileScreen')} style={styles.uploadBtn} >
             {
                 user.profileImage
                     ?
-                    <Avatar.Image size={200} source={{ uri: user.profileImage }} />
+                    <Avatar.Image size={64} source={{ uri: user.profileImage }} />
                     :
                     user.userName ?
-                    <Avatar.Text size={200} label={user.userName.charAt(0).toUpperCase()} />
+                    <Avatar.Text size={64} label={user.userName.charAt(0).toUpperCase()} />
                     :
-                    <Avatar.Text size={200} label={'N'} />
+                    <Avatar.Text size={64} label={'N'} />
                     
             }
             </TouchableOpacity>
