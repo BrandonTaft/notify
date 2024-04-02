@@ -4,7 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { styles } from "../utils/styles";
 
-const ChatItem = ({ item }) => {
+const ChatRoomListItem = ({ item }) => {
     const navigation = useNavigation();
     const [messages, setMessages] = useState({});
    
@@ -49,4 +49,4 @@ const ChatItem = ({ item }) => {
     );
 };
 
-export default ChatItem;
+export default ChatRoomListItem;

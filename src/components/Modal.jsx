@@ -2,12 +2,13 @@ import { View, Text, TextInput, Pressable } from "react-native";
 import React, { useState } from "react";
 import { styles } from "../utils/styles";
 import socket from "../utils/socket";
+import { nanoid } from "@reduxjs/toolkit";
 
 const Modal = ({ setVisible }) => {
     const [groupName, setGroupName] = useState("");
     const closeModal = () => setVisible(false);
     const handleCreateRoom = () => {
-        socket.emit("createRoom", {name:groupName, organization:"brandon's org"});
+        socket.emit("createRoom", {id: nanoid(), name:groupName, organization:"brandon's org"});
         closeModal();
     };
     return (

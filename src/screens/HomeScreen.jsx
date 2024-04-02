@@ -2,7 +2,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Header from '../components/Header';
 import UpcomingReminders from '../components/UpcomingReminders';
 import Notes from '../components/Notes';
-import ChatListScreen from './ChatListScreen';
+import ChatRoomListScreen from './ChatRoomListScreen';
 import {useSelector } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -20,7 +20,8 @@ const HomeScreen = ({ route, navigation }) => {
     // const { isLoading, reminders, setRefresh, refresh } = useFetch()
     // const [showPicker, setShowPicker] = useState(false);
     const getUser = async() => {
-        const user = await AsyncStorage.getItem("notify_user")
+        const user = useSelector(state => state.user)
+        const storedUser = await AsyncStorage.getItem("notify_user")
         console.log("HOMESCREEN STORED",user)
 
     }
@@ -39,7 +40,7 @@ const HomeScreen = ({ route, navigation }) => {
 
             <GestureHandlerRootView style={{ flex: 1, backgroundColor: '#000' }}>
                 <Header />
-                <ChatListScreen />
+                <ChatRoomListScreen />
                 <UpcomingReminders />
                 {/* <Notes /> */}
                 

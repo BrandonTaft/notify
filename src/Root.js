@@ -7,8 +7,9 @@ import { useSelector } from 'react-redux';
 import LoginScreen from './screens/LoginScreen';
 import HomeScreen from './screens/HomeScreen';
 import ChatRoomScreen from './screens/ChatRoomScreen';
-import ChatListScreen from './screens/ChatListScreen';
+import ChatRoomListScreen from './screens/ChatRoomListScreen';
 import ProfileScreen from './screens/ProfileScreen';
+import { IconButton, MD3Colors } from 'react-native-paper';
 
 const Tab = createMaterialBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -18,15 +19,31 @@ export default function Root() {
 
     function ChatListTab() {
         return (
-            <Stack.Navigator initialRouteName="ChatListScreen">
+            <Stack.Navigator initialRouteName="Chat Rooms">
                 <Stack.Screen
-                    name='ChatListScreen'
-                    component={ChatListScreen}
+                    name='Chat Rooms'
+                    component={ChatRoomListScreen}
+                    options={{
+                        headerShown: false
+                    }}
                 />
                 <Stack.Screen
                     name="ChatRoomScreen"
                     component={ChatRoomScreen}
-                />
+                //     options={{
+                        
+                //         headerLeft: () => (
+                //             <IconButton
+                //             icon="comment-edit"
+                //             iconColor={MD3Colors.primary0}
+                //             containerColor='grey'
+                            
+                //             size={40}
+                //             onPress={() => {}}
+                //           />
+                //         ),
+                //       }}
+                 />
             </Stack.Navigator>
         );
     }

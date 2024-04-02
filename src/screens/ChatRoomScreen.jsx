@@ -1,30 +1,43 @@
 import React, { useLayoutEffect, useState, useEffect } from "react";
 import { View, TextInput, Text, FlatList, Pressable } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import ChatRoomMessages from "../components/ChatRoomMessages";
+import ChatRoomMessage from "../components/ChatRoomMessage";
 import { AvatarButton } from "../components/buttons/AvatarButton";
 import { styles } from "../utils/styles";
 import socket from "../utils/socket";
 import { useSelector } from "react-redux";
+import { IconButton, MD3Colors } from "react-native-paper";
 
 const ChatRoomScreen = ({ route, navigation }) => {
     const [user, setUser] = useState("");
     const { name, id } = route.params;
-
     const [chatMessages, setChatMessages] = useState([]);
     const [message, setMessage] = useState("");
     const notifyUser = useSelector(state => state.user)
+    const rooms = useSelector(state => state.chatRooms)
 
-    const getUsername = async () => {
-        try {
-            const value = await AsyncStorage.getItem("username");
-            if (value !== null) {
-                setUser(value);
-            }
-        } catch (e) {
-            console.error("Error while loading username!");
-        }
-    };
+
+
+
+
+    useLayoutEffect(() => {
+        navigation.setOptions({ headerTitle: name, headerLeft: () => (
+                        <IconButton
+                        icon="comment-edit"
+                        iconColor={MD3Colors.primary0}
+                        containerColor='grey'
+                        
+                        size={40}
+                        onPress={() => navigation.navigate("ChatListTab", {screen: 'ChatListScreen'})}
+                      />
+                    ), });
+        socket.emit("findRoom", id);
+        socket.on("foundRoom", (roomChats) => setChatMessages(roomChats));
+    }, []);
+
+    useEffect(() => {
+        socket.on("newMessage", (roomChats) => setChatMessages(roomChats));
+    }, [socket]);
 
     const handleNewMessage = () => {
         const hour =
@@ -41,25 +54,13 @@ const ChatRoomScreen = ({ route, navigation }) => {
             socket.emit("newMessage", {
                 message,
                 room_id: id,
-                user,
+                user: notifyUser.userName,
+                reactions: { thumbsUp: 0, thumbsDown: 0, heart: 0, eyes: 0 },
                 timestamp: { hour, mins },
             });
         }
         setMessage("")
     };
-
-    useLayoutEffect(() => {
-        navigation.setOptions({ title: name });
-        getUsername();
-        socket.emit("findRoom", id);
-        socket.on("foundRoom", (roomChats) => setChatMessages(roomChats));
-    }, []);
-
-    useEffect(() => {
-        
-        socket.on("newMessage", (roomChats) => setChatMessages(roomChats));
-        console.log("IRAN",chatMessages)
-    }, [socket]);
 
 
     return (
@@ -70,15 +71,14 @@ const ChatRoomScreen = ({ route, navigation }) => {
                     { paddingVertical: 5, paddingHorizontal: 10 },
                 ]}
             >
-                <AvatarButton styles={{color:"black"}} handlePress={() => navigation.navigate("ChatListScreen")} />
+                <AvatarButton styles={{ color: "black" }} handlePress={() => navigation.navigate("ChatListScreen")} />
                 {chatMessages[0] ? (
                     <FlatList
-                        //data={chatMessages}
+                        data={[...chatMessages].reverse()}
                         renderItem={({ item }) => (
-                            <ChatRoomMessages item={item} user={user} />
+                            <ChatRoomMessage message={item} user={notifyUser.userName} />
                         )}
                         inverted
-                        data={[...chatMessages].reverse()}
                         keyExtractor={(item) => item.id}
                     />
                 ) : (

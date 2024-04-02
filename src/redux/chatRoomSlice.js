@@ -1,9 +1,7 @@
-import { createSlice, nanoid, createAsyncThunk, useSelector } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    chatRooms: [],
-    status: 'idle',
-    error: null
+    chatRooms: []
 }
 
 export const chatRoomSlice = createSlice({
@@ -13,6 +11,7 @@ export const chatRoomSlice = createSlice({
         addChatRoom: {
             reducer(state, action) {
                 state.chatRooms = action.payload
+                console.log(state.chatRooms)
             }
         },
         updateChatRoom: (state, action) => {
@@ -22,9 +21,18 @@ export const chatRoomSlice = createSlice({
                 existingChatRoom.messages = messages
             }
         },
+        addChatReaction: (state, action) => {
+            const { room_id, id, reaction } = action.payload
+            console.log("REACTION", action.payload)
+            const room = state.chatRooms.find(room => room.id === room_id)
+            const chatMessage = room.messages.find(message => message.id === id)
+            if (chatMessage) {
+              chatMessage.reactions[reaction]++
+            }
+          }
     }
 })
 
-export const { addChatRoom, updateChatRoom } = chatRoomSlice.actions;
+export const { addChatRoom, updateChatRoom, addChatReaction } = chatRoomSlice.actions;
 
 export default chatRoomSlice.reducer;

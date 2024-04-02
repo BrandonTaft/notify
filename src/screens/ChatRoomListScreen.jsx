@@ -1,7 +1,7 @@
 import { useState, useLayoutEffect, useEffect } from "react";
 import { View, Text, Pressable, SafeAreaView, FlatList } from "react-native";
 import socket from "../utils/socket";
-import ChatItem from "../components/ChatItem";
+import ChatRoomListItem from "../components/ChatRoomListItem";
 import { styles } from "../utils/styles";
 import Modal from "../components/Modal";
 import { fetchGroups } from "../api";
@@ -9,12 +9,12 @@ import { IconButton, MD3Colors } from 'react-native-paper';
 import { useSelector, useDispatch } from 'react-redux'
 import { addChatRoom } from "../redux/chatRoomSlice";
 import Loader from "../components/Loader";
-const ChatListScreen = () => {
+
+const ChatRoomListScreen = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false)
   const [chatRooms, setChatRooms] = useState([]);
   const [visible, setVisible] = useState(false);
   const dispatch = useDispatch()
-
 
   useLayoutEffect(() => {
     setIsLoading(true)
@@ -30,10 +30,11 @@ const ChatListScreen = () => {
   }, []);
 
   useEffect(() => {
-    socket.on("roomsList", (rooms) => {
+    socket.on("chatRoomList", (rooms) => {
       setChatRooms(rooms)
       dispatch(addChatRoom(rooms))
     });
+    console.log("CHATLIST_ chatRoomList socket-", chatRooms)
   }, [socket]);
 
   let chatScreenData;
@@ -45,7 +46,7 @@ const ChatListScreen = () => {
         {chatRooms.length > 0 ? (
           <FlatList
             data={chatRooms}
-            renderItem={({ item }) => <ChatItem item={item} />}
+            renderItem={({ item }) => <ChatRoomListItem item={item} />}
             keyExtractor={(item) => item.id}
           />
         ) : (
@@ -58,18 +59,31 @@ const ChatListScreen = () => {
     )
   }
   return (
-    <View style={styles.chatList}>
+    <View style={styles.chatRoomListScreen}>
+      <View style={styles.chatRoomListScreenFabGroup} >
       <IconButton
         icon="comment-edit"
         iconColor={MD3Colors.primary0}
+        containerColor='grey'
+        style={styles.chatRoomListScreenFab}
         size={40}
         onPress={() => setVisible(true)}
       />
-      {chatScreenData}
-      {visible &&
-        <Modal setVisible={setVisible} />
-      }
+      <IconButton
+        icon="location-exit"
+        iconColor={MD3Colors.primary0}
+        containerColor='grey'
+        style={styles.chatRoomListScreenFab}
+        size={40}
+        onPress={() => navigation.navigate("HomeScreen")}
+      />
     </View>
+      { chatScreenData }
+  {
+    visible &&
+    <Modal setVisible={setVisible} />
+  }
+    </View >
   );
 };
-export default ChatListScreen;
+export default ChatRoomListScreen;

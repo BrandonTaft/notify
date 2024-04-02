@@ -1,9 +1,11 @@
 import { View, Text } from "react-native";
 import { Avatar } from 'react-native-paper';
 import { styles } from "../utils/styles";
+import { ReactionButtons } from "./buttons/ReactionButtons";
 
-export default function ChatRoomMessages({ item, user }) {
-    const status = item.user !== user;
+export default function ChatRoomMessage({ message, user }) {
+    console.log("MESSAGE", message)
+    const status = message.user !== user;
     return (
         <View>
             <View
@@ -35,7 +37,7 @@ export default function ChatRoomMessages({ item, user }) {
                         }
                     >
                         <Text style={styles.mmessageText}>
-                            {item.text}
+                            {message.text}
                         </Text>
                         <View
                             style={
@@ -55,7 +57,8 @@ export default function ChatRoomMessages({ item, user }) {
                         </View>
                     </View>
                 </View>
-                <Text style={{ marginLeft: 40 }}>{item.time}</Text>
+                <Text style={{ marginLeft: 40 }}>{message.time}</Text>
+                <ReactionButtons message={message} />
             </View>
         </View>
     );

@@ -39,5 +39,5 @@ export const fetchBackUpData = async () => {
 export const fetchGroups = async () => {
     return await fetch("https://99ff-2600-6c5a-4a7f-463a-9552-e6ff-d168-230b.ngrok-free.app/chatrooms")
       .then((res) => res.json())
-      .catch((error) => console.log(error))
+      .catch((error) => console.log("Server did not respond"))
   }

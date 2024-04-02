@@ -140,14 +140,23 @@ export const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: 'center'
     },
-
-    chatList: {
-        flex: 1,
-        border: 'solid',
-        borderWidth: 1,
-        borderColor: 'grey',
-        borderRadius: 20
+    /*******CHAT ROOM LIST SCREEN *******/
+    reactions: {
+        flexDirection:'row'
     },
+    chatRoomListScreen: {
+        position:'relative',
+        flex: 1
+    },
+    chatRoomListScreenFabGroup: {
+        position: 'absolute',
+        flexDirection: 'row',
+        margin: 16,
+        right: 0,
+        top: 0,
+        zIndex:99
+    },
+    
     chatheading: {
         fontSize: 24,
         fontWeight: "bold",
