@@ -5,6 +5,7 @@ import Notes from '../components/Notes';
 import ChatRoomListScreen from './ChatRoomListScreen';
 import {useSelector } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import ChatRoomPreview from '../components/ChatRoomPreview';
 
 // import { useState } from 'react';
 // import useFetch from '../hooks/useFetch';
@@ -40,7 +41,7 @@ const HomeScreen = ({ route, navigation }) => {
 
             <GestureHandlerRootView style={{ flex: 1, backgroundColor: '#000' }}>
                 <Header />
-                <ChatRoomListScreen />
+                <ChatRoomPreview />
                 <UpcomingReminders />
                 {/* <Notes /> */}
                 

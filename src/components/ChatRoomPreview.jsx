@@ -1,17 +1,17 @@
 import { useState, useLayoutEffect, useEffect } from "react";
 import { View, Text, Pressable, SafeAreaView, FlatList } from "react-native";
-import socket from "../utils/socket";
-import ChatRoomListItem from "../components/ChatRoomListItem";
-import { styles } from "../utils/styles";
-import CreateChat from "../components/CreateChat";
 import { fetchGroups } from "../api";
-import { IconButton, MD3Colors } from 'react-native-paper';
 import { useSelector, useDispatch } from 'react-redux';
 import { addChatRoom } from "../redux/chatRoomSlice";
-import Loader from "../components/Loader";
+import CreateChat from "./CreateChat";
+import ChatRoomListItem from "./ChatRoomListItem";
+import Loader from "./Loader";
+import { IconButton, MD3Colors } from 'react-native-paper';
+import socket from "../utils/socket";
+import { styles } from "../utils/styles";
 
-const ChatRoomListScreen = ({ navigation }) => {
-  const [isLoading, setIsLoading] = useState(false)
+export default function ChatRoomPreview() {
+    const [isLoading, setIsLoading] = useState(false)
   const [chatRooms, setChatRooms] = useState([]);
   const [visible, setVisible] = useState(false);
   const dispatch = useDispatch()
@@ -36,7 +36,6 @@ const ChatRoomListScreen = ({ navigation }) => {
     });
     console.log("CHATLIST_ chatRoomList socket-", chatRooms)
   }, [socket]);
-
   let chatScreenData;
   if (isLoading) {
     chatScreenData = <Loader />
@@ -85,5 +84,4 @@ const ChatRoomListScreen = ({ navigation }) => {
   }
     </View >
   );
-};
-export default ChatRoomListScreen;
+}

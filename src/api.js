@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { Platform } from 'react-native';
 const BASE_URL = " https://99ff-2600-6c5a-4a7f-463a-9552-e6ff-d168-230b.ngrok-free.app";
 
 export const storeBackUpData = async (reminders) => {
@@ -37,7 +37,35 @@ export const fetchBackUpData = async () => {
 };
 
 export const fetchGroups = async () => {
-    return await fetch("https://99ff-2600-6c5a-4a7f-463a-9552-e6ff-d168-230b.ngrok-free.app/chatrooms")
+    return await fetch("https://593b-2600-6c5a-4a7f-463a-61b3-94e3-5c2a-117f.ngrok-free.app/chatrooms")
       .then((res) => res.json())
       .catch((error) => console.log("Server did not respond"))
   }
+
+  export const storeProfileImage = async (uri, userId) => {
+    let uriParts = uri.split('.');
+    let fileType = uriParts[uriParts.length - 1];
+    let formData = new FormData();
+    formData.append('photo', {
+        uri,
+        name: `${userId}.${fileType}`,
+        type: `image/${fileType}`
+    });
+    formData.append('userId', userId)
+    return await fetch("https://593b-2600-6c5a-4a7f-463a-61b3-94e3-5c2a-117f.ngrok-free.app/api/profile-image",
+        {
+            method: 'POST',
+            body: formData,
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'multipart/form-data',
+            },
+        })
+        .then((response) => response.json())
+        .then((response) => {
+            console.log('response', response);
+        })
+        .catch((error) => {
+            console.log('error', error);
+        })
+}

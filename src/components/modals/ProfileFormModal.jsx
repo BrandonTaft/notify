@@ -5,6 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { styles } from "../../utils/styles";
 import { Avatar, Button } from 'react-native-paper';
 import * as ImagePicker from 'expo-image-picker';
+import { storeProfileImage } from "../../api";
 import { editUserProfileImage, editUserBanner, editUserCredentials } from '../../redux/userSlice';
 import {
     Text,
@@ -13,9 +14,26 @@ import {
     TextInput,
     Pressable,
     Alert,
+    Platform,
     Image,
     Modal
 } from "react-native";
+
+const createFormData = (photo, body = {}) => {
+    const data = new FormData();
+
+    data.append('photo', {
+        name: photo.fileName,
+        type: photo.type,
+        uri: photo.uri,
+    });
+
+    Object.keys(body).forEach((key) => {
+        data.append(key, body[key]);
+    });
+    console.log("DATA", data)
+    return data;
+};
 
 const ProfileFormModal = ({ showProfileFormModal, setShowProfileFormModal }) => {
     const [isLoading, setIsLoading] = useState(false)
@@ -33,7 +51,7 @@ const ProfileFormModal = ({ showProfileFormModal, setShowProfileFormModal }) => 
             }
         };
         checkForCameraRollPermission()
-        setNotifyUser({userName:user.userName, organization: user.organization})
+        setNotifyUser({ userName: user.userName, organization: user.organization })
     }, [])
 
     // useEffect(() => {
@@ -60,7 +78,7 @@ const ProfileFormModal = ({ showProfileFormModal, setShowProfileFormModal }) => 
             Alert.alert("Error! While saving userName");
         } finally {
             setShowProfileFormModal(false)
-        } 
+        }
     };
 
     const handleProfileEdit = () => {
@@ -82,6 +100,7 @@ const ProfileFormModal = ({ showProfileFormModal, setShowProfileFormModal }) => 
         }
     };
 
+
     // const takeProfileImageWithCamera = async () => {
     //     const pictureTaken = await ImagePicker.launchCameraAsync({
     //         allowsEditing: true,
@@ -92,6 +111,35 @@ const ProfileFormModal = ({ showProfileFormModal, setShowProfileFormModal }) => 
     //         const pic = JSON.stringify({ profileImage: pictureTaken.assets[0].uri })
     //         await AsyncStorage.mergeItem('notify_user', pic)
     //     }
+    // }
+
+    // const storeProfileImage = async (uri) => {
+    //     let uriParts = uri.split('.');
+    //     let fileType = uriParts[uriParts.length - 1];
+    //     let formData = new FormData();
+    //     formData.append('photo', {
+    //         uri,
+    //         name: `photo.${fileType}`,
+    //         type: `image/${fileType}`,
+    //         user: "123"
+    //     });
+    //     formData.append('userId', "123")
+    //     return await fetch("https://593b-2600-6c5a-4a7f-463a-61b3-94e3-5c2a-117f.ngrok-free.app/api/profile-image",
+    //         {
+    //             method: 'POST',
+    //             body: formData,
+    //             headers: {
+    //                 Accept: 'application/json',
+    //                 'Content-Type': 'multipart/form-data',
+    //             },
+    //         })
+    //         .then((response) => response.json())
+    //         .then((response) => {
+    //             console.log('response', response);
+    //         })
+    //         .catch((error) => {
+    //             console.log('error', error);
+    //         })
     // }
 
     const addImageFromLibrary = async (imageType) => {
@@ -106,7 +154,8 @@ const ProfileFormModal = ({ showProfileFormModal, setShowProfileFormModal }) => 
                 dispatch(editUserProfileImage(_image.assets[0].uri));
                 imageToStore = JSON.stringify({ profileImage: _image.assets[0].uri })
                 await AsyncStorage.mergeItem('notify_user', imageToStore)
-
+                storeProfileImage(_image.assets[0].uri, user.id)
+                console.log(_image.assets[0])
             } else {
 
                 dispatch(editUserBanner(_image.assets[0].uri))
@@ -143,16 +192,16 @@ const ProfileFormModal = ({ showProfileFormModal, setShowProfileFormModal }) => 
                 </View>
                 <View style={styles.logininputContainer}>
                     <TextInput
-                    value={notifyUser.userName}
+                        value={notifyUser.userName}
                         autoCorrect={false}
                         placeholder='Enter your userName'
                         style={styles.logininput}
                         onChangeText={(value) => {
-                            setNotifyUser({ ...notifyUser, userName: value})
+                            setNotifyUser({ ...notifyUser, userName: value })
                         }}
                     />
                     <TextInput
-                    value={notifyUser.organization}
+                        value={notifyUser.organization}
                         autoCorrect={false}
                         placeholder='Enter your organization'
                         style={styles.logininput}
@@ -162,10 +211,10 @@ const ProfileFormModal = ({ showProfileFormModal, setShowProfileFormModal }) => 
                     />
                 </View>
                 <Pressable onPress={handleProfileEdit} style={styles.loginbutton}>
-                        <View>
-                            <Text style={styles.loginbuttonText}>Get Started</Text>
-                        </View>
-                    </Pressable>
+                    <View>
+                        <Text style={styles.loginbuttonText}>Get Started</Text>
+                    </View>
+                </Pressable>
             </View>
         </Modal>
     );

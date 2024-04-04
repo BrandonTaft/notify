@@ -2,35 +2,44 @@ import React, { useLayoutEffect, useState, useEffect } from "react";
 import { View, TextInput, Text, FlatList, Pressable } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ChatRoomMessage from "../components/ChatRoomMessage";
-import { AvatarButton } from "../components/buttons/AvatarButton";
+// import { AvatarButton } from "../components/buttons/AvatarButton";
 import { styles } from "../utils/styles";
 import socket from "../utils/socket";
 import { useSelector } from "react-redux";
-import { IconButton, MD3Colors } from "react-native-paper";
+import { IconButton, MD3Colors, Avatar } from "react-native-paper";
+import { AvatarButton, LogOutButton } from "../components/Buttons";
+
 
 const ChatRoomScreen = ({ route, navigation }) => {
-    const [user, setUser] = useState("");
+
     const { name, id } = route.params;
     const [chatMessages, setChatMessages] = useState([]);
     const [message, setMessage] = useState("");
     const notifyUser = useSelector(state => state.user)
     const rooms = useSelector(state => state.chatRooms)
 
+    const user = useSelector(state => state.user);
 
-
+    const RightHeaderButtons = () => {
+        return (
+            <View style={styles.rightHeaderButtonsContainer}>
+            <AvatarButton
+                    styles={styles.avatarButtonImage}
+                    size={50}
+                    handlePress={() => navigation.navigate("ProfileScreen")}
+                />
+            <LogOutButton size={50} color = "#000" />
+            </View>
+        )
+    }
 
 
     useLayoutEffect(() => {
-        navigation.setOptions({ headerTitle: name, headerLeft: () => (
-                        <IconButton
-                        icon="comment-edit"
-                        iconColor={MD3Colors.primary0}
-                        containerColor='grey'
-                        
-                        size={40}
-                        onPress={() => navigation.navigate("ChatListTab", {screen: 'ChatListScreen'})}
-                      />
-                    ), });
+        navigation.setOptions({
+            headerTitle: name,
+            headerRight: (props) => <RightHeaderButtons {...props} />,
+            
+        });
         socket.emit("findRoom", id);
         socket.on("foundRoom", (roomChats) => setChatMessages(roomChats));
     }, []);
@@ -55,6 +64,7 @@ const ChatRoomScreen = ({ route, navigation }) => {
                 message,
                 room_id: id,
                 user: notifyUser.userName,
+                user_id: notifyUser.id,
                 reactions: { thumbsUp: 0, thumbsDown: 0, heart: 0, eyes: 0 },
                 timestamp: { hour, mins },
             });
@@ -65,13 +75,14 @@ const ChatRoomScreen = ({ route, navigation }) => {
 
     return (
         <View style={styles.messagingscreen}>
+
             <View
                 style={[
                     styles.messagingscreen,
                     { paddingVertical: 5, paddingHorizontal: 10 },
                 ]}
             >
-                <AvatarButton styles={{ color: "black" }} handlePress={() => navigation.navigate("ChatListScreen")} />
+
                 {chatMessages[0] ? (
                     <FlatList
                         data={[...chatMessages].reverse()}

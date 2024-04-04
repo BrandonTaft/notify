@@ -141,6 +141,9 @@ export const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     /*******CHAT ROOM LIST SCREEN *******/
+    rightHeaderButtonsContainer: {
+        flexDirection:'row'
+    },
     reactions: {
         flexDirection:'row'
     },

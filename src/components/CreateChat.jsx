@@ -4,7 +4,7 @@ import { styles } from "../utils/styles";
 import socket from "../utils/socket";
 import { nanoid } from "@reduxjs/toolkit";
 
-const Modal = ({ setVisible }) => {
+const CreateChat = ({ setVisible }) => {
     const [groupName, setGroupName] = useState("");
     const closeModal = () => setVisible(false);
     const handleCreateRoom = () => {
@@ -35,4 +35,4 @@ const Modal = ({ setVisible }) => {
     );
 };
 
-export default Modal;
+export default CreateChat;
