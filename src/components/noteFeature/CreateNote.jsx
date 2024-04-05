@@ -2,15 +2,14 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { createNote } from '../../redux/noteSlice';
 import { Text, View, TextInput, Pressable, Modal } from 'react-native';
-import { IconButton } from 'react-native-paper';
+import { IconButton, useTheme } from 'react-native-paper';
 import { styles } from '../../utils/styles';
-import { useTheme } from '@react-navigation/native';
 
 export default function CreateNote() {
   const dispatch = useDispatch()
   const [content, setContent] = useState("");
   const [showCreateNoteModal, setShowCreateNoteModal] = useState(false)
-  const { colors } = useTheme()
+  const theme = useTheme()
 
 
   const onSaveNotePress = () => {
@@ -25,7 +24,7 @@ export default function CreateNote() {
     <>
       <IconButton
         icon="note-edit"
-        iconColor={colors.icon}
+        iconColor={theme.colors.onPrimaryContainer}
         size={40}
         onPress={() => setShowCreateNoteModal(true)}
       />

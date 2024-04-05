@@ -86,9 +86,9 @@ export default function ProfileScreen() {
               <Avatar.Image size={150} source={{ uri: user.profileImage }} style={styles.profileImage} />
               :
               user.userName ?
-                <Avatar.Text size={200} label={user.userName.charAt(0).toUpperCase()} />
+                <Avatar.Text size={150} label={user.userName.charAt(0).toUpperCase()} />
                 :
-                <Avatar.Text size={200} label={'N'} />
+                <Avatar.Text size={150} label={'N'} />
 
           }
         </ImageBackground>
@@ -101,10 +101,6 @@ export default function ProfileScreen() {
         showProfileFormModal={showProfileFormModal}
         setShowProfileFormModal={setShowProfileFormModal}
       />
-      <View style={styles.profileNotesContainer} >
-        <Notes />
-      <Notes />
-      </View>
     </View>
   );
 };

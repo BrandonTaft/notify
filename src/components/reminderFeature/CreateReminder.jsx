@@ -3,8 +3,7 @@ import { useDispatch } from 'react-redux';
 import { createReminder, updateReminder } from '../../redux/reminderSlice';
 import { Text, View, TextInput, Pressable, Modal } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import { IconButton } from 'react-native-paper';
-import { useTheme } from '@react-navigation/native';
+import { IconButton, useTheme } from 'react-native-paper';
 import { styles } from '../../utils/styles';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -19,7 +18,7 @@ export default function CreateReminder() {
   const [token, setToken] = useState();
 
   const [showCreateReminderModal, setShowCreateReminderModal] = useState(false)
-  const { colors } = useTheme()
+  const theme = useTheme()
 
   useEffect(() => {
     const getToken = async() => {
@@ -42,7 +41,7 @@ export default function CreateReminder() {
     <>
       <IconButton
         icon="reminder"
-        iconColor={colors.icon}
+        iconColor={theme.colors.onPrimaryContainer}
         size={40}
         onPress={() => setShowCreateReminderModal(true)}
       />

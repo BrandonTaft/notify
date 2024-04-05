@@ -1,13 +1,13 @@
 import { View, TouchableOpacity, Text } from 'react-native';
 import { useSelector } from 'react-redux';
-import { useNavigation, useTheme } from '@react-navigation/native';
-import { Avatar } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
+import { Avatar, useTheme } from 'react-native-paper';
 import { styles } from '../../utils/styles';
 
 export default function ProfileImage() {
     const user = useSelector(state => state.user);
     const navigation = useNavigation();
-    const { colors } = useTheme();
+    const theme = useTheme();
 
     return (
         <>
@@ -20,16 +20,18 @@ export default function ProfileImage() {
                         user.userName ?
                             <Avatar.Text
                                 size={64}
-                                style={{ backgroundColor: colors.icon }}
-                                color={colors.text}
+                                style={{ backgroundColor: theme.colors.onPrimaryContainer }}
+                                color={theme.colors.primaryContainer}
                                 label={user.userName.charAt(0).toUpperCase()}
+                                labelStyle={{fontWeight:"bold"}}
                             />
                             :
                             <Avatar.Text
                                 size={64}
-                                style={{ backgroundColor: colors.icon }}
-                                color={colors.text}
+                                style={{ backgroundColor: theme.colors.onPrimaryContainer }}
+                                color={theme.colors.primaryContainer}
                                 label={'N'}
+                                labelStyle={{fontWeight:"bold"}}
                             />
 
                 }

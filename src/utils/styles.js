@@ -77,7 +77,6 @@ export const styles = StyleSheet.create({
     /**********PROFILE SCREEN*********/
     profileScreen: {
         flex: 1,
-        backgroundColor: '#000'
     },
     profileImageContainer: {
         position: 'relative',

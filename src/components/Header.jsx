@@ -8,7 +8,7 @@ import { styles } from "../utils/styles";
 export default function Header() {
     const theme = useTheme();
     return (
-        <Surface style={[styles.headerContainer,  {backgroundColor: theme.colors.onPrimaryContainer }]} elevation={5}>
+        <Surface theme={theme.colors.elevation.level1} style={[styles.headerContainer,  {backgroundColor: theme.colors.primaryContainer }]} elevation={5}>
             <ProfileImage />
             <CreateNote />
             <CreateReminder />

@@ -13,7 +13,7 @@ export function ThemeButton({ styles, size }) {
     return (
         <IconButton
             icon="theme-light-dark"
-            iconColor={theme.colors.text}
+            iconColor={theme.colors.onPrimaryContainer}
             size={40}
             // onPress={async () => {
             //     await AsyncStorage.removeItem("notify_user")
@@ -26,11 +26,11 @@ export function ThemeButton({ styles, size }) {
 
 export function LogOutButton({ styles, size }) {
     const dispatch = useDispatch();
-    const { colors } = useTheme();
+    const theme = useTheme();
     return (
         <IconButton
             icon="logout"
-            iconColor={colors.icon}
+            iconColor={theme.colors.onPrimaryContainer}
             size={40}
             onPress={async () => {
                 await AsyncStorage.removeItem("notify_user")
@@ -40,23 +40,24 @@ export function LogOutButton({ styles, size }) {
     )
 }
 
-export function AvatarButton({ handlePress, size }) {
-    const user = useSelector(state => state.user);
-    return (
-        <Pressable style={styles.avatarButton} onPress={handlePress}>
-            {
-                user.profileImage
-                    ?
-                    <Avatar.Image size={size} source={{ uri: user.profileImage }} />
-                    :
-                    user.userName ?
-                        <Avatar.Text size={size} label={user.userName.charAt(0).toUpperCase()} />
-                        :
-                        <Avatar.Text size={size} label={'N'} />
-            }
-        </Pressable>
-    )
-};
+// export function AvatarButton({ handlePress, size }) {
+//     const user = useSelector(state => state.user);
+//     const theme = useTheme()
+//     return (
+//         <Pressable style={styles.avatarButton} onPress={handlePress}>
+//             {
+//                 user.profileImage
+//                     ?
+//                     <Avatar.Image size={size} source={{ uri: user.profileImage }} />
+//                     :
+//                     user.userName ?
+//                         <Avatar.Text size={size} label={user.userName.charAt(0).toUpperCase()} style={{backgroundColor: "yellow"}} color="yellow" />
+//                         :
+//                         <Avatar.Text size={size} label={'N'} />
+//             }
+//         </Pressable>
+//     )
+// };
 
 export function ReactionButtons({ message }) {
     const reactionEmoji = {

@@ -43,7 +43,7 @@ export default function ChatRoomPreview() {
     chatScreenData = <Loader />
   } else {
     chatScreenData = (
-      <View style={styles.chatlistContainer}>
+      <View style={{flex:1}}>
         {chatRooms.length > 0 ? (
           <FlatList
             data={chatRooms}
@@ -79,7 +79,20 @@ export default function ChatRoomPreview() {
         onPress={() => navigation.navigate("HomeScreen")}
       />
     </View>
-      { chatScreenData }
+    <View style={{flex:1, backgroundColor:'pink'}}>
+        {chatRooms.length > 0 ? (
+          <FlatList
+            data={chatRooms}
+            renderItem={({ item }) => <ChatRoomListItem item={item} />}
+            keyExtractor={(item) => item.id}
+          />
+        ) : (
+          <View style={styles.chatemptyContainer}>
+            <Text style={styles.chatemptyText}>No rooms created!</Text>
+            <Text>Click the icon above to create a Chat room</Text>
+          </View>
+        )}
+      </View>
   {
     visible &&
     <CreateChat setVisible={setVisible} />
