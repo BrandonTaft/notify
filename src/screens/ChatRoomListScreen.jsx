@@ -1,10 +1,10 @@
 import { useState, useLayoutEffect, useEffect } from "react";
 import { View, Text, Pressable, SafeAreaView, FlatList } from "react-native";
 import socket from "../utils/socket";
-import ChatRoomListItem from "../components/ChatRoomListItem";
+import ChatRoomListItem from "../components/chatFeature/ChatRoomListItem";
 import { styles } from "../utils/styles";
-import CreateChat from "../components/CreateChat";
-import { fetchGroups } from "../api";
+import CreateChat from "../components/chatFeature/CreateChat";
+import { fetchGroups } from "../utils/api";
 import { IconButton, MD3Colors } from 'react-native-paper';
 import { useSelector, useDispatch } from 'react-redux';
 import { addChatRoom } from "../redux/chatRoomSlice";

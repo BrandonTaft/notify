@@ -1,43 +1,40 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { updateNote, deleteNote } from '../redux/noteSlice';
+import { createNote } from '../../redux/noteSlice';
 import { Text, View, TextInput, Pressable, Modal } from 'react-native';
-import { IconButton, MD3Colors } from 'react-native-paper';
-import { styles } from '../utils/styles';
+import { IconButton } from 'react-native-paper';
+import { styles } from '../../utils/styles';
+import { useTheme } from '@react-navigation/native';
 
-
-
-
-
-export default function UpdateNote({showUpdateNoteModal, setShowUpdateNoteModal, itemToEdit}) {
+export default function CreateNote() {
   const dispatch = useDispatch()
-  const [content, setContent] = useState();
- 
+  const [content, setContent] = useState("");
+  const [showCreateNoteModal, setShowCreateNoteModal] = useState(false)
+  const { colors } = useTheme()
 
-  useEffect(()=> {
-    if(itemToEdit) {
-    setContent(itemToEdit.content || "")
-    }
-  },[showUpdateNoteModal])
 
   const onSaveNotePress = () => {
-      dispatch(
-        updateNote({
-          id: itemToEdit.id,
-          content
-        })
-      )
+    if (content) {
+      dispatch(createNote(content))
       setContent('')
-      setShowUpdateNoteModal (false)
+      setShowCreateNoteModal(false)
+    }
   }
 
   return (
+    <>
+      <IconButton
+        icon="note-edit"
+        iconColor={colors.icon}
+        size={40}
+        onPress={() => setShowCreateNoteModal(true)}
+      />
       <Modal
         animationType="slide"
         transparent={true}
-        visible={showUpdateNoteModal}
+        visible={showCreateNoteModal}
         onRequestClose={() => {
-          setShowUpdateNoteModal(false);
+          setShowCreateNoteModal(false);
         }}>
         <View style={styles.modalView}>
           <Text>Add a New Note</Text>
@@ -51,22 +48,6 @@ export default function UpdateNote({showUpdateNoteModal, setShowUpdateNoteModal,
             placeholder=""
           />
           <View style={styles.horizontalView}>
-            <Pressable
-              android_ripple={
-                RippleConfig = {
-                  color: "#312e3f",
-                  borderless: true,
-                  foreground: false
-                }
-              }
-              style={styles.round}
-              onPress={() => {
-                dispatch(deleteNote(itemToEdit.id))
-                setShowUpdateNoteModal(false)
-            }}
-            >
-             
-            </Pressable>
             <Pressable
               android_ripple={
                 RippleConfig = {
@@ -92,7 +73,7 @@ export default function UpdateNote({showUpdateNoteModal, setShowUpdateNoteModal,
               }
               style={styles.round}
               onPress={() => {
-                setShowUpdateNoteModal(false)
+                setShowCreateNoteModal(false)
               }}
             >
               <Text style={{ fontSize: 18, color: 'white', fontWeight: 'bold' }}>
@@ -102,6 +83,6 @@ export default function UpdateNote({showUpdateNoteModal, setShowUpdateNoteModal,
           </View>
         </View>
       </Modal>
-   
+    </>
   )
 }

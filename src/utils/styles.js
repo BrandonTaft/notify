@@ -1,10 +1,17 @@
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
-
-
+    /************HEADER***********/
+    headerContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-evenly',
+        padding:10,
+        borderRadius:15
+    },
     /************LOGIN***********/
     loginscreen: {
+
         flex: 1,
         backgroundColor: "#EEF1FF",
         alignItems: "center",
@@ -70,48 +77,48 @@ export const styles = StyleSheet.create({
     /**********PROFILE SCREEN*********/
     profileScreen: {
         flex: 1,
-        backgroundColor:'#000'
+        backgroundColor: '#000'
     },
     profileImageContainer: {
-        position:'relative',
+        position: 'relative',
         flex: 3
     },
     profileImage: {
-        position:'absolute',
-        top:'50%'
+        position: 'absolute',
+        top: '50%'
     },
     profileImageBtnContainer: {
         flexDirection: 'row',
         width: '100%',
         justifyContent: 'space-evenly',
         backgroundColor: 'red',
-        position:'relative'
+        position: 'relative'
     },
     profileData: {
         flex: 1,
-        alignItems:'center'
+        alignItems: 'center'
     },
     fab: {
-    position: 'absolute',
-    margin: 16,
-    right: 0,
-    top: 0,
-    zIndex:99
-  },
-  profileText: {
-    fontSize:20,
-    color:"#fff"
-  },
-  profileNotesContainer : {
-    flex:4
-  },
+        position: 'absolute',
+        margin: 16,
+        right: 0,
+        top: 0,
+        zIndex: 99
+    },
+    profileText: {
+        fontSize: 20,
+        color: "#fff"
+    },
+    profileNotesContainer: {
+        flex: 4
+    },
     /**********PROFILE FORM MODAL *********/
     profileFormModal: {
         backgroundColor: '#fff',
-        marginTop:'auto',
-        flex:.75,
+        marginTop: 'auto',
+        flex: .75,
         alignItems: "center",
-       
+
     },
     profileFormModalBtnContainer: {
         flexDirection: 'column',
@@ -141,14 +148,11 @@ export const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     /*******CHAT ROOM LIST SCREEN *******/
-    rightHeaderButtonsContainer: {
-        flexDirection:'row'
-    },
     reactions: {
-        flexDirection:'row'
+        flexDirection: 'row'
     },
     chatRoomListScreen: {
-        position:'relative',
+        position: 'relative',
         flex: 1
     },
     chatRoomListScreenFabGroup: {
@@ -157,9 +161,9 @@ export const styles = StyleSheet.create({
         margin: 16,
         right: 0,
         top: 0,
-        zIndex:99
+        zIndex: 99
     },
-    
+
     chatheading: {
         fontSize: 24,
         fontWeight: "bold",
@@ -365,7 +369,7 @@ export const styles = StyleSheet.create({
     upcomingContainer: {
         flex: 1,
         padding: 6,
-        
+
     },
     title: {
         // fontFamily: "Rubik-Medium",

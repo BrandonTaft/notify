@@ -4,7 +4,7 @@ import { Text, View, Pressable, ScrollView } from 'react-native';
 
 
 
-import usePushNotification from './hooks/usePushNotification';
+import usePushNotification from '../hooks/usePushNotification';
 
 import CreateReminder from './CreateReminder';
 
@@ -12,7 +12,7 @@ import ReminderItems from './ReminderItems';
 
 
 // import AsyncStorage from '@react-native-async-storage/async-storage';
-import { styles } from '../utils/styles';
+import { styles } from '../../utils/styles';
 
 
 export default function UpcomingReminders() {

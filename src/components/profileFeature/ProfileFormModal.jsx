@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { styles } from "../../utils/styles";
 import { Avatar, Button } from 'react-native-paper';
 import * as ImagePicker from 'expo-image-picker';
-import { storeProfileImage } from "../../api";
+import { storeProfileImage } from "../../utils/api";
 import { editUserProfileImage, editUserBanner, editUserCredentials } from '../../redux/userSlice';
 import {
     Text,

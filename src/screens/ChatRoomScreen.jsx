@@ -1,8 +1,7 @@
 import React, { useLayoutEffect, useState, useEffect } from "react";
 import { View, TextInput, Text, FlatList, Pressable } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import ChatRoomMessage from "../components/ChatRoomMessage";
-// import { AvatarButton } from "../components/buttons/AvatarButton";
+import ChatRoomMessage from "../components/chatFeature/ChatRoomMessage";
 import { styles } from "../utils/styles";
 import socket from "../utils/socket";
 import { useSelector } from "react-redux";

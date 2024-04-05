@@ -1,8 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit';
-import reminderReducer from "../redux/reminderSlice";
-import noteReducer from '../redux/noteSlice';
-import chatRoomReducer from '../redux/chatRoomSlice'
-import userReducer from '../redux/userSlice';
+import reminderReducer from "../reminderSlice";
+import noteReducer from '../noteSlice';
+import chatRoomReducer from '../chatRoomSlice'
+import userReducer from '../userSlice';
 
 export default configureStore({
   reducer: {

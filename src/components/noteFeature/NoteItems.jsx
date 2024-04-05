@@ -1,12 +1,11 @@
 import { StyleSheet, Text, View, Pressable } from 'react-native';
 import { List, MD3Colors, Icon } from 'react-native-paper';
 import { useDispatch } from 'react-redux';
-import { ElapsedTime } from './ElapsedTime';
-import { deleteNote } from '../redux/noteSlice';
+import { ElapsedTime } from '../ElapsedTime';
+import { deleteNote } from '../../redux/noteSlice';
 import { useState, useRef } from 'react';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import UpdateNote from './UpdateNote';
-import { ReactionButtons } from './buttons/ReactionButtons';
 
 function NoteItems({ list }) {
     const [showUpdateNoteModal, setShowUpdateNoteModal] = useState(false);
@@ -98,7 +97,6 @@ function NoteItems({ list }) {
                                     </Text>
                                     <ElapsedTime timestamp={item.timeStamp} />
                                     <View style={{flexDirection:'row', justifyContent:'space-evenly'}}>
-                                    <ReactionButtons note={item} />
                                     </View>
                                 </View>
                                 <List.Icon color={MD3Colors.tertiary70} icon="chevron-right" />

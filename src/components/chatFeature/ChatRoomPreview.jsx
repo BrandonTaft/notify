@@ -1,20 +1,22 @@
 import { useState, useLayoutEffect, useEffect } from "react";
 import { View, Text, Pressable, SafeAreaView, FlatList } from "react-native";
-import { fetchGroups } from "../api";
+import { fetchGroups } from "../../utils/api";
 import { useSelector, useDispatch } from 'react-redux';
-import { addChatRoom } from "../redux/chatRoomSlice";
+import { addChatRoom } from "../../redux/chatRoomSlice";
 import CreateChat from "./CreateChat";
 import ChatRoomListItem from "./ChatRoomListItem";
-import Loader from "./Loader";
+import Loader from "../Loader";
 import { IconButton, MD3Colors } from 'react-native-paper';
-import socket from "../utils/socket";
-import { styles } from "../utils/styles";
+import socket from "../../utils/socket";
+import { useTheme } from '@react-navigation/native';
+import { styles } from "../../utils/styles";
 
 export default function ChatRoomPreview() {
     const [isLoading, setIsLoading] = useState(false)
   const [chatRooms, setChatRooms] = useState([]);
   const [visible, setVisible] = useState(false);
   const dispatch = useDispatch()
+  const { colors } = useTheme();
 
   useLayoutEffect(() => {
     setIsLoading(true)
@@ -58,7 +60,7 @@ export default function ChatRoomPreview() {
     )
   }
   return (
-    <View style={styles.chatRoomListScreen}>
+    <View style={[styles.chatRoomListScreen, {backgroundColor: colors.primary} ]}>
       <View style={styles.chatRoomListScreenFabGroup} >
       <IconButton
         icon="comment-edit"

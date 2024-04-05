@@ -1,7 +1,7 @@
 import { View, Text } from "react-native";
 import { Avatar } from 'react-native-paper';
-import { styles } from "../utils/styles";
-import { ReactionButtons } from "./Buttons";
+import { styles } from "../../utils/styles";
+import { ReactionButtons } from "../Buttons";
 
 export default function ChatRoomMessage({ message, user }) {
     console.log("MESSAGE", message)

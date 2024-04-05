@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import {  updateReminder, deleteReminder } from '../redux/reminderSlice';
+import {  updateReminder, deleteReminder } from '../../redux/reminderSlice';
 import { Text, View, TextInput, Pressable, Modal } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { IconButton, MD3Colors } from 'react-native-paper';
-import { styles } from '../utils/styles';
+import { styles } from '../../utils/styles';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 

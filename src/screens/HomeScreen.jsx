@@ -1,11 +1,12 @@
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { View } from 'react-native';
 import Header from '../components/Header';
-import UpcomingReminders from '../components/UpcomingReminders';
-import Notes from '../components/Notes';
+import UpcomingReminders from '../components/reminderFeature/UpcomingReminders';
+import Notes from '../components/noteFeature/Notes';
 import ChatRoomListScreen from './ChatRoomListScreen';
 import {useSelector } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import ChatRoomPreview from '../components/ChatRoomPreview';
+import ChatRoomPreview from '../components/chatFeature/ChatRoomPreview';
+import { useTheme } from '@react-navigation/native';
 
 // import { useState } from 'react';
 // import useFetch from '../hooks/useFetch';
@@ -20,6 +21,7 @@ import ChatRoomPreview from '../components/ChatRoomPreview';
 const HomeScreen = ({ route, navigation }) => {
     // const { isLoading, reminders, setRefresh, refresh } = useFetch()
     // const [showPicker, setShowPicker] = useState(false);
+    const { colors } = useTheme();
     const getUser = async() => {
         const user = useSelector(state => state.user)
         const storedUser = await AsyncStorage.getItem("notify_user")
@@ -30,22 +32,17 @@ const HomeScreen = ({ route, navigation }) => {
    const user = useSelector(state => state.user)
    console.log("HOMESCREEN stateeee",user)
     return (
-        // <Layout
-        //     setShowPicker={setShowPicker}
-        //     reminders={reminders}
-        //     onSuccess={() => setRefresh(!refresh)}
-        //     navigation={navigation}
-        // >
-        <>
+        
+        <View style={{backgroundColor: colors.background}}>
 
 
-            <GestureHandlerRootView style={{ flex: 1, backgroundColor: '#000' }}>
+          
                 <Header />
                 <ChatRoomPreview />
                 <UpcomingReminders />
                 {/* <Notes /> */}
                 
-            </GestureHandlerRootView>
+           
             
 
 
@@ -56,7 +53,7 @@ const HomeScreen = ({ route, navigation }) => {
                 showPicker={showPicker}
             /> */}
 
-        </>
+        </View>
         // </Layout>
     )
 }

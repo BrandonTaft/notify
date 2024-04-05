@@ -7,9 +7,7 @@ import { Avatar, Button, FAB, IconButton, MD3Colors } from 'react-native-paper';
 import { styles } from '../utils/styles';
 import { editUserProfileImage, editUserBanner } from '../redux/userSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import ProfileFormModal from '../components/modals/ProfileFormModal';
-import Notes from '../components/Notes';
-import UpcomingReminders from '../components/UpcomingReminders';
+import ProfileFormModal from '../components/profileFeature/ProfileFormModal';
 
 export default function ProfileScreen() {
   const [showProfileFormModal, setShowProfileFormModal] = useState(false);
