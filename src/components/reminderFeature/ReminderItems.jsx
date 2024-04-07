@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View, Pressable } from 'react-native';
-import { List, MD3Colors, Icon } from 'react-native-paper';
+import { StyleSheet, View, Pressable } from 'react-native';
+import { List, MD3Colors, Icon, useTheme, Text } from 'react-native-paper';
 import { useDispatch } from 'react-redux';
 import UpdateReminder from './UpdateReminder';
 import { completeReminder, deleteReminder } from '../../redux/reminderSlice';
@@ -9,9 +9,10 @@ import Swipeable from 'react-native-gesture-handler/Swipeable';
 function ReminderItems({ list }) {
     const [showUpdateModal, setShowUpdateModal] = useState(false);
     const itemToEditRef = useRef({});
-    const listItemRef = useRef([]);
+    const reminderItemRef = useRef([]);
     const prevOpenedRow = useRef();
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
+    const theme = useTheme();
  console.log(list)
     const renderRightActions = (item) => {
         return (
@@ -24,7 +25,7 @@ function ReminderItems({ list }) {
                             foreground: true
                         }
                     }
-                    style={styles.listItemRightInsideButton}
+                    style={styles.reminderItemRightInsideButton}
                     onPress={() => {
                         itemToEditRef.current = item
                         setShowUpdateModal(true)
@@ -44,7 +45,7 @@ function ReminderItems({ list }) {
                             foreground: true
                         }
                     }
-                    style={styles.listItemRightButton}
+                    style={styles.reminderItemRightButton}
                     onPress={() => {
                         dispatch(completeReminder(item.id))
                     }}>
@@ -68,7 +69,7 @@ function ReminderItems({ list }) {
                         foreground: true
                     }
                 }
-                style={styles.listItemLeftButton}
+                style={styles.reminderItemLeftButton}
                 onPress={() => {
                     dispatch(deleteReminder(item.id))
                 }}>
@@ -82,10 +83,10 @@ function ReminderItems({ list }) {
     };
 
     const closeRow = (index) => {
-        if (prevOpenedRow.current && prevOpenedRow.current !== listItemRef.current[index]) {
+        if (prevOpenedRow.current && prevOpenedRow.current !== reminderItemRef.current[index]) {
             prevOpenedRow.current.close();
         }
-        prevOpenedRow.current = listItemRef.current[index];
+        prevOpenedRow.current = reminderItemRef.current[index];
     }
 
     return (
@@ -103,18 +104,18 @@ function ReminderItems({ list }) {
                                 renderLeftActions={() => renderLeftActions(item)}
                                 renderRightActions={() => renderRightActions(item)}
                                 onSwipeableWillOpen={() => closeRow(index)}
-                                containerStyle={styles.swipeableContainerBack}
-                                childrenContainerStyle={styles.swipeableContainerFront}
+                                containerStyle={[styles.swipeableContainerBack, {backgroundColor:theme.colors.secondaryContainer}]}
+                                childrenContainerStyle={[styles.swipeableContainerFront, {backgroundColor:theme.colors.secondaryContainer}]}
                                 key={item.id}
-                                ref={ref => listItemRef.current[index] = ref}
+                                ref={ref => reminderItemRef.current[index] = ref}
                             >
                                 <List.Icon color={MD3Colors.tertiary70} icon="chevron-left" />
-                                <View style={styles.listItemContents}>
-                                    <Text style={styles.listItemTitle}>
+                                <View style={styles.reminderItemTextContainer}>
+                                    <Text style={{color:theme.colors.onSurface}} variant="titleMedium">
                                         {item.title}
                                     </Text>
                                     {item.selectedDate &&
-                                        <Text style={styles.listItemTime}>
+                                        <Text style={{color:theme.colors.outline}} variant="labelMedium">
                                             {new Date(JSON.parse(item.selectedDate)).toLocaleDateString([], {
                                                 weekday: 'short', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit'
                                             })}
@@ -148,25 +149,15 @@ const styles = StyleSheet.create({
     swipeableContainerFront: {
         flex: 1,
         flexDirection: 'row',
-        backgroundColor: "black",
+        backgroundColor: "white",
         overflow: 'hidden'
     },
-    listItemContents: {
+   reminderItemTextContainer: {
         flexDirection: 'column',
         flex: 1,
-        padding: 10
+        padding:5
     },
-    listItemTitle: {
-        // fontFamily: "Rubik-Regular",
-        color: '#f0edf3',
-        fontSize: 18,
-    },
-    listItemTime: {
-        // fontFamily: "Rubik-Regular",
-        color: 'grey',
-        fontSize: 15
-    },
-    listItemLeftButton: {
+    reminderItemLeftButton: {
         backgroundColor: 'red',
         borderRadius: 15,
         borderBottomRightRadius: 0,
@@ -174,7 +165,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         paddingHorizontal: 15
     },
-    listItemRightButton: {
+    reminderItemRightButton: {
         backgroundColor: 'grey',
         borderRadius: 15,
         borderBottomLeftRadius: 0,
@@ -182,7 +173,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         paddingHorizontal: 15
     },
-    listItemRightInsideButton: {
+    reminderItemRightInsideButton: {
         backgroundColor: 'white',
         borderBottomLeftRadius: 0,
         borderTopLeftRadius: 0,

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Pressable, View, Text, StyleSheet, ScrollView } from "react-native";
+import { Button } from 'react-native-paper';
 import { FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 import CreateNote from './CreateNote';
 import { useSelector } from 'react-redux';
@@ -14,9 +15,12 @@ export default function Notes() {
 
     console.log(notes)
     return (
-        <View style={styles.notesContainer}>
+        <View style={{ justifyContent: 'center', flex: 1, alignItems: 'center' }}>
         {/* <CreateNote /> */}
-            <Pressable
+        <Button icon={'pencil'} onPress={() => setShowNotes(!showNotes)} uppercase={false} mode="elevated">
+         Notes
+        </Button>
+            {/* <Pressable
                 android_ripple={
                     RippleConfig = {
                         color: "#8789f7",
@@ -58,7 +62,7 @@ export default function Notes() {
                         }}
                     />
                 }
-            </Pressable>
+            </Pressable> */}
             {showNotes &&
                 <>
                      <ScrollView keyboardShouldPersistTaps="handled">
@@ -72,36 +76,8 @@ export default function Notes() {
 }
 
 const styles = StyleSheet.create({
-    notesContainer:{
-        flex:1,
-        position:"absolute"
-    },
-    menuBtn: {
-        
-        borderRadius: 16,
-        borderWidth: 3,
-        borderColor: '#312e3f',
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingLeft: 22,
-        paddingRight: 20,
-        paddingVertical: 4,
-        marginHorizontal: 4,
-        marginTop: 10,
-    },
-    active: {
-        borderColor: '#8789f7',
-        borderBottomLeftRadius: 0,
-        borderBottomRightRadius: 0,
-        marginBottom: 4
-    },
-    menuBtnText: {
-        // fontFamily: 'Rubik-Medium',
-        color: '#8789f7',
-        fontSize: 24,
-        marginLeft: 25,
-        marginTop: 2
-    },
+   
+    
     topHorizontal: {
         flexDirection: 'row',
         justifyContent: 'space-evenly',

@@ -3,8 +3,9 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createMaterialBottomTabNavigator } from "react-native-paper/react-navigation";
 import { createStackNavigator } from '@react-navigation/stack';
 import { PaperProvider, MD3DarkTheme, MD3LightTheme, useTheme } from 'react-native-paper';
+import { en, registerTranslation } from 'react-native-paper-dates'
 import { useSelector } from 'react-redux';
-import { StatusBar, useColorScheme } from 'react-native';
+import { StatusBar, View, useColorScheme } from 'react-native';
 import LoginScreen from './screens/LoginScreen';
 import HomeScreen from './screens/HomeScreen';
 import ChatRoomScreen from './screens/ChatRoomScreen';
@@ -15,10 +16,11 @@ import Icon from 'react-native-vector-icons/FontAwesome6';
 import { Entypo } from '@expo/vector-icons';
 const Tab = createMaterialBottomTabNavigator();
 const Stack = createStackNavigator();
-
+registerTranslation('en', en)
 
 export default function Root() {
     const isLoggedIn = useSelector(state => state.user.isLoggedIn);
+    // const theme = useTheme();
     const colorScheme = useColorScheme();
     const LightTheme = {
         ...MD3LightTheme,
@@ -106,7 +108,6 @@ export default function Root() {
                     initialRouteName="LoginScreen"
                 >
                     {!isLoggedIn ? (
-
                         <Stack.Screen
                             name='LoginScreen'
                             component={LoginScreen}
@@ -124,35 +125,6 @@ export default function Root() {
                         />
                     )}
                 </Stack.Navigator>
-                {/* <Tab.Navigator
-                        initialRouteName="LoginScreen"
-                        barStyle={{ backgroundColor: '#121212' }}
-                        swipeEnabled
-                    >
-                        <Tab.Screen
-                            name='LoginScreen'
-                            component={LoginScreen}
-                            options={{
-                                barStyle: { display: "none" },
-                              }}
-                        />
-
-                        <Tab.Screen
-                            name='HomeScreen'
-                            component={HomeScreen}
-                            initialParams={{ itemId: 42 }}
-                        />
-
-                        <Tab.Screen
-                            name='ChatListTab'
-                            component={ChatListTab}
-                            options={{
-                                headerShown: true,
-                                headerTitle: "Chat Room"
-                            }}
-                        />
-                    </Tab.Navigator> */}
-
             </NavigationContainer>
         </PaperProvider>
     );

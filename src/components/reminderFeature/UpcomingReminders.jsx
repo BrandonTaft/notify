@@ -31,9 +31,8 @@ export default function UpcomingReminders() {
 
     return (
         
-        <View style={styles.upcomingReminderContainer}>
+        <View style={{paddingHorizontal:5}}>
             <ScrollView keyboardShouldPersistTaps="handled">
-                <Text style={styles.title} >Scheduled</Text>
                 <ReminderItems
                     list={upcomingReminders}
                 />
