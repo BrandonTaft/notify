@@ -3,10 +3,12 @@ import { useLayoutEffect, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { styles } from "../../utils/styles";
+import { useTheme } from "react-native-paper";
 
 const ChatRoomListItem = ({ item }) => {
     const navigation = useNavigation();
     const [messages, setMessages] = useState({});
+    const theme = useTheme();
    
     useLayoutEffect(() => {
         setMessages(item.messages[item.messages.length - 1]);
@@ -23,7 +25,7 @@ const ChatRoomListItem = ({ item }) => {
     };
 
     return (
-        <Pressable style={styles.cchat} onPress={handleNavigation}>
+        <Pressable style={[styles.cchat, {backgroundColor:theme.colors.primary}]} onPress={handleNavigation}>
             <Ionicons
                 name='person-circle-outline'
                 size={45}

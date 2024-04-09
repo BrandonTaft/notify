@@ -13,15 +13,15 @@ const HomeScreen = ({ route, navigation }) => {
             <Header />
             
             
-            <Surface style={{ flexDirection: 'column', flex: 1, backgroundColor: theme.colors.surface, margin: 10, borderRadius: 10 }} elevation={1}>
+            <Surface style={{ flexDirection: 'column', flex: 1, backgroundColor: theme.colors.surface, margin: 10, borderRadius: 10 }} elevation={2}>
                 <ChatRoomPreview />
             </Surface>
             <Divider horizontalInset />
-            <Surface style={{ flexDirection: 'column', flex: 1, backgroundColor: theme.colors.surface, margin: 10, borderRadius: 10 }} elevation={1}>
+            <Surface style={{ flexDirection: 'column', flex: 1, backgroundColor: theme.colors.surface, margin: 10, borderRadius: 10 }} elevation={2}>
                 <UpcomingReminders />
             </Surface>
             <Divider horizontalInset />
-            <Surface style={{ flexDirection: 'column', flex: 1, backgroundColor: theme.colors.surface, margin: 10, borderRadius: 10 }} elevation={1}>
+            <Surface style={{ flexDirection: 'column', flex: 1, backgroundColor: theme.colors.surface, margin: 10, borderRadius: 10 }} elevation={2}>
                 <Tools />
             </Surface>
         </View>

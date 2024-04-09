@@ -1,9 +1,9 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { createReminder } from '../../redux/reminderSlice';
-import { Text, View, TextInput, Pressable, Modal } from 'react-native';
+import { View } from 'react-native';
 import { DatePickerModal, TimePickerModal } from 'react-native-paper-dates';
-import { IconButton, useTheme } from 'react-native-paper';
+import { IconButton, useTheme, Button, Text, TextInput, Modal, Portal } from 'react-native-paper';
 import { styles } from '../../utils/styles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -56,6 +56,10 @@ export default function CreateReminder() {
     setIsTimePickerVisible(false);
   }, [setIsTimePickerVisible, selectedDay, setSelectedDate]);
 
+  const onModalDismiss = useCallback(() => {
+    setShowCreateReminderModal(false)
+  }, [setIsDatePickerVisible]);
+
   return (
     <>
       <IconButton
@@ -64,35 +68,26 @@ export default function CreateReminder() {
         size={40}
         onPress={() => setShowCreateReminderModal(true)}
       />
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={showCreateReminderModal}
-        onRequestClose={() => {
-          setShowCreateReminderModal(false);
-        }}>
-        <View style={styles.modalView}>
+      <Portal>
+        <Modal
+          visible={showCreateReminderModal}
+          style={{ padding: 20 }}
+          contentContainerStyle={{ backgroundColor: 'red', padding: 20 }}
+          onDismiss={() => {
+            setShowCreateReminderModal(false);
+          }}>
+
           <Text>Add a New Reminder</Text>
           <TextInput
             multiline={true}
-            numberOfLines={6}
+
             placeholderTextColor="#fff"
-            style={styles.input}
+
             onChangeText={setTitle}
             value={title}
             placeholder=""
           />
-          <Pressable
-            android_ripple={
-              RippleConfig = {
-                color: "#8789f7",
-                borderless: false,
-                foreground: false
-              }
-            }
-            style={styles.addTime}
-            onPress={() => setIsDatePickerVisible(true)}
-          >
+          <Button icon={'content-save-check-outline'} uppercase={false} mode="elevated" onPress={()=> setIsDatePickerVisible(true)}>
             <Text style={styles.mainText}>
               {
                 selectedDate
@@ -102,53 +97,16 @@ export default function CreateReminder() {
                   'Add Time'
               }
             </Text>
-          </Pressable>
-          <View style={styles.horizontalView}>
-            <Pressable
-              android_ripple={
-                RippleConfig = {
-                  color: "#312e3f",
-                  borderless: true,
-                  foreground: false
-                }
-              }
-              style={styles.round}
-              onPress={() => console.log("PRESSED")}
-            >
+          </Button>
+          <View>
 
-            </Pressable>
-            <Pressable
-              android_ripple={
-                RippleConfig = {
-                  color: "#312e3f",
-                  borderless: true,
-                  foreground: false
-                }
-              }
-              style={styles.round}
-              onPress={() => onSaveReminderPress()}
-            >
-              <Text style={{ fontSize: 18, color: 'white', fontWeight: 'bold' }}>
-                Save
-              </Text>
-            </Pressable>
-            <Pressable
-              android_ripple={
-                RippleConfig = {
-                  color: "#312e3f",
-                  borderless: true,
-                  foreground: false
-                }
-              }
-              style={styles.round}
-              onPress={() => {
-                setShowCreateReminderModal(false)
-              }}
-            >
-              <Text style={{ fontSize: 18, color: 'white', fontWeight: 'bold' }}>
-                Cancel
-              </Text>
-            </Pressable>
+            <Button icon={'content-save-check-outline'} onPress={() => onSaveReminderPress()} uppercase={false} mode="elevated">
+              Save
+            </Button>
+
+            <Button icon={'content-save-check-outline'} onPress={() => onModalDismiss()} uppercase={false} mode="elevated">
+              <Text variant="labelLarge">Cancel</Text>
+            </Button>
           </View>
           <DatePickerModal
             locale="en"
@@ -165,8 +123,9 @@ export default function CreateReminder() {
             hours={12}
             minutes={14}
           />
-        </View>
-      </Modal>
+          {/* </View> */}
+        </Modal>
+      </Portal>
     </>
   )
 }
