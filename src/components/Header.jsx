@@ -1,17 +1,47 @@
+import { useState } from "react";
 import CreateNote from "./noteFeature/CreateNote";
-import CreateReminder from "./reminderFeature/CreateReminder";
+import CreateReminderComponent from "./reminderFeature/CreateReminderComponent";
+import { useDispatch } from 'react-redux';
+import { createReminder } from '../redux/reminderSlice';
 import ProfileImage from "./profileFeature/ProfileImage";
 import { LogOutButton, ThemeButton } from "./Buttons";
-import { Surface, useTheme } from 'react-native-paper';
+import { Surface, useTheme,IconButton } from 'react-native-paper';
 import { styles } from "../utils/styles";
 
 export default function Header() {
+    const [showCreateReminderComponent, setShowCreateReminderComponent] = useState(false)
+    const dispatch = useDispatch()
     const theme = useTheme();
     return (
-        <Surface theme={theme.colors.elevation.level1} style={[styles.headerContainer,  {backgroundColor: theme.colors.primaryContainer }]} elevation={5}>
+        <Surface
+            theme={theme.colors.elevation.level1}
+            elevation={5}
+            style={
+                [
+                    styles.headerContainer,
+                    {
+                        backgroundColor: theme.colors.primaryContainer
+                    }
+                ]
+            }
+        >
             <ProfileImage />
             <CreateNote />
-            <CreateReminder />
+            <IconButton
+                icon="reminder"
+                iconColor={theme.colors.onPrimaryContainer}
+                size={40}
+                onPress={() => setShowCreateReminderComponent(true)}
+            />
+            <CreateReminderComponent
+                showCreateReminderComponent={showCreateReminderComponent}
+                setShowCreateReminderComponent={setShowCreateReminderComponent}
+                handleSave={
+                    (title, selectedDate, token) => {
+                        dispatch(createReminder(title, selectedDate, token))
+                    }
+                }
+            />
             <LogOutButton size={36} color={'#fff'} />
             <ThemeButton />
         </Surface>

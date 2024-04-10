@@ -40,24 +40,24 @@ export function LogOutButton({ styles, size }) {
     )
 }
 
-// export function AvatarButton({ handlePress, size }) {
-//     const user = useSelector(state => state.user);
-//     const theme = useTheme()
-//     return (
-//         <Pressable style={styles.avatarButton} onPress={handlePress}>
-//             {
-//                 user.profileImage
-//                     ?
-//                     <Avatar.Image size={size} source={{ uri: user.profileImage }} />
-//                     :
-//                     user.userName ?
-//                         <Avatar.Text size={size} label={user.userName.charAt(0).toUpperCase()} style={{backgroundColor: "yellow"}} color="yellow" />
-//                         :
-//                         <Avatar.Text size={size} label={'N'} />
-//             }
-//         </Pressable>
-//     )
-// };
+export function AvatarButton({ handlePress, size }) {
+    const user = useSelector(state => state.user);
+    const theme = useTheme()
+    return (
+        <Pressable style={styles.avatarButton} onPress={handlePress}>
+            {
+                user.profileImage
+                    ?
+                    <Avatar.Image size={size} source={{ uri: user.profileImage }} />
+                    :
+                    user.userName ?
+                        <Avatar.Text size={size} label={user.userName.charAt(0).toUpperCase()} style={{backgroundColor: "yellow"}} color="yellow" />
+                        :
+                        <Avatar.Text size={size} label={'N'} />
+            }
+        </Pressable>
+    )
+};
 
 export function ReactionButtons({ message }) {
     const reactionEmoji = {

@@ -37,9 +37,6 @@ export default function Root() {
                 <Stack.Screen
                     name='Chat Rooms'
                     component={ChatRoomListScreen}
-                    options={{
-                        headerShown: false
-                    }}
                 />
                 <Stack.Screen
                     name="ChatRoomScreen"

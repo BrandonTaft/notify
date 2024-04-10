@@ -5,7 +5,7 @@ import ChatRoomMessage from "../components/chatFeature/ChatRoomMessage";
 import { styles } from "../utils/styles";
 import socket from "../utils/socket";
 import { useSelector } from "react-redux";
-import { IconButton, MD3Colors, Avatar } from "react-native-paper";
+import { IconButton, MD3Colors, Avatar, useTheme } from "react-native-paper";
 import { AvatarButton, LogOutButton } from "../components/Buttons";
 
 
@@ -19,9 +19,11 @@ const ChatRoomScreen = ({ route, navigation }) => {
 
     const user = useSelector(state => state.user);
 
+    const theme = useTheme();
+
     const RightHeaderButtons = () => {
         return (
-            <View style={styles.rightHeaderButtonsContainer}>
+            <View style={{flexDirection:'row', alignItems:'center'}}>
             <AvatarButton
                     styles={styles.avatarButtonImage}
                     size={50}
@@ -73,7 +75,7 @@ const ChatRoomScreen = ({ route, navigation }) => {
 
 
     return (
-        <View style={styles.messagingscreen}>
+        <View style={{flex:1, backgroundColor:theme.colors.background}}>
 
             <View
                 style={[

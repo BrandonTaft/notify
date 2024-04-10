@@ -1,22 +1,25 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-import { createReminder } from '../../redux/reminderSlice';
 import { View } from 'react-native';
 import { DatePickerModal, TimePickerModal } from 'react-native-paper-dates';
 import { IconButton, useTheme, Button, Text, TextInput, Modal, Portal } from 'react-native-paper';
 import { styles } from '../../utils/styles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function CreateReminder() {
+
+export default function CreateReminderComponent({
+  showCreateReminderComponent,
+  setShowCreateReminderComponent,
+  handleSave,
+  itemToEdit
+}) {
   const dispatch = useDispatch()
   const [title, setTitle] = useState("");
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedDay, setSelectedDay] = useState(null);
-  const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
+  const [isDateTimePickerVisible, setIsDateTimePickerVisible] = useState(false);
   const [isTimePickerVisible, setIsTimePickerVisible] = useState(false);
   const [token, setToken] = useState();
-
-  const [showCreateReminderModal, setShowCreateReminderModal] = useState(false)
   const theme = useTheme()
 
   useEffect(() => {
@@ -27,24 +30,30 @@ export default function CreateReminder() {
     getToken()
   }, [])
 
-  const onSaveReminderPress = () => {
-    if (title) {
-      dispatch(createReminder(title, selectedDate, token));
-      setTitle('');
-      setSelectedDate("");
-      setShowCreateReminderModal(false);
+  useEffect(()=> {
+    if(itemToEdit) {
+    setTitle(itemToEdit.title || "")
+    setSelectedDate(itemToEdit.selectedDate || null)
     }
-  };
+  },[showCreateReminderComponent]);
+
+  const onSubmit = () => {
+    console.log(title, selectedDate, token)
+    handleSave(title, selectedDate, token)
+    setTitle('');
+      setSelectedDate("");
+      setShowCreateReminderComponent(false);
+  }
 
   const onCalendarDismiss = useCallback(() => {
-    setIsDatePickerVisible(false);
-  }, [setIsDatePickerVisible]);
+    setIsDateTimePickerVisible(false);
+  }, [setIsDateTimePickerVisible]);
 
   const onCalendarConfirm = useCallback((params) => {
-    setIsDatePickerVisible(false);
+    setIsDateTimePickerVisible(false);
     setSelectedDay(params.date);
     setIsTimePickerVisible(true);
-  }, [setIsDatePickerVisible, setSelectedDate]);
+  }, [setIsDateTimePickerVisible, setSelectedDate]);
 
   const onTimePickerDismiss = useCallback(() => {
     setIsTimePickerVisible(false);
@@ -57,24 +66,17 @@ export default function CreateReminder() {
   }, [setIsTimePickerVisible, selectedDay, setSelectedDate]);
 
   const onModalDismiss = useCallback(() => {
-    setShowCreateReminderModal(false)
-  }, [setIsDatePickerVisible]);
+    setShowCreateReminderComponent(false)
+  }, [setIsDateTimePickerVisible]);
 
   return (
-    <>
-      <IconButton
-        icon="reminder"
-        iconColor={theme.colors.onPrimaryContainer}
-        size={40}
-        onPress={() => setShowCreateReminderModal(true)}
-      />
       <Portal>
         <Modal
-          visible={showCreateReminderModal}
+          visible={showCreateReminderComponent}
           style={{ padding: 20 }}
           contentContainerStyle={{ backgroundColor: 'red', padding: 20 }}
           onDismiss={() => {
-            setShowCreateReminderModal(false);
+            setShowCreateReminderComponent(false);
           }}>
 
           <Text>Add a New Reminder</Text>
@@ -87,7 +89,7 @@ export default function CreateReminder() {
             value={title}
             placeholder=""
           />
-          <Button icon={'content-save-check-outline'} uppercase={false} mode="elevated" onPress={()=> setIsDatePickerVisible(true)}>
+          <Button icon={'content-save-check-outline'} uppercase={false} mode="elevated" onPress={()=> setIsDateTimePickerVisible(true)}>
             <Text style={styles.mainText}>
               {
                 selectedDate
@@ -100,7 +102,7 @@ export default function CreateReminder() {
           </Button>
           <View>
 
-            <Button icon={'content-save-check-outline'} onPress={() => onSaveReminderPress()} uppercase={false} mode="elevated">
+            <Button icon={'content-save-check-outline'} onPress={() => onSubmit(title,selectedDate,token)} uppercase={false} mode="elevated">
               Save
             </Button>
 
@@ -111,7 +113,7 @@ export default function CreateReminder() {
           <DatePickerModal
             locale="en"
             mode="single"
-            visible={isDatePickerVisible}
+            visible={isDateTimePickerVisible}
             onDismiss={onCalendarDismiss}
             date={selectedDay}
             onConfirm={onCalendarConfirm}
@@ -120,12 +122,10 @@ export default function CreateReminder() {
             visible={isTimePickerVisible}
             onDismiss={() => onTimePickerDismiss()}
             onConfirm={(props) => onTimePickerConfirm(props)}
-            hours={12}
-            minutes={14}
+           
           />
-          {/* </View> */}
+         
         </Modal>
       </Portal>
-    </>
   )
 }

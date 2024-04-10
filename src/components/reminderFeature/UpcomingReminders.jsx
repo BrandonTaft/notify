@@ -6,8 +6,6 @@ import { Text, View, Pressable, ScrollView } from 'react-native';
 
 import usePushNotification from '../hooks/usePushNotification';
 
-import CreateReminder from './CreateReminder';
-
 import ReminderItems from './ReminderItems';
 
 
