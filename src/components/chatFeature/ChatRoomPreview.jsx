@@ -13,7 +13,7 @@ export default function ChatRoomPreview() {
   const [isLoading, setIsLoading] = useState(false)
   const [chatRooms, setChatRooms] = useState([]);
   const dispatch = useDispatch()
-  const theme = useTheme();
+  // const theme = useTheme();
 
   useLayoutEffect(() => {
     setIsLoading(true)
@@ -27,8 +27,11 @@ export default function ChatRoomPreview() {
         console.error(err)
       });
   }, []);
-
+  useEffect(()=> {
+    console.log("PREVIEW")
+  },[])
   useEffect(() => {
+    
     socket.on("chatRoomList", (rooms) => {
       setChatRooms(rooms)
       dispatch(addChatRoom(rooms))
@@ -58,7 +61,20 @@ export default function ChatRoomPreview() {
   }
   return (
     <View style={[{ flex: 1 }]}>
-      {chatScreenData}
+     <View style={{ flex: 1 }}>
+        {chatRooms.length > 0 ? (
+          <FlatList
+            data={chatRooms}
+            renderItem={({ item }) => <ChatRoomListItem item={item} />}
+            keyExtractor={(item) => item.id}
+          />
+        ) : (
+          <View style={styles.chatemptyContainer}>
+            <Text style={styles.chatemptyText}>No rooms created!</Text>
+            <Text>Click the icon above to create a Chat room</Text>
+          </View>
+        )}
+      </View>
     </View >
   );
 }

@@ -335,33 +335,33 @@ export const styles = StyleSheet.create({
     //     height: 80,
     //     marginBottom: 10,
     // },
-    cchat: {
-        width: "100%",
-        flexDirection: "row",
-        alignItems: "center",
-        borderRadius: 20,
-        paddingHorizontal: 15,
-        backgroundColor: "#312e3f",
-        height: 80,
-        marginBottom: 10,
-    },
-    cavatar: {
-        marginRight: 15,
-    },
+    // cchat: {
+    //     width: "100%",
+    //     flexDirection: "row",
+    //     alignItems: "center",
+    //     borderRadius: 20,
+    //     paddingHorizontal: 15,
+    //     backgroundColor: "#312e3f",
+    //     height: 80,
+    //     marginBottom: 10,
+    // },
+    // cavatar: {
+    //     marginRight: 15,
+    // },
     cusername: {
         fontSize: 18,
         marginBottom: 5,
         fontWeight: "bold",
     },
     cmessage: {
-        fontSize: 14,
+       
         opacity: 0.7,
     },
-    crightContainer: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        flex: 1,
-    },
+    // crightContainer: {
+    //     flexDirection: "row",
+    //     justifyContent: "space-between",
+    //     flex: 1,
+    // },
     ctime: {
         opacity: 0.5,
     },
