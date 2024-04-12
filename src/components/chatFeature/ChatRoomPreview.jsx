@@ -1,19 +1,22 @@
 import { useState, useLayoutEffect, useEffect } from "react";
-import { View, Text, Pressable, SafeAreaView, FlatList } from "react-native";
+import { View, FlatList } from "react-native";
 import { fetchGroups } from "../../utils/api";
 import { useSelector, useDispatch } from 'react-redux';
 import { addChatRoom } from "../../redux/chatRoomSlice";
 import ChatRoomListItem from "./ChatRoomListItem";
 import Loader from "../Loader";
-import { IconButton, MD3Colors, useTheme } from 'react-native-paper';
+import { Text, useTheme, Chip } from 'react-native-paper';
 import socket from "../../utils/socket";
-import { styles } from "../../utils/styles";
+import CreateChatComponent from "./CreateChatComponent";
 
 export default function ChatRoomPreview() {
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
   const [chatRooms, setChatRooms] = useState([]);
+  const [showCreateChatComponent, setShowCreateChatComponent] = useState(false);
   const dispatch = useDispatch()
-  // const theme = useTheme();
+  const theme = useTheme();
+  const rooms = useSelector(state => state.chatRooms);
+
 
   useLayoutEffect(() => {
     setIsLoading(true)
@@ -27,22 +30,19 @@ export default function ChatRoomPreview() {
         console.error(err)
       });
   }, []);
-  useEffect(()=> {
-    console.log("PREVIEW")
-  },[])
+
   useEffect(() => {
-    
     socket.on("chatRoomList", (rooms) => {
       setChatRooms(rooms)
       dispatch(addChatRoom(rooms))
     });
   }, [socket]);
 
-  let chatScreenData;
+  let chatRoomPreviewData;
   if (isLoading) {
-    chatScreenData = <Loader />
+    chatRoomPreviewData = <Loader />
   } else {
-    chatScreenData = (
+    chatRoomPreviewData = (
       <View style={{ flex: 1 }}>
         {chatRooms.length > 0 ? (
           <FlatList
@@ -51,30 +51,30 @@ export default function ChatRoomPreview() {
             keyExtractor={(item) => item.id}
           />
         ) : (
-          <View style={styles.chatemptyContainer}>
-            <Text style={styles.chatemptyText}>No rooms created!</Text>
-            <Text>Click the icon above to create a Chat room</Text>
+          <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
+            <Text variant="headlineSmall" style={{ color: theme.colors.text }}>No rooms created!</Text>
+            <Chip
+              icon="chat"
+              elevated={true}
+              rippleColor="rgba(0, 0, 0, .25)"
+              onPress={() => setShowCreateChatComponent(true)}
+              style={{margin:20}}
+              textStyle={{ fontSize: 17, fontWeight: 'bold' }}
+            >
+              Create Room
+            </Chip>
           </View>
         )}
+        <CreateChatComponent
+          showCreateChatComponent={showCreateChatComponent}
+          setShowCreateChatComponent={setShowCreateChatComponent}
+        />
       </View>
     )
   }
   return (
     <View style={[{ flex: 1 }]}>
-     <View style={{ flex: 1 }}>
-        {chatRooms.length > 0 ? (
-          <FlatList
-            data={chatRooms}
-            renderItem={({ item }) => <ChatRoomListItem item={item} />}
-            keyExtractor={(item) => item.id}
-          />
-        ) : (
-          <View style={styles.chatemptyContainer}>
-            <Text style={styles.chatemptyText}>No rooms created!</Text>
-            <Text>Click the icon above to create a Chat room</Text>
-          </View>
-        )}
-      </View>
+      {chatRoomPreviewData}
     </View >
   );
 }

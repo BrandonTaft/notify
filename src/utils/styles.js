@@ -150,10 +150,10 @@ export const styles = StyleSheet.create({
     reactions: {
         flexDirection: 'row'
     },
-    chatRoomListScreen: {
-        position: 'relative',
-        flex: 1
-    },
+    // chatRoomListScreen: {
+        
+    //     flex: 1
+    // },
     chatRoomListScreenFabGroup: {
         position: 'absolute',
         flexDirection: 'row',
@@ -185,13 +185,13 @@ export const styles = StyleSheet.create({
     chatlistContainer: {
         paddingHorizontal: 10,
     },
-    chatemptyContainer: {
-        width: "100%",
-        height: "80%",
-        alignItems: "center",
-        justifyContent: "center",
-    },
-    chatemptyText: { fontWeight: "bold", fontSize: 24, paddingBottom: 30 },
+    // chatemptyContainer: {
+    //     width: "100%",
+    //     height: "80%",
+    //     alignItems: "center",
+    //     justifyContent: "center",
+    // },
+    // chatemptyText: { fontWeight: "bold", fontSize: 24, paddingBottom: 25 },
     messagingscreen: {
         flex: 1,
     },
@@ -206,6 +206,7 @@ export const styles = StyleSheet.create({
     },
     messaginginput: {
         borderWidth: 1,
+        backgroundColor:"#FFF",
         padding: 10,
         flex: 1,
         marginRight: 10,

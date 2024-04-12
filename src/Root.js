@@ -33,9 +33,9 @@ export default function Root() {
       };
     function ChatListTab() {
         return (
-            <Stack.Navigator initialRouteName="Chat Rooms">
+            <Stack.Navigator initialRouteName="ChatListScreen">
                 <Stack.Screen
-                    name='Chat Rooms'
+                    name='ChatListScreen'
                     component={ChatRoomListScreen}
                 />
                 <Stack.Screen

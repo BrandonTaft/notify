@@ -40,6 +40,19 @@ export function LogOutButton({ styles, size }) {
     )
 }
 
+export function BackButton({ onPressButton }) {
+    const theme = useTheme();
+    return (
+        <IconButton
+            icon="arrow-left"
+            iconColor={"#000"}
+            size={25}
+            onPress={async () => onPressButton()}
+        />
+    )
+}
+
+
 export function AvatarButton({ handlePress, size }) {
     const user = useSelector(state => state.user);
     const theme = useTheme()

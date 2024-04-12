@@ -1,38 +1,37 @@
-import { useState } from "react";
+import { useState, useLayoutEffect } from "react";
 import { View } from "react-native";
 import { styles } from "../utils/styles";
-import CreateChat from "../components/chatFeature/CreateChat";
-import { IconButton, MD3Colors } from 'react-native-paper';
+import CreateChatComponent from "../components/chatFeature/CreateChatComponent";
+import { IconButton, MD3Colors, Text, useTheme, FAB } from 'react-native-paper';
 import ChatRoomPreview from "../components/chatFeature/ChatRoomPreview";
 
 const ChatRoomListScreen = ({ navigation }) => {
-  const [visible, setVisible] = useState(false);
-  
+  const [showCreateChatComponent, setShowCreateChatComponent] = useState(false);
+  const theme = useTheme();
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitle: "",
+      headerStyle: { backgroundColor: theme.colors.primaryContainer },
+      headerBackTitleStyle : {color:"#FFF"}
+      // headerRight: (props) => <RightHeaderButtons {...props} />,
+      // headerLeft: (props) => <LeftHeaderButtons {...props} />
+    });
+  }, []);
   return (
-    <View style={styles.chatRoomListScreen}>
-      <View style={styles.chatRoomListScreenFabGroup} >
-      <IconButton
-        icon="comment-edit"
-        iconColor={MD3Colors.primary0}
-        containerColor='grey'
-        style={styles.chatRoomListScreenFab}
-        size={40}
-        onPress={() => setVisible(true)}
+    <View style={{ backgroundColor: theme.colors.background, flex: 1 }}>
+      <FAB
+        icon="plus"
+        style={{bottom: 0, right: 0, zIndex:999, margin:20, position:'absolute'}}
+        onPress={() => setShowCreateChatComponent(true)}
       />
-      <IconButton
-        icon="location-exit"
-        iconColor={MD3Colors.primary0}
-        containerColor='grey'
-        style={styles.chatRoomListScreenFab}
-        size={40}
-        onPress={() => navigation.navigate("HomeScreen")}
+      <Text variant="titleLarge" style={{ color: theme.colors.textMuted, textAlign: 'center' }}>Chat Rooms</Text>
+      <ChatRoomPreview />
+
+      <CreateChatComponent
+        showCreateChatComponent={showCreateChatComponent}
+        setShowCreateChatComponent={setShowCreateChatComponent}
       />
-    </View>
-     <ChatRoomPreview />
-  {
-    visible &&
-    <CreateChat setVisible={setVisible} />
-  }
+
     </View >
   );
 };

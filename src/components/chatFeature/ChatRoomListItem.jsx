@@ -15,6 +15,7 @@ const ChatRoomListItem = ({ item }) => {
     }, []);
 
     const handleNavigation = () => {
+        console.log("ITEM", item.id)
         navigation.navigate('ChatListTab', {
             screen: 'ChatRoomScreen',
             params: {

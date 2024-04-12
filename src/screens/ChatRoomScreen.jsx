@@ -6,7 +6,7 @@ import { styles } from "../utils/styles";
 import socket from "../utils/socket";
 import { useSelector } from "react-redux";
 import { IconButton, MD3Colors, Avatar, useTheme } from "react-native-paper";
-import { AvatarButton, LogOutButton } from "../components/Buttons";
+import { AvatarButton, LogOutButton, BackButton } from "../components/Buttons";
 
 
 const ChatRoomScreen = ({ route, navigation }) => {
@@ -20,7 +20,7 @@ const ChatRoomScreen = ({ route, navigation }) => {
     const user = useSelector(state => state.user);
 
     const theme = useTheme();
-
+   
     const RightHeaderButtons = () => {
         return (
             <View style={{flexDirection:'row', alignItems:'center'}}>
@@ -32,18 +32,28 @@ const ChatRoomScreen = ({ route, navigation }) => {
             <LogOutButton size={50} color = "#000" />
             </View>
         )
+    };
+
+    const LeftHeaderButtons = () => {
+        return (
+            <View style={{flexDirection:'row', alignItems:'center'}}>
+                <BackButton onPressButton={() => navigation.navigate('ChatListScreen')}/>
+            </View>
+        )
     }
+
 
 
     useLayoutEffect(() => {
         navigation.setOptions({
             headerTitle: name,
+            headerStyle: { backgroundColor: theme.colors.primaryContainer },
             headerRight: (props) => <RightHeaderButtons {...props} />,
-            
+            headerLeft: (props) => <LeftHeaderButtons {...props} />
         });
         socket.emit("findRoom", id);
         socket.on("foundRoom", (roomChats) => setChatMessages(roomChats));
-    }, []);
+    }, [id]);
 
     useEffect(() => {
         socket.on("newMessage", (roomChats) => setChatMessages(roomChats));
@@ -97,7 +107,7 @@ const ChatRoomScreen = ({ route, navigation }) => {
                     ""
                 )}
             </View>
-            <View style={styles.messaginginputContainer}>
+            <View style={[styles.messaginginputContainer, {backgroundColor: theme.colors.primaryContainer }]}>
                 <TextInput
                     autoFocus
                     editable
