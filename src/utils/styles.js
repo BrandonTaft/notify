@@ -75,9 +75,9 @@ export const styles = StyleSheet.create({
         bottom: 1
     },
     /**********PROFILE SCREEN*********/
-    profileScreen: {
-        flex: 1,
-    },
+    // profileScreen: {
+    //     flex: 1,
+    // },
     profileImageContainer: {
         position: 'relative',
         flex: 3
@@ -107,9 +107,6 @@ export const styles = StyleSheet.create({
     profileText: {
         fontSize: 20,
         color: "#fff"
-    },
-    profileNotesContainer: {
-        flex: 4
     },
     /**********PROFILE FORM MODAL *********/
     profileFormModal: {
@@ -295,7 +292,6 @@ export const styles = StyleSheet.create({
 
     leftArrowOverlap: {
         position: "absolute",
-        backgroundColor: "#eeeeee",
         width: 20,
         height: 35,
         bottom: -6,
@@ -315,7 +311,6 @@ export const styles = StyleSheet.create({
 
     rightArrowOverlap: {
         position: "absolute",
-        backgroundColor: "#eeeeee",
         width: 20,
         height: 35,
         bottom: -6,

@@ -30,32 +30,18 @@ export default function Root() {
         ...MD3DarkTheme,
         mode: 'adaptive',
         colors: darkColors
-      };
-    function ChatListTab() {
-        return (
-            <Stack.Navigator initialRouteName="ChatListScreen">
-                <Stack.Screen
-                    name='ChatListScreen'
-                    component={ChatRoomListScreen}
-                />
-                <Stack.Screen
-                    name="ChatRoomScreen"
-                    component={ChatRoomScreen}
-                />
-            </Stack.Navigator>
-        );
-    }
+    };
 
     function TabNavigator() {
         const theme = useTheme();
         return (
             <Tab.Navigator
                 initialRouteName="HomeScreen"
-                barStyle={{ backgroundColor: theme.colors.primaryContainer  }}
+                barStyle={{ backgroundColor: theme.colors.primaryContainer }}
                 swipeEnabled
                 labeled={false}
                 activeColor='blue'
-                activeIndicatorStyle={{ backgroundColor:theme.colors.outline, height:50, borderRadius:999}}
+                activeIndicatorStyle={{ backgroundColor: theme.colors.outline, height: 50, borderRadius: 999 }}
             >
                 <Tab.Screen
                     name='HomeScreen'
@@ -64,7 +50,7 @@ export default function Root() {
                     options={{
                         tabBarLabel: 'Home',
                         tabBarIcon: ({ color, size }) => {
-                          return <Icon name="house-user" size={26} color={theme.colors.onPrimaryContainer} />;
+                            return <Icon name="house-user" size={30} color={theme.colors.onPrimaryContainer} />;
                         },
                     }}
                 />
@@ -76,20 +62,20 @@ export default function Root() {
                     options={{
                         tabBarLabel: 'Profile',
                         tabBarIcon: ({ color, size }) => {
-                          return <Icon name="user" size={30} color={theme.colors.onPrimaryContainer} />;
+                            return <Icon name="user" size={30} color={theme.colors.onPrimaryContainer} />;
                         },
                     }}
                 />
 
                 <Tab.Screen
-                    name='ChatListTab'
-                    component={ChatListTab}
+                    name='ChatRoomListScreen'
+                    component={ChatRoomListScreen}
                     options={{
                         headerShown: true,
                         headerTitle: "Chat Room",
                         tabBarLabel: 'Chat',
                         tabBarIcon: ({ color, size }) => {
-                          return <Entypo name="chat" size={30} color={theme.colors.onPrimaryContainer} />;
+                            return <Entypo name="chat" size={30} color={theme.colors.onPrimaryContainer} />;
                         },
                     }}
                 />
@@ -113,13 +99,19 @@ export default function Root() {
                             }}
                         />
                     ) : (
-                        <Stack.Screen
-                            name='TabNavigator'
-                            component={TabNavigator}
-                            options={{
-                                headerShown: false
-                            }}
-                        />
+                        <>
+                            <Stack.Screen
+                                name='TabNavigator'
+                                component={TabNavigator}
+                                options={{
+                                    headerShown: false
+                                }}
+                            />
+                            <Stack.Screen
+                                name="ChatRoomScreen"
+                                component={ChatRoomScreen}
+                            />
+                        </>
                     )}
                 </Stack.Navigator>
             </NavigationContainer>

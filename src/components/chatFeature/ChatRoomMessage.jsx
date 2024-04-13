@@ -1,23 +1,26 @@
 import { View, Text } from "react-native";
-import { Avatar } from 'react-native-paper';
+import { Avatar, useTheme } from 'react-native-paper';
 import { styles } from "../../utils/styles";
 import { ReactionButtons } from "../Buttons";
 
 export default function ChatRoomMessage({ message, user }) {
     console.log("MESSAGE", message)
-    const status = message.user !== user;
+    const isFromMe = message.user === user;
+    console.log(isFromMe)
+    const theme = useTheme();
     return (
         <View>
             <View
                 style={
-                    status
-                        ? styles.mmessageWrapper
-                        : [styles.mmessageWrapper, { alignItems: "flex-end" }]
+                    isFromMe
+                        ? [styles.mmessageWrapper, { alignItems: "flex-end" }]
+                        : styles.mmessageWrapper
                 }
             >
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    {status
+                    {isFromMe
                         ?
+                        null
                         // <Avatar.Icon
                         //     size={35}
                         //     color="#fff"
@@ -26,15 +29,15 @@ export default function ChatRoomMessage({ message, user }) {
                         //     // title={Array.from(user)[0]}
                             
                         // />
-                        <Avatar.Image size={60} source={{ uri: 'https://593b-2600-6c5a-4a7f-463a-61b3-94e3-5c2a-117f.ngrok-free.app/images/Ihb-hH2IMb95aCcnAmGu4.jpeg' }} style={{position:'relative', zIndex:999}}/>
                         :
-                        ""
+                        <Avatar.Image size={60} source={{ uri: `https://1c77-75-131-25-248.ngrok-free.app/images/${message.user_id}.jpeg` }} style={{position:'relative', zIndex:999}}/>
+                       
                     }
                     <View
                         style={
-                            status
-                                ? styles.mmessage
-                                : [styles.mmessage, { backgroundColor: "aqua", marginRight:5 }]
+                            isFromMe
+                                ? [styles.mmessage, { backgroundColor: "aqua", marginRight:5 }]
+                                : styles.mmessage
                         }
                     >
                         <Text style={styles.mmessageText}>
@@ -42,18 +45,19 @@ export default function ChatRoomMessage({ message, user }) {
                         </Text>
                         <View
                             style={
-                                status
-                                    ? styles.leftArrow
-                                    : styles.rightArrow
+                                isFromMe
+                                    ? styles.rightArrow
+                                    : styles.leftArrow
                             }
                         >
                         </View>
                         <View
-                            style={
-                                status
-                                    ? styles.leftArrowOverlap
-                                    : styles.rightArrowOverlap
-                            }
+                            style={[
+                                isFromMe
+                                    ? styles.rightArrowOverlap
+                                    : styles.leftArrowOverlap,
+                                    {backgroundColor: theme.colors.background}
+                            ]}
                         >
                         </View>
                     </View>

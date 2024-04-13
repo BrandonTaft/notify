@@ -1,48 +1,43 @@
 import React, { useLayoutEffect, useState, useEffect } from "react";
 import { View, TextInput, Text, FlatList, Pressable } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import ChatRoomMessage from "../components/chatFeature/ChatRoomMessage";
 import { styles } from "../utils/styles";
 import socket from "../utils/socket";
 import { useSelector } from "react-redux";
-import { IconButton, MD3Colors, Avatar, useTheme } from "react-native-paper";
+import { useTheme } from "react-native-paper";
 import { AvatarButton, LogOutButton, BackButton } from "../components/Buttons";
 
-
 const ChatRoomScreen = ({ route, navigation }) => {
-
     const { name, id } = route.params;
     const [chatMessages, setChatMessages] = useState([]);
     const [message, setMessage] = useState("");
     const notifyUser = useSelector(state => state.user)
-    const rooms = useSelector(state => state.chatRooms)
-
-    const user = useSelector(state => state.user);
-
     const theme = useTheme();
-   
+console.log("NOTIFY USER", notifyUser)
     const RightHeaderButtons = () => {
         return (
-            <View style={{flexDirection:'row', alignItems:'center'}}>
-            <AvatarButton
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <AvatarButton
                     styles={styles.avatarButtonImage}
                     size={50}
                     handlePress={() => navigation.navigate("ProfileScreen")}
                 />
-            <LogOutButton size={50} color = "#000" />
+                <LogOutButton size={50} color="#000" />
             </View>
         )
     };
 
     const LeftHeaderButtons = () => {
         return (
-            <View style={{flexDirection:'row', alignItems:'center'}}>
-                <BackButton onPressButton={() => navigation.navigate('ChatListScreen')}/>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <BackButton
+                    onPressButton={() => {
+                        navigation.navigate('TabNavigator', { screen: 'ChatRoomListScreen' })
+                    }}
+                />
             </View>
         )
     }
-
-
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -56,7 +51,9 @@ const ChatRoomScreen = ({ route, navigation }) => {
     }, [id]);
 
     useEffect(() => {
-        socket.on("newMessage", (roomChats) => setChatMessages(roomChats));
+        socket.on("newMessage", (roomChats) => {
+            setChatMessages(roomChats)
+        })
     }, [socket]);
 
     const handleNewMessage = () => {
@@ -83,17 +80,14 @@ const ChatRoomScreen = ({ route, navigation }) => {
         setMessage("")
     };
 
-
     return (
-        <View style={{flex:1, backgroundColor:theme.colors.background}}>
-
+        <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
             <View
                 style={[
                     styles.messagingscreen,
                     { paddingVertical: 5, paddingHorizontal: 10 },
                 ]}
             >
-
                 {chatMessages[0] ? (
                     <FlatList
                         data={[...chatMessages].reverse()}
@@ -103,11 +97,10 @@ const ChatRoomScreen = ({ route, navigation }) => {
                         inverted
                         keyExtractor={(item) => item.id}
                     />
-                ) : (
-                    ""
+                ) : (""
                 )}
             </View>
-            <View style={[styles.messaginginputContainer, {backgroundColor: theme.colors.primaryContainer }]}>
+            <View style={[styles.messaginginputContainer, { backgroundColor: theme.colors.primaryContainer }]}>
                 <TextInput
                     autoFocus
                     editable

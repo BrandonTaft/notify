@@ -5,14 +5,11 @@ import Tools from '../components/Tools';
 import ChatRoomPreview from '../components/chatFeature/ChatRoomPreview';
 import { Surface, useTheme, Divider } from 'react-native-paper';
 
-
-const HomeScreen = ({ route, navigation }) => {
+const HomeScreen = () => {
     const theme = useTheme();
     return (
         <View style={{ flex: 1 }}>
             <Header />
-            
-            
             <Surface style={{ flexDirection: 'column', flex: 1, backgroundColor: theme.colors.surface, margin: 10, borderRadius: 10 }} elevation={2}>
                 <ChatRoomPreview />
             </Surface>

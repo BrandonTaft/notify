@@ -13,7 +13,7 @@ export default function Notes() {
     const [showNotes, setShowNotes] = useState(false)
     
 
-    console.log(notes)
+    
     return (
         <View style={{ justifyContent: 'center', flex: 1, alignItems: 'center' }}>
         {/* <CreateNote /> */}

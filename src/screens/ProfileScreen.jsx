@@ -68,7 +68,7 @@ export default function ProfileScreen() {
   }
 
   return (
-    <View style={styles.profileScreen}>
+    <View style={{flex:1}}>
  <IconButton
           icon="account-edit"
           iconColor={MD3Colors.primary100}

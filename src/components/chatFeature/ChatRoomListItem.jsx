@@ -1,5 +1,5 @@
 import { View, StyleSheet, Pressable } from "react-native";
-import { useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useState, useEffect } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 // import { styles } from "../../utils/styles";
@@ -9,15 +9,20 @@ const ChatRoomListItem = ({ item }) => {
     const navigation = useNavigation();
     const [messages, setMessages] = useState({});
     const theme = useTheme();
-
+console.log("ITEM", item.messages[item.messages.length - 1])
     useLayoutEffect(() => {
         setMessages(item.messages[item.messages.length - 1]);
     }, []);
 
+    useEffect(() => {
+        setMessages(item.messages[item.messages.length - 1]);
+    }, [item]);
+
+
     const handleNavigation = () => {
         console.log("ITEM", item.id)
-        navigation.navigate('ChatListTab', {
-            screen: 'ChatRoomScreen',
+        navigation.navigate( {
+            name: 'ChatRoomScreen',
             params: {
                 id: item.id,
                 name: item.name,

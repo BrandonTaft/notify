@@ -61,12 +61,25 @@ export function AvatarButton({ handlePress, size }) {
             {
                 user.profileImage
                     ?
-                    <Avatar.Image size={size} source={{ uri: user.profileImage }} />
+                    <Avatar.Image
+                        size={size}
+                        source={{ uri: user.profileImage }}
+                    />
                     :
                     user.userName ?
-                        <Avatar.Text size={size} label={user.userName.charAt(0).toUpperCase()} style={{backgroundColor: "yellow"}} color="yellow" />
+                        <Avatar.Text
+                            size={size}
+                            label={user.userName.charAt(0).toUpperCase()}
+                            style={{ backgroundColor: theme.colors.onPrimaryContainer }}
+                            labelStyle={{ color: theme.colors.onPrimary, fontWeight: 'bold' }}
+                        />
                         :
-                        <Avatar.Text size={size} label={'N'} />
+                        <Avatar.Text
+                            size={size}
+                            label={'N'}
+                            style={{ backgroundColor: theme.colors.onPrimaryContainer }}
+                            labelStyle={{ color: theme.colors.onPrimary, fontWeight: 'bold' }}
+                        />
             }
         </Pressable>
     )
@@ -87,7 +100,11 @@ export function ReactionButtons({ message }) {
     }, []);
 
     useEffect(() => {
-        socket.on("newReaction", (reaction) => setChatReaction(reaction));
+        socket.on("newReaction", (reaction) => {
+            if(message.id === reaction.id){
+            setChatReaction(reaction.reactions)
+            }
+        });
     }, [socket]);
 
     const handleNewReaction = (emojiName) => {

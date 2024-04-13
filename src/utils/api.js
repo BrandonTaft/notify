@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from 'react-native';
-const BASE_URL = "https://a15d-2600-6c5a-4a7f-463a-4d63-72d-f6a2-48ca.ngrok-free.app";
+const BASE_URL = "https://1c77-75-131-25-248.ngrok-free.app";
 
 export const storeBackUpData = async (reminders) => {
     await AsyncStorage.setItem('reminders', JSON.stringify(reminders));
@@ -37,7 +37,7 @@ export const fetchBackUpData = async () => {
 };
 
 export const fetchGroups = async () => {
-    return await fetch("https://a15d-2600-6c5a-4a7f-463a-4d63-72d-f6a2-48ca.ngrok-free.app/chatrooms")
+    return await fetch("https://1c77-75-131-25-248.ngrok-free.app/chatrooms")
       .then((res) => res.json())
       .catch((error) => console.log("Server did not respond"))
   }
@@ -52,7 +52,7 @@ export const fetchGroups = async () => {
         type: `image/${fileType}`
     });
     formData.append('userId', userId)
-    return await fetch("https://a15d-2600-6c5a-4a7f-463a-4d63-72d-f6a2-48ca.ngrok-free.app/api/profile-image",
+    return await fetch("https://1c77-75-131-25-248.ngrok-free.app/api/profile-image",
         {
             method: 'POST',
             body: formData,
