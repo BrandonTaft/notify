@@ -21,28 +21,40 @@ export default function ChatRoomMessage({ message, user }) {
                     {isFromMe
                         ?
                         null
-                        // <Avatar.Icon
-                        //     size={35}
-                        //     color="#fff"
-                        //     icon="account-circle"
-                        //     style={{position:'relative', zIndex:9}}
-                        //     // title={Array.from(user)[0]}
-                            
-                        // />
                         :
-                        <Avatar.Image size={60} source={{ uri: `https://1c77-75-131-25-248.ngrok-free.app/images/${message.user_id}.jpeg` }} style={{position:'relative', zIndex:999}}/>
-                       
+                        <>
+                        {
+                            message.profile_image
+                                ?
+                                <Avatar.Image 
+                                size={60} 
+                                source={{ uri: `https://70bc-75-131-25-248.ngrok-free.app/images/${message.user_id}.jpeg` }} 
+                                style={{ position: 'relative', zIndex: 999 }}
+                                />
+                                :
+                                <Avatar.Text
+                                    size={60}
+                                    label={message.user.charAt(0).toUpperCase()}
+                                    style={{ backgroundColor: theme.colors.onPrimaryContainer , position: 'relative', zIndex: 999 }}
+                                    labelStyle={{ color: theme.colors.onPrimary, fontWeight: 'bold' }}
+                                />
+                        }
+                        </>
                     }
                     <View
                         style={
                             isFromMe
-                                ? [styles.mmessage, { backgroundColor: "aqua", marginRight:5 }]
+                                ? [styles.mmessage, { backgroundColor: "aqua", marginRight: 5 }]
                                 : styles.mmessage
                         }
                     >
+                        
                         <Text style={styles.mmessageText}>
                             {message.text}
                         </Text>
+
+                        <Text style={{}}>{message.time}</Text>
+
                         <View
                             style={
                                 isFromMe
@@ -56,13 +68,13 @@ export default function ChatRoomMessage({ message, user }) {
                                 isFromMe
                                     ? styles.rightArrowOverlap
                                     : styles.leftArrowOverlap,
-                                    {backgroundColor: theme.colors.background}
+                                { backgroundColor: theme.colors.background }
                             ]}
                         >
                         </View>
                     </View>
                 </View>
-                <Text style={{ marginLeft: 40 }}>{message.time}</Text>
+                {/* <Text style={{ marginLeft: 40 }}>{message.time}</Text> */}
                 <ReactionButtons message={message} />
             </View>
         </View>

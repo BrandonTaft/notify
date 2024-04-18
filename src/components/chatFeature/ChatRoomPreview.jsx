@@ -4,11 +4,9 @@ import { fetchGroups } from "../../utils/api";
 import { useSelector, useDispatch } from 'react-redux';
 import { addChatRoom, addAllRoomsFromServer } from "../../redux/chatRoomSlice";
 import ChatRoomListItem from "./ChatRoomListItem";
-import Loader from "../Loader";
 import { Text, useTheme, Chip } from 'react-native-paper';
 import socket from "../../utils/socket";
 import CreateChatComponent from "./CreateChatComponent";
-import { ScrollView } from "react-native";
 
 export default function ChatRoomPreview() {
   const [isLoading, setIsLoading] = useState(false);
@@ -17,13 +15,14 @@ export default function ChatRoomPreview() {
   const dispatch = useDispatch()
   const theme = useTheme();
   const rooms = useSelector(state => state.chatRooms);
+  const user = useSelector(state => state.user)
 
   console.log("previewwwww", rooms)
   console.log("previewwwwwSTATEEE", chatRooms)
 
   useLayoutEffect(() => {
     setIsLoading(true)
-    fetchGroups()
+    fetchGroups(user.organization)
       .then((rooms) => {
         setIsLoading(false)
         setChatRooms(rooms)

@@ -89,8 +89,7 @@ export function ReactionButtons({ message }) {
     const reactionEmoji = {
         thumbsUp: '👍',
         thumbsDown: '👎',
-        heart: '❤️',
-        eyes: '👀'
+        heart: '❤️'
     };
     const [chatReaction, setChatReaction] = useState({});
     const { colors } = useTheme();
@@ -120,7 +119,7 @@ export function ReactionButtons({ message }) {
             <Pressable key={emojiName} style={{}} onPress={() =>
                 handleNewReaction(emojiName)
             }>
-                <Text style={{ color: colors.text }}>{emoji} {chatReaction[emojiName]}</Text>
+                <Text style={{ color: colors.text, fontSize:18, marginHorizontal:3 }}>{emoji} {chatReaction[emojiName]}</Text>
             </Pressable>
         )
     });

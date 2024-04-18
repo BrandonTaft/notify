@@ -73,7 +73,9 @@ console.log("NOTIFY USER", notifyUser)
                 room_id: id,
                 user: notifyUser.userName,
                 user_id: notifyUser.id,
-                reactions: { thumbsUp: 0, thumbsDown: 0, heart: 0, eyes: 0 },
+                profile_image: notifyUser.profileImage,
+                org: notifyUser.organization,
+                reactions: { thumbsUp: 0, thumbsDown: 0, heart: 0 },
                 timestamp: { hour, mins },
             });
         }
