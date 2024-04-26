@@ -108,8 +108,8 @@ export function ReactionButtons({ message }) {
 
     const handleNewReaction = (emojiName) => {
         socket.emit("newReaction", {
-            room_id: message.room_id,
-            id: message.id,
+            roomId: message.roomId,
+            messageId: message.messageId,
             reaction: emojiName
         });
     };

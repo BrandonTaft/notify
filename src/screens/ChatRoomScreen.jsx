@@ -8,7 +8,7 @@ import { useTheme } from "react-native-paper";
 import { AvatarButton, LogOutButton, BackButton } from "../components/Buttons";
 
 const ChatRoomScreen = ({ route, navigation }) => {
-    const { name, id } = route.params;
+    const { name, roomId } = route.params;
     const [chatMessages, setChatMessages] = useState([]);
     const [message, setMessage] = useState("");
     const notifyUser = useSelector(state => state.user)
@@ -46,9 +46,9 @@ console.log("NOTIFY USER", notifyUser)
             headerRight: (props) => <RightHeaderButtons {...props} />,
             headerLeft: (props) => <LeftHeaderButtons {...props} />
         });
-        socket.emit("findRoom", id);
+        socket.emit("findRoom", roomId);
         socket.on("foundRoom", (roomChats) => setChatMessages(roomChats));
-    }, [id]);
+    }, [roomId]);
 
     useEffect(() => {
         socket.on("newMessage", (roomChats) => {
@@ -70,10 +70,10 @@ console.log("NOTIFY USER", notifyUser)
         if (notifyUser.userName) {
             socket.emit("newMessage", {
                 message,
-                room_id: id,
+                roomId: roomId,
                 user: notifyUser.userName,
-                user_id: notifyUser.id,
-                profile_image: notifyUser.profileImage,
+                userId: notifyUser.id,
+                profileImage: notifyUser.profileImage,
                 org: notifyUser.organization,
                 reactions: { thumbsUp: 0, thumbsDown: 0, heart: 0 },
                 timestamp: { hour, mins },
@@ -97,7 +97,7 @@ console.log("NOTIFY USER", notifyUser)
                             <ChatRoomMessage message={item} user={notifyUser.userName} />
                         )}
                         inverted
-                        keyExtractor={(item) => item.id}
+                        keyExtractor={(item) => item.messageId}
                     />
                 ) : (""
                 )}

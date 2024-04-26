@@ -20,12 +20,12 @@ console.log("ITEM", item.messages[item.messages.length - 1])
 
 
     const handleNavigation = () => {
-        console.log("ITEM", item.id)
+        console.log("ITEM", item.RoomId)
         navigation.navigate( {
             name: 'ChatRoomScreen',
             params: {
-                id: item.id,
-                name: item.name,
+                id: item.roomId,
+                name: item.roomName,
             }
         });
     };
@@ -67,7 +67,7 @@ console.log("ITEM", item.messages[item.messages.length - 1])
 
                 <View style={styles.chatRoomListItemText}>
                     <View>
-                        <Text variant="headlineSmall" style={{ color: theme.colors.text }}>{item.name}</Text>
+                        <Text variant="headlineSmall" style={{ color: theme.colors.text }}>{item.roomName}</Text>
 
                         <Text variant="bodyMedium" style={{ color: theme.colors.text, opacity: .5 }}>
                             {messages?.text ? messages.text : "Tap to start chatting"}

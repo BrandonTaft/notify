@@ -25,10 +25,10 @@ export const chatRoomSlice = createSlice({
         //     }
         // },
         addChatReaction: (state, action) => {
-            const { room_id, id, reaction } = action.payload
+            const { roomId, messageId, reaction } = action.payload
             console.log("REACTION", action.payload)
-            const room = state.find(room => room.id === room_id)
-            const chatMessage = room.messages.find(message => message.id === id)
+            const room = state.find(room => room.roomId === roomId)
+            const chatMessage = room.messages.find(message => message.messageId === messageId)
             if (chatMessage) {
               chatMessage.reactions[reaction]++
             }

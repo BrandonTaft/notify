@@ -21,6 +21,7 @@ registerTranslation('en', en)
 export default function Root() {
     const isLoggedIn = useSelector(state => state.user.isLoggedIn);
     // const theme = useTheme();
+    console.log(isLoggedIn,"ISLOGGEDIN")
     const colorScheme = useColorScheme();
     const LightTheme = {
         ...MD3LightTheme,

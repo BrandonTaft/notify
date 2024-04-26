@@ -47,7 +47,7 @@ export default function ChatRoomPreview() {
         <FlatList
           data={rooms}
           renderItem={({ item }) => <ChatRoomListItem item={item} />}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item.roomId}
         />
       ) : (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>

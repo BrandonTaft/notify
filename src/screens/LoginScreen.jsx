@@ -4,8 +4,9 @@ import { createUser } from "../redux/userSlice";
 import { nanoid } from "@reduxjs/toolkit";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { styles } from "../utils/styles";
+import { logInUser } from "../utils/api";
 import {
-    Text,
+   
     SafeAreaView,
     View,
     TextInput,
@@ -13,52 +14,78 @@ import {
     Alert,
     Image
 } from "react-native";
+import { Modal, Button, Dialog, Portal, Text } from "react-native-paper";
+import RegisterModal from "../components/RegisterModal";
 
 const LoginScreen = () => {
-    const [isLoading, setIsLoading] = useState(false)
-    const [notifyUser, setNotifyUser] = useState({});
+    const [isLoading, setIsLoading] = useState(false);
+    const [notifyUser, setNotifyUser] = useState({
+        userName: '',
+    password: '',
+    });
+    const [message, setMessage] = useState('');
+  const hideDialog = () => setMessage(false);
+    const [showRegisterModal, setShowRegisterModal] = useState(false);
     const dispatch = useDispatch();
 
-    useEffect(() => {
-        setIsLoading(true)
-        const checkForExistingUser = async () => {
-            const existingUser = await AsyncStorage.getItem("notify_user");
-            if (existingUser !== null) {
-                const persistedUser = JSON.parse(existingUser)
-                dispatch(createUser({...persistedUser, isLoggedIn: true}))
-            } else {
-                setIsLoading(false)
-            }
-        }
-        checkForExistingUser()
-    }, []);
+    // useEffect(() => {
+
+    //     setIsLoading(true)
+    //     const checkForExistingUser = async () => {
+    //         await AsyncStorage.clear()
+    //         const existingUser = await AsyncStorage.getItem("notify_user");
+    //         if (existingUser !== null) {
+    //             const persistedUser = JSON.parse(existingUser)
+    //             dispatch(createUser({ ...persistedUser, isLoggedIn: true }))
+    //         } else {
+    //             setIsLoading(false)
+    //         }
+    //     }
+    //     checkForExistingUser()
+    // }, []);
 
     const storeCredentials = async () => {
         try {
             const jsonValue = JSON.stringify(notifyUser)
             await AsyncStorage.setItem("notify_user", jsonValue);
-            dispatch(createUser({...notifyUser, isLoggedIn: true}))
+            console.log(notifyUser)
+            dispatch(createUser({ ...notifyUser, isLoggedIn: true }))
         } catch (e) {
             Alert.alert("Error! While saving userName");
         }
     };
 
     const handleSignIn = () => {
-        if (notifyUser.userName.trim() && notifyUser.organization.trim()) {
-            storeCredentials();
-        } else {
-            Alert.alert(
-                "TRY AGAIN",
-                "UserName and Organization are required to chat.",
-                [
-                    {
-                        "text": "OK"
-                    }
-                ],
-                {
-                    cancelable: true
+        // if (notifyUser.userName.trim() && notifyUser.organization.trim()) {
+        //     storeCredentials();
+        // } else {
+        //     Alert.alert(
+        //         "TRY AGAIN",
+        //         "UserName and Organization are required to chat.",
+        //         [
+        //             {
+        //                 "text": "OK"
+        //             }
+        //         ],
+        //         {
+        //             cancelable: true
+        //         }
+        //     );
+        // }
+        if (notifyUser.userName === '') {
+            setMessage("You must enter a user name")
+        } else if (notifyUser.password === '') {
+            setMessage("You must enter a password")
+        }  else {
+            logInUser(notifyUser).then(result => {
+                console.log(result)
+                if (result.success) {
+                    console.log(notifyUser,"IRANNNN")
+                    dispatch(createUser({ ...notifyUser, isLoggedIn: true }))
+                } else {
+                    setMessage(result.message)
                 }
-            );
+            })
         }
     };
 
@@ -81,10 +108,10 @@ const LoginScreen = () => {
                         />
                         <TextInput
                             autoCorrect={false}
-                            placeholder='Enter your organization'
+                            placeholder='password'
                             style={styles.logininput}
                             onChangeText={(value) => {
-                                setNotifyUser({ ...notifyUser, organization: value })
+                                setNotifyUser({ ...notifyUser, password: value })
                             }}
                         />
                     </View>
@@ -93,8 +120,33 @@ const LoginScreen = () => {
                             <Text style={styles.loginbuttonText}>Get Started</Text>
                         </View>
                     </Pressable>
+                    <Button mode="text" onPress={() => setShowRegisterModal(true)}>
+                        Register
+                    </Button>
                 </View>
             }
+            <Portal>
+          <Dialog visible={message} onDismiss={hideDialog}>
+            <Dialog.Title>Alert</Dialog.Title>
+            <Dialog.Content>
+              <Text variant="bodyMedium">{message}</Text>
+            </Dialog.Content>
+            <Dialog.Actions>
+              <Button onPress={hideDialog}>Done</Button>
+            </Dialog.Actions>
+          </Dialog>
+        </Portal>
+    
+
+
+            <Modal
+                visible={showRegisterModal}
+                style={{ padding: 20 }}
+                onDismiss={() => {
+                    setShowRegisterModal(false);
+                }}>
+                <RegisterModal setShowRegisterModal={setShowRegisterModal} />
+            </Modal>
         </SafeAreaView>
     );
 };

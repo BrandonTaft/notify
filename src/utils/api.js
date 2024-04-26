@@ -1,6 +1,33 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from 'react-native';
-const BASE_URL = "https://70bc-75-131-25-248.ngrok-free.app";
+const BASE_URL = "https://2783-75-131-25-248.ngrok-free.app";
+
+export const registerUser = async(user) => {
+    return await fetch(BASE_URL + '/api/users/register', {
+        method: 'POST',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ user : user })
+    })
+    .then(response => response.json()) 
+    .catch((error) => console.log("Server did not respond"))
+}
+
+export const logInUser = async(user) => {
+    return await fetch(BASE_URL + '/api/users/login', {
+        method: 'POST',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ user : user })
+    })
+    .then(response => response.json()) 
+    .catch((error) => console.log("Server did not respond"))
+}
+
 
 export const storeBackUpData = async (reminders) => {
     await AsyncStorage.setItem('reminders', JSON.stringify(reminders));

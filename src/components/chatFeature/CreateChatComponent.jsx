@@ -7,10 +7,10 @@ import { nanoid } from "@reduxjs/toolkit";
 
 
 const CreateChatComponent = ({ showCreateChatComponent, setShowCreateChatComponent }) => {
-    const [groupName, setGroupName] = useState("");
+    const [roomName, setRoomName] = useState("");
     const closeModal = () => setShowCreateChatComponent(false);
     const handleCreateRoom = () => {
-        socket.emit("createRoom", { id: nanoid(), name: groupName, organization: "brandon's org" });
+        socket.emit("createRoom", { roomName: roomName, organization: "brandon's org" });
         closeModal();
     };
     return (
@@ -28,7 +28,7 @@ const CreateChatComponent = ({ showCreateChatComponent, setShowCreateChatCompone
                     <TextInput
                         style={styles.modalinput}
                         placeholder='Group name'
-                        onChangeText={(value) => setGroupName(value)}
+                        onChangeText={(value) => setRoomName(value)}
                     />
 
                     <View style={styles.modalbuttonContainer}>
