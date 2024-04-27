@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useState } from "react";
 import { Pressable, Text, View, Appearance, useColorScheme } from "react-native";
 import { useDispatch, useSelector } from 'react-redux';
-import { logOutUser } from '../redux/userSlice';
+import { logOut } from '../redux/userSlice';
 import { Avatar, IconButton, useTheme } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import socket from "../utils/socket";
@@ -25,6 +25,7 @@ export function ThemeButton({ styles, size }) {
 }
 
 export function LogOutButton({ styles, size }) {
+    const user = useSelector(state => state.user);
     const dispatch = useDispatch();
     const theme = useTheme();
     return (
@@ -34,7 +35,7 @@ export function LogOutButton({ styles, size }) {
             size={40}
             onPress={async () => {
                 await AsyncStorage.removeItem("notify_user")
-                dispatch(logOutUser())
+                dispatch(logOut(user))
             }}
         />
     )

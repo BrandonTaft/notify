@@ -44,11 +44,12 @@
       }
     },
     "notification": {
-      "icon":"./assets/N.png",
-      "color":"#b804d1de"
+      "icon": "./assets/N.png",
+      "color": "#b804d1de"
     },
-    
-    "owner": "btaft6278"
+    "owner": "btaft6278",
+    "plugins": [
+      "expo-secure-store"
+    ]
   }
-
 }

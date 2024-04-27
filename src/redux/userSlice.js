@@ -1,9 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { logOutUser } from "../utils/api";
 
 export const userSlice = createSlice({
   name: "user",
   initialState: {
     isLoggedIn: false,
+    notes: []
   },
   reducers: {
     createUser: {
@@ -11,15 +13,16 @@ export const userSlice = createSlice({
         return action.payload
       },
       prepare(notifyUser) {
-        const {id, userName, organization, profileImage, bannerImage, isLoggedIn} = notifyUser
+        const { _id, userName, organization, profileImage, bannerImage, isLoggedIn, notes } = notifyUser
         return {
           payload: {
-            id,
+            userId: _id,
             userName,
             organization,
             profileImage,
             bannerImage,
             isLoggedIn: isLoggedIn,
+            notes: notes
           }
         }
       }
@@ -43,14 +46,13 @@ export const userSlice = createSlice({
         bannerImage: action.payload
       }
     },
-    logOutUser: () => {
-      return {
-        isLoggedIn: false
-      }
+    logOut: (state, action) => {
+      logOutUser(state)
+      return { isLoggedIn: false }
     },
   }
 });
 
-export const { createUser, logOutUser, editUserProfileImage, editUserBanner, editUserCredentials } = userSlice.actions;
+export const { createUser, logOut, editUserProfileImage, editUserBanner, editUserCredentials } = userSlice.actions;
 
 export default userSlice.reducer; 

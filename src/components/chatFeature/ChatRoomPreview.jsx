@@ -17,9 +17,6 @@ export default function ChatRoomPreview() {
   const rooms = useSelector(state => state.chatRooms);
   const user = useSelector(state => state.user)
 
-  console.log("previewwwww", rooms)
-  console.log("previewwwwwSTATEEE", chatRooms)
-
   useLayoutEffect(() => {
     setIsLoading(true)
     fetchGroups(user.organization)

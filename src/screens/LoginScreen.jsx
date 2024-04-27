@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch } from 'react-redux';
 import { createUser } from "../redux/userSlice";
-import { nanoid } from "@reduxjs/toolkit";
+import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { styles } from "../utils/styles";
 import { logInUser } from "../utils/api";
@@ -28,8 +28,17 @@ const LoginScreen = () => {
     const [showRegisterModal, setShowRegisterModal] = useState(false);
     const dispatch = useDispatch();
 
-    // useEffect(() => {
-
+    useEffect(() => {
+        console.log("LOGINSCREEN")
+        async function checkForLoggedInUser() {
+            let token = await SecureStore.getItemAsync("secureToken");
+            console.log("TOKENNN",token)
+        }
+        checkForLoggedInUser()
+        // (async() => {
+        //     let token = await SecureStore.getItemAsync(key);
+        //     console.log("TOKENNN",token)
+        // })
     //     setIsLoading(true)
     //     const checkForExistingUser = async () => {
     //         await AsyncStorage.clear()
@@ -42,7 +51,7 @@ const LoginScreen = () => {
     //         }
     //     }
     //     checkForExistingUser()
-    // }, []);
+     }, []);
 
     const storeCredentials = async () => {
         try {
@@ -56,32 +65,16 @@ const LoginScreen = () => {
     };
 
     const handleSignIn = () => {
-        // if (notifyUser.userName.trim() && notifyUser.organization.trim()) {
-        //     storeCredentials();
-        // } else {
-        //     Alert.alert(
-        //         "TRY AGAIN",
-        //         "UserName and Organization are required to chat.",
-        //         [
-        //             {
-        //                 "text": "OK"
-        //             }
-        //         ],
-        //         {
-        //             cancelable: true
-        //         }
-        //     );
-        // }
         if (notifyUser.userName === '') {
             setMessage("You must enter a user name")
         } else if (notifyUser.password === '') {
             setMessage("You must enter a password")
         }  else {
-            logInUser(notifyUser).then(result => {
-                console.log(result)
+            logInUser(notifyUser).then(async(result) => {
                 if (result.success) {
-                    console.log(notifyUser,"IRANNNN")
-                    dispatch(createUser({ ...notifyUser, isLoggedIn: true }))
+                    console.log(result.existingUser,"IRANNNN")
+                    dispatch(createUser({ ...result.existingUser, isLoggedIn: true }))
+                    await SecureStore.setItemAsync("secureToken", result.token);
                 } else {
                     setMessage(result.message)
                 }
@@ -103,7 +96,7 @@ const LoginScreen = () => {
                             placeholder='Enter your userName'
                             style={styles.logininput}
                             onChangeText={(value) => {
-                                setNotifyUser({ ...notifyUser, userName: value, id: nanoid() })
+                                setNotifyUser({ ...notifyUser, userName: value })
                             }}
                         />
                         <TextInput

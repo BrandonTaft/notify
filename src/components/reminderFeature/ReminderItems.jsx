@@ -13,7 +13,7 @@ function ReminderItems({ list }) {
     const prevOpenedRow = useRef();
     const dispatch = useDispatch();
     const theme = useTheme();
-    console.log(list)
+  
     const renderRightActions = (item) => {
         return (
             <View style={{ flexDirection: 'row' }} >
