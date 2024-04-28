@@ -20,19 +20,23 @@ registerTranslation('en', en)
 
 export default function Root() {
     const isLoggedIn = useSelector(state => state.user.isLoggedIn);
-    // const theme = useTheme();
-    console.log(isLoggedIn,"ISLOGGEDIN")
     const colorScheme = useColorScheme();
+    const theme = useTheme();
     const LightTheme = {
         ...MD3LightTheme,
-        colors: lightColors
+        colors: lightColors,
+        roundness: 16,
+        buttonRoundness: { isV3: false, roundness: 16 }
     }
     const DarkTheme = {
         ...MD3DarkTheme,
         mode: 'adaptive',
-        colors: darkColors
+        colors: darkColors,
+        roundness: 16,
+        buttonRoundness: { isV3: false, roundness: 16 }
     };
-
+    const appTheme = colorScheme === 'dark' ? DarkTheme : LightTheme;
+    
     function TabNavigator() {
         const theme = useTheme();
         return (
@@ -42,7 +46,7 @@ export default function Root() {
                 swipeEnabled
                 labeled={false}
                 activeColor='blue'
-                activeIndicatorStyle={{ backgroundColor: theme.colors.outline, height: 50, borderRadius: 999 }}
+                activeIndicatorStyle={{ backgroundColor: theme.colors.outline, height: 160, borderRadius: 999 }}
             >
                 <Tab.Screen
                     name='HomeScreen'
@@ -83,10 +87,10 @@ export default function Root() {
             </Tab.Navigator>
         )
     }
-
+    
     return (
-        <PaperProvider theme={colorScheme === 'dark' ? DarkTheme : LightTheme}>
-            <NavigationContainer >
+        <PaperProvider theme={appTheme}>
+            <NavigationContainer theme={appTheme}>
                 <StatusBar />
                 <Stack.Navigator
                     initialRouteName="LoginScreen"

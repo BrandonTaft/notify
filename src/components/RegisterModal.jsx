@@ -23,11 +23,11 @@ export default function RegisterModal({
   const theme = useTheme()
 
   const registerNewUser = () => {
-    if (newUser.userName  === '') {
+    if (!newUser.userName.trim()) {
       setMessage("You must enter a user name")
-  } else if (newUser.password === '') {
+  } else if (!newUser.password.trim()) {
     setMessage("You must enter a password")
-  }else if (newUser.organization === '') {
+  }else if (!newUser.organization.trim()) {
     setMessage("You must enter an organization")
   } else {
     registerUser(newUser).then(result => {
@@ -40,29 +40,35 @@ export default function RegisterModal({
   }
   }
   return (
-    <Surface elevation={3} style={{ backgroundColor: theme.colors.background, borderRadius: 20, padding: 10, alignItems: 'center' }}>
+    <Surface elevation={3} style={{ backgroundColor: theme.colors.background, borderRadius: 20, padding: 10, alignItems: 'center', opacity:.8 }}>
       <Text variant="headlineSmall">Register</Text>
-      <View style={styles.logininputContainer}>
+      <View style={{width:"90%", paddingVertical:20}}>
         <TextInput
+          mode="outlined"
           autoCorrect={false}
-          placeholder='User Name'
-          style={styles.logininput}
+          label='User Name'
+          theme={theme.roundness}
+          style={{ width: '100%', margin:5 }}
           onChangeText={(value) => {
             setNewUser({ ...newUser, userName: value })
           }}
         />
         <TextInput
-          autoCorrect={false}
-          placeholder='Password'
-          style={styles.logininput}
+         mode="outlined"
+         autoCorrect={false}
+         label='Password'
+         theme={theme.roundness}
+         style={{ width: '100%', margin:5 }}
           onChangeText={(value) => {
             setNewUser({ ...newUser, password: value })
           }}
         />
         <TextInput
-          autoCorrect={false}
-          placeholder='Enter your organization'
-          style={styles.logininput}
+         mode="outlined"
+         autoCorrect={false}
+         label='Organization'
+         theme={theme.roundness}
+         style={{ width: '100%', margin:5 }}
           onChangeText={(value) => {
             setNewUser({ ...newUser, organization: value })
           }}
@@ -70,8 +76,9 @@ export default function RegisterModal({
       </View>
       <Button
         onPress={() => registerNewUser(newUser)}
-        style={{ backgroundColor: theme.colors.onBackground }}
-        textColor={theme.colors.onPrimary}
+        style={[{ backgroundColor: theme.colors.primary, marginBottom:15, paddingHorizontal:15 }]}
+        theme={theme.buttonRoundness}
+                        textColor={theme.colors.onPrimary}
       >
         Get Started
       </Button>

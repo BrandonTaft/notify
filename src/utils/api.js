@@ -30,8 +30,6 @@ export const logInUser = async(user) => {
 };
 
 export const logOutUser = async(user) => {
-    await SecureStore.deleteItemAsync("secureToken")
-    // .catch((error) => console.log(error))
     return await fetch(BASE_URL + '/api/users/logout', {
         method: 'POST',
         headers: {

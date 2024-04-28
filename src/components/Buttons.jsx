@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { logOut } from '../redux/userSlice';
 import { Avatar, IconButton, useTheme } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SecureStore from 'expo-secure-store';
 import socket from "../utils/socket";
 import { styles } from "../utils/styles";
 
@@ -34,8 +35,10 @@ export function LogOutButton({ styles, size }) {
             iconColor={theme.colors.onPrimaryContainer}
             size={40}
             onPress={async () => {
-                await AsyncStorage.removeItem("notify_user")
+                
                 dispatch(logOut(user))
+                await SecureStore.deleteItemAsync("secureToken")
+                await AsyncStorage.removeItem("notify_user")
             }}
         />
     )
