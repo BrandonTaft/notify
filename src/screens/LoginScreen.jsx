@@ -3,19 +3,18 @@ import { useDispatch } from 'react-redux';
 import { createUser } from "../redux/userSlice";
 import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { styles } from "../utils/styles";
 import { logInUser } from "../utils/api";
-import {
-
-    SafeAreaView,
-    View,
-
-
-    Alert,
-    Image
-} from "react-native";
-import { Modal, Button, Dialog, Portal, Text, TextInput, useTheme } from "react-native-paper";
 import RegisterModal from "../components/RegisterModal";
+import Alert from "../components/Alert";
+import { View, Image } from "react-native";
+import { 
+    Modal,
+    Button, 
+    Text, 
+    TextInput, 
+    useTheme, 
+    Icon
+} from "react-native-paper";
 
 const LoginScreen = () => {
     const [isLoading, setIsLoading] = useState(false);
@@ -25,14 +24,13 @@ const LoginScreen = () => {
         password: '',
     });
     const [message, setMessage] = useState('');
-    const hideDialog = () => setMessage(false);
-    const [showRegisterModal, setShowRegisterModal] = useState(false);
     const dispatch = useDispatch();
     const theme = useTheme();
 
     useEffect(() => {
         (async () => {
             try {
+                setIsLoading(true)
                 let token = await SecureStore.getItemAsync("secureToken");
                 const existingUser = await AsyncStorage.getItem("notify_user");
                 if (token !== null && existingUser) {
@@ -41,11 +39,11 @@ const LoginScreen = () => {
                 }
             } catch (error) {
                 console.log("Unable to access token", error);
+            } finally {
+                setIsLoading(false)
             }
         })();
     }, []);
-
-
 
     const handleSignIn = () => {
         if (!notifyUser.userName.trim()) {
@@ -69,13 +67,24 @@ const LoginScreen = () => {
     };
 
     return (
-        <SafeAreaView style={styles.loginscreen}>
+        <View style={{
+            flex: 1,
+            width: "100%",
+            alignItems: "center",
+            justifyContent: "center",
+        }}>
             {isLoading
                 ?
                 <Image source={require('../../assets/notify-icon.png')} />
                 :
-                <View style={[{ backgroundColor: theme.colors.background }, styles.loginscreen]}>
-                    <Image source={require('../../assets/notify-icon.png')} style={{position:'absolute', height:200, top:40}}/>
+                <>
+                    <View style={{ marginBottom: 40 }}>
+                        <Icon
+                            source="reminder"
+                            color={theme.colors.primary}
+                            size={120}
+                        />
+                    </View>
                     <Text
                         variant="headlineMedium"
                         style={{ color: theme.colors.primary }}
@@ -88,7 +97,7 @@ const LoginScreen = () => {
                         autoCorrect={false}
                         label='User Name'
                         theme={theme.roundness}
-                        style={{ width: '80%', margin:15 }}
+                        style={{ width: '80%', margin: 15 }}
                         onChangeText={(value) => {
                             setNotifyUser({ ...notifyUser, userName: value.trim() })
                         }}
@@ -117,51 +126,19 @@ const LoginScreen = () => {
 
                     <Button
                         mode='elevated'
+                        uppercase
                         theme={theme.buttonRoundness}
-                        textColor={theme.colors.onPrimary}
-                        style={[{ backgroundColor: theme.colors.primary, margin:25, paddingHorizontal:15, width: '50%' }]}
+                        textColor={theme.colors.onSecondary}
+                        style={[{ backgroundColor: theme.colors.secondary, margin: 25, width: '50%' }]}
                         onPress={handleSignIn}
-
                     >
                         Get Started
                     </Button>
-                    <Button
-                         mode='elevated'
-                         theme={theme.buttonRoundness}
-                         textColor={theme.colors.primary}
-                         style={[{ backgroundColor: theme.colors.background, border:'solid', borderColor: theme.colors.primary, borderWidth:1, paddingHorizontal:15, width: '50%' }]}
-                        onPress={() => setShowRegisterModal(true)}
-                    >
-                        
-                            Register
-                      
-                    </Button>
-
-                </View>
+                    <RegisterModal />
+                </>
             }
-            <Portal>
-                <Dialog visible={message} onDismiss={hideDialog}>
-                    <Dialog.Title>Alert</Dialog.Title>
-                    <Dialog.Content>
-                        <Text variant="bodyMedium">{message}</Text>
-                    </Dialog.Content>
-                    <Dialog.Actions>
-                        <Button onPress={hideDialog}>Done</Button>
-                    </Dialog.Actions>
-                </Dialog>
-            </Portal>
-
-
-
-            <Modal
-                visible={showRegisterModal}
-                style={{ padding: 20 }}
-                onDismiss={() => {
-                    setShowRegisterModal(false);
-                }}>
-                <RegisterModal setShowRegisterModal={setShowRegisterModal} />
-            </Modal>
-        </SafeAreaView>
+            <Alert message={message} setMessage={setMessage} />            
+        </View>
     );
 };
 

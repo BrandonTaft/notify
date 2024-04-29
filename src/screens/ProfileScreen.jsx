@@ -3,7 +3,7 @@ import { Image, View, ImageBackground, Text } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { AntDesign } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
-import { Avatar, Button, FAB, IconButton, MD3Colors } from 'react-native-paper';
+import { Avatar, Button, FAB, IconButton, MD3Colors, Modal } from 'react-native-paper';
 import { styles } from '../utils/styles';
 import { editUserProfileImage, editUserBanner } from '../redux/userSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -14,7 +14,7 @@ export default function ProfileScreen() {
   const user = useSelector(state => state.user);
   const dispatch = useDispatch()
 
-console.log(user)
+  console.log(user)
 
   // useEffect(() => {
   //   const checkForCameraRollPermission = async () => {
@@ -68,15 +68,15 @@ console.log(user)
   }
 
   return (
-    <View style={{flex:1}}>
- <IconButton
-          icon="account-edit"
-          iconColor={MD3Colors.primary100}
-          size={40}
-          containerColor='grey'
-          style={styles.fab}
-          onPress={() => setShowProfileFormModal(true)}
-        />
+    <View style={{ flex: 1 }}>
+      <IconButton
+        icon="account-edit"
+        iconColor={MD3Colors.primary100}
+        size={40}
+        containerColor='grey'
+        style={styles.fab}
+        onPress={() => setShowProfileFormModal(true)}
+      />
       <View style={styles.profileImageContainer} >
         <ImageBackground source={{ uri: user.bannerImage }} resizeMode="cover" style={{ width: '100%', height: 200, justifyContent: 'flex-end', alignItems: 'center' }}>
           {
@@ -97,10 +97,15 @@ console.log(user)
         <Text style={styles.profileText}>{user.userName}</Text>
         <Text style={styles.profileText}>{user.organization}</Text>
       </View>
-      <ProfileFormModal
-        showProfileFormModal={showProfileFormModal}
-        setShowProfileFormModal={setShowProfileFormModal}
-      />
+      <Modal
+        visible={showProfileFormModal}
+        style={{ padding: 20 }}
+        onDismiss={() => {
+          setShowProfileFormModal(false);
+        }}
+      >
+        <ProfileFormModal setShowProfileFormModal={setShowProfileFormModal} />
+      </Modal>
     </View>
   );
 };

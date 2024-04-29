@@ -1,101 +1,147 @@
-import { useEffect, useState, useCallback } from 'react';
-import { useDispatch } from 'react-redux';
-import { View } from 'react-native';
-import { DatePickerModal, TimePickerModal } from 'react-native-paper-dates';
-import { Surface, IconButton, useTheme, Button, Text, TextInput, Modal, Dialog, Portal } from 'react-native-paper';
-import { styles } from '../utils/styles';
+import { useState } from 'react';
+import { Surface, useTheme, Button, Text, TextInput, Modal, Portal } from 'react-native-paper';
 import { registerUser } from '../utils/api';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import Alert from './Alert';
 
-
-export default function RegisterModal({
-  showRegisterModal,
-  setShowRegisterModal,
-}) {
-  const dispatch = useDispatch()
+export default function RegisterModal() {
+  const [showRegisterModal, setShowRegisterModal] = useState(false);
+  const [hidePassWord, setHidePassWord] = useState(true);
+  const [hidePassWordCopy, setHidePassWordCopy] = useState(true);
+  const [passwordCopy, setPasswordCopy] = useState("");
   const [newUser, setNewUser] = useState({
     userName: '',
     password: '',
     organization: ''
   });
   const [message, setMessage] = useState('');
-  const hideDialog = () => setMessage(false);
-  const theme = useTheme()
+  const theme = useTheme();
 
   const registerNewUser = () => {
     if (!newUser.userName.trim()) {
       setMessage("You must enter a user name")
-  } else if (!newUser.password.trim()) {
-    setMessage("You must enter a password")
-  }else if (!newUser.organization.trim()) {
-    setMessage("You must enter an organization")
-  } else {
-    registerUser(newUser).then(result => {
-      if (result.success) {
-        setShowRegisterModal(false)
-      } else {
-        setMessage(result.message)
-      }
-    })
-  }
-  }
+    } else if (!newUser.password.trim()) {
+      setMessage("You must enter a password")
+    } else if (!newUser.organization.trim()) {
+      setMessage("You must enter an organization")
+    } else if (newUser.password !== passwordCopy) {
+      setMessage("Passwords do not match")
+    } else {
+      registerUser(newUser).then(result => {
+        if (result.success) {
+          setShowRegisterModal(false)
+        } else {
+          setMessage(result.message)
+        }
+      })
+    }
+  };
+
   return (
-    <Surface elevation={3} style={{ backgroundColor: theme.colors.background, borderRadius: 20, padding: 10, alignItems: 'center', opacity:.8 }}>
-      <Text variant="headlineSmall">Register</Text>
-      <View style={{width:"90%", paddingVertical:20}}>
-        <TextInput
-          mode="outlined"
-          autoCorrect={false}
-          label='User Name'
-          theme={theme.roundness}
-          style={{ width: '100%', margin:5 }}
-          onChangeText={(value) => {
-            setNewUser({ ...newUser, userName: value })
-          }}
-        />
-        <TextInput
-         mode="outlined"
-         autoCorrect={false}
-         label='Password'
-         theme={theme.roundness}
-         style={{ width: '100%', margin:5 }}
-          onChangeText={(value) => {
-            setNewUser({ ...newUser, password: value })
-          }}
-        />
-        <TextInput
-         mode="outlined"
-         autoCorrect={false}
-         label='Organization'
-         theme={theme.roundness}
-         style={{ width: '100%', margin:5 }}
-          onChangeText={(value) => {
-            setNewUser({ ...newUser, organization: value })
-          }}
-        />
-      </View>
+    <>
       <Button
-        onPress={() => registerNewUser(newUser)}
-        style={[{ backgroundColor: theme.colors.primary, marginBottom:15, paddingHorizontal:15 }]}
-        theme={theme.buttonRoundness}
-                        textColor={theme.colors.onPrimary}
+        mode='outlined'
+        
+        uppercase
+        style={[{  width: '50%', borderRadius:16 }]}
+        onPress={() => setShowRegisterModal(true)}
       >
-        Get Started
+        Register
       </Button>
-
       <Portal>
-          <Dialog visible={message} onDismiss={hideDialog}>
-            <Dialog.Title>Alert</Dialog.Title>
-            <Dialog.Content>
-              <Text variant="bodyMedium">{message}</Text>
-            </Dialog.Content>
-            <Dialog.Actions>
-              <Button onPress={hideDialog}>Done</Button>
-            </Dialog.Actions>
-          </Dialog>
-        </Portal>
-    </Surface>
-
-
+        <Modal
+          visible={showRegisterModal}
+          style={{ padding: 20 }}
+          onDismiss={() => {
+            setShowRegisterModal(false);
+          }}>
+          <Surface
+            elevation={3}
+            style={{
+                justifyContent: 'center',
+                borderRadius: 20,
+                paddingVertical: 50,
+                paddingHorizontal: 20,
+                alignItems: 'center'
+              }}
+          >
+            <Text
+              variant="headlineMedium"
+              style={{ color: theme.colors.primary }}
+            >
+              Register
+            </Text>
+            <TextInput
+              mode="outlined"
+              autoCorrect={false}
+              label='User Name'
+              theme={theme.roundness}
+              style={{ width: '100%', margin: 5 }}
+              onChangeText={(value) => {
+                setNewUser({ ...newUser, userName: value.trim() })
+              }}
+            />
+            <TextInput
+              mode="outlined"
+              autoCorrect={false}
+              autoCapitalize="none"
+              blurOnSubmit={false}
+              label='Create Password'
+              theme={theme.roundness}
+              style={{ width: '100%', margin: 5 }}
+              textContentType="password"
+              secureTextEntry={hidePassWord ? true : false}
+              onChangeText={(value) => setPasswordCopy(value)}
+              right={
+                <TextInput.Icon
+                  icon="eye"
+                  iconColor={theme.colors.primary}
+                  onPress={() => setHidePassWord(!hidePassWord)}
+                />
+              }
+            />
+            <TextInput
+              mode="outlined"
+              autoCorrect={false}
+              autoCapitalize="none"
+              blurOnSubmit={false}
+              label='Re-enter Password'
+              theme={theme.roundness}
+              style={{ width: '100%', margin: 5 }}
+              textContentType="password"
+              secureTextEntry={hidePassWordCopy ? true : false}
+              onChangeText={(value) => {
+                setNewUser({ ...newUser, password: value.trim() })
+              }}
+              right={
+                <TextInput.Icon
+                  icon="eye"
+                  iconColor={theme.colors.primary}
+                  onPress={() => setHidePassWordCopy(!hidePassWordCopy)}
+                />
+              }
+            />
+            <TextInput
+              mode="outlined"
+              autoCorrect={false}
+              label='Organization'
+              theme={theme.roundness}
+              style={{ width: '100%', margin: 5 }}
+              onChangeText={(value) => {
+                setNewUser({ ...newUser, organization: value.trim() })
+              }}
+            />
+            <Button
+              onPress={() => registerNewUser(newUser)}
+              style={[{ backgroundColor: theme.colors.primary, margin: 15, width: '50%' }]}
+              theme={theme.buttonRoundness}
+              textColor={theme.colors.onPrimary}
+            >
+              Register
+            </Button>
+            <Alert message={message} setMessage={setMessage} />
+          </Surface>
+        </Modal>
+      </Portal>
+    </>
   )
-}
+};

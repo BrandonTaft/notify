@@ -42,6 +42,35 @@ export const logOutUser = async(user) => {
     .catch((error) => console.log("Server "))
 }
 
+export const storeProfileImage = async (uri, userId) => {
+    let uriParts = uri.split('.');
+    let fileType = uriParts[uriParts.length - 1];
+    let formData = new FormData();
+    formData.append('photo', {
+        uri,
+        name: `${userId}.${fileType}`,
+        type: `image/${fileType}`
+    });
+    formData.append('userId', userId)
+    return await fetch(BASE_URL + '/api/users/profile-image',
+        {
+            method: 'POST',
+            body: formData,
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'multipart/form-data',
+            },
+        })
+        .then((response) => response.json())
+        .then((response) => {
+            console.log('response', response);
+        })
+        .catch((error) => {
+            console.log('error', error);
+        })
+}
+
+
 
 export const storeBackUpData = async (reminders) => {
     // await AsyncStorage.setItem('reminders', JSON.stringify(reminders));
@@ -78,35 +107,9 @@ export const fetchBackUpData = async () => {
 };
 
 export const fetchGroups = async (org) => {
-    return await fetch(`https://70bc-75-131-25-248.ngrok-free.app/chatrooms/${org}`)
+    return await fetch(BASE_URL + '/chatrooms/${org}')
       .then((res) => res.json())
-      .catch((error) => console.log("Server did not respond"))
+      .catch((error) => console.log("Chat Server did not respond"))
   }
 
-  export const storeProfileImage = async (uri, userId) => {
-    let uriParts = uri.split('.');
-    let fileType = uriParts[uriParts.length - 1];
-    let formData = new FormData();
-    formData.append('photo', {
-        uri,
-        name: `${userId}.${fileType}`,
-        type: `image/${fileType}`
-    });
-    formData.append('userId', userId)
-    return await fetch("https://70bc-75-131-25-248.ngrok-free.app/api/profile-image",
-        {
-            method: 'POST',
-            body: formData,
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'multipart/form-data',
-            },
-        })
-        .then((response) => response.json())
-        .then((response) => {
-            console.log('response', response);
-        })
-        .catch((error) => {
-            console.log('error', error);
-        })
-}
+  

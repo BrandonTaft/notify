@@ -3,15 +3,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { nanoid } from "@reduxjs/toolkit";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { styles } from "../../utils/styles";
-import { Avatar, Button } from 'react-native-paper';
+import { Text, Button, TextInput, Surface, useTheme } from 'react-native-paper';
 import * as ImagePicker from 'expo-image-picker';
 import { storeProfileImage } from "../../utils/api";
 import { editUserProfileImage, editUserBanner, editUserCredentials } from '../../redux/userSlice';
 import {
-    Text,
+
     SafeAreaView,
     View,
-    TextInput,
+
     Pressable,
     Alert,
     Platform,
@@ -35,11 +35,12 @@ const createFormData = (photo, body = {}) => {
     return data;
 };
 
-const ProfileFormModal = ({ showProfileFormModal, setShowProfileFormModal }) => {
+const ProfileFormModal = ({ setShowProfileFormModal }) => {
     const [isLoading, setIsLoading] = useState(false)
     const [userNameToEdit, setUserNameToEdit] = useState("")
     const [notifyUser, setNotifyUser] = useState({});
     const dispatch = useDispatch();
+    const theme = useTheme();
 
     const user = useSelector(state => state.user)
 
@@ -154,69 +155,88 @@ const ProfileFormModal = ({ showProfileFormModal, setShowProfileFormModal }) => 
                 dispatch(editUserProfileImage(_image.assets[0].uri));
                 imageToStore = JSON.stringify({ profileImage: _image.assets[0].uri })
                 await AsyncStorage.mergeItem('notify_user', imageToStore)
-                storeProfileImage(_image.assets[0].uri, user.id)
-                console.log(_image.assets[0])
+                storeProfileImage(_image.assets[0].uri, user.userId)
             } else {
-
                 dispatch(editUserBanner(_image.assets[0].uri))
                 imageToStore = JSON.stringify({ bannerImage: _image.assets[0].uri })
                 await AsyncStorage.mergeItem('notify_user', imageToStore)
             }
         }
+        setShowProfileFormModal(false);
     };
 
 
     return (
-        <Modal
-            animationType="slide"
-            transparent={true}
-            visible={showProfileFormModal}
-            onRequestClose={() => {
-                setShowProfileFormModal(!showProfileFormModal);
-            }}>
-            <View style={styles.profileFormModal}>
-                <Text style={styles.loginheading}>EDIT PROFILE</Text>
-                <Button icon="close" mode="contained-tonal" onPress={() => setShowProfileFormModal(false)}>
-                    Close
-                </Button>
-                <View style={styles.profileFormModalBtnContainer}>
-                    {/* <Button icon="camera" mode="elevated" onPress={takeProfileImageWithCamera}>
+        <Surface
+            elevation={3}
+            style={
+                {
+                    justifyContent: 'center',
+                    borderRadius: 20,
+                    paddingVertical: 50,
+                    paddingHorizontal:20,
+                    alignItems: 'center'
+                }
+            }
+        >
+            <Text
+                variant="headlineMedium"
+                style={{ color: theme.colors.primary }}
+            >
+                Edit Profile
+            </Text>
+            <Button icon="close" mode="contained-tonal" onPress={() => setShowProfileFormModal(false)}>
+                Close
+            </Button>
+            {/* <View style={styles.profileFormModalBtnContainer}> */}
+            {/* <Button icon="camera" mode="elevated" onPress={takeProfileImageWithCamera}>
                         Camera
                     </Button> */}
-                    <Button icon="view-gallery" mode="elevated" onPress={() => addImageFromLibrary("profile_image")}>
-                        Edit Profile Picture
-                    </Button>
-                    <Button icon="view-gallery" mode="elevated" onPress={() => addImageFromLibrary("banner_image")}>
-                        Edit Banner Image
-                    </Button>
+            <Button
+                icon="view-gallery"
+                mode="elevated"
+                onPress={() => addImageFromLibrary("profile_image")}
+            >
+                Edit Profile Picture
+            </Button>
+            <Button
+                icon="view-gallery"
+                mode="elevated"
+                onPress={() => addImageFromLibrary("banner_image")}
+            >
+                Edit Banner Image
+            </Button>
+            {/* </View> */}
+
+            <TextInput
+                value={notifyUser.userName}
+                mode="outlined"
+                autoCorrect={false}
+                label='Edit user name'
+                theme={theme.roundness}
+                style={{ width: '100%', margin: 5 }}
+                onChangeText={(value) => {
+                    setNotifyUser({ ...notifyUser, userName: value })
+                }}
+            />
+            <TextInput
+                value={notifyUser.organization}
+                mode="outlined"
+                autoCorrect={false}
+                label='Edit organization'
+                theme={theme.roundness}
+                style={{ width: '100%', margin: 5 }}
+                onChangeText={(value) => {
+                    setNotifyUser({ ...notifyUser, organization: value })
+                }}
+            />
+
+            <Pressable onPress={handleProfileEdit} style={styles.loginbutton}>
+                <View>
+                    <Text style={styles.loginbuttonText}>Get Started</Text>
                 </View>
-                <View style={styles.logininputContainer}>
-                    <TextInput
-                        value={notifyUser.userName}
-                        autoCorrect={false}
-                        placeholder='Enter your userName'
-                        style={styles.logininput}
-                        onChangeText={(value) => {
-                            setNotifyUser({ ...notifyUser, userName: value })
-                        }}
-                    />
-                    <TextInput
-                        value={notifyUser.organization}
-                        autoCorrect={false}
-                        placeholder='Enter your organization'
-                        style={styles.logininput}
-                        onChangeText={(value) => {
-                            setNotifyUser({ ...notifyUser, organization: value })
-                        }}
-                    />
-                </View>
-                <Pressable onPress={handleProfileEdit} style={styles.loginbutton}>
-                    <View>
-                        <Text style={styles.loginbuttonText}>Get Started</Text>
-                    </View>
-                </Pressable>
-            </View>
-        </Modal>
+            </Pressable>
+        </Surface>
     );
 };
 

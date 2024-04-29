@@ -9,14 +9,6 @@ export const styles = StyleSheet.create({
         padding:10,
         borderRadius:15
     },
-    /************LOGIN***********/
-    loginscreen: {
-        flex: 1,
-        width:"100%",
-        alignItems: "center",
-        justifyContent: "center",
-    },
-   
    
 
     /*********HEADER*********/
