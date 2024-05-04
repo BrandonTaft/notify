@@ -24,11 +24,11 @@ export default function ChatRoomMessage({ message, user }) {
                         :
                         <>
                         {
-                            message.profile_image
+                            message.profileImage
                                 ?
                                 <Avatar.Image 
                                 size={60} 
-                                source={{ uri: `https://70bc-75-131-25-248.ngrok-free.app/images/${message.userId}.jpeg` }} 
+                                source={{ uri: `https://c39b-75-131-25-248.ngrok-free.app/images/${message.userId}.jpeg` }} 
                                 style={{ position: 'relative', zIndex: 999 }}
                                 />
                                 :

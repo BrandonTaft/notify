@@ -4,7 +4,7 @@ import CreateReminderComponent from "./reminderFeature/CreateReminderComponent";
 import { useDispatch } from 'react-redux';
 import { createReminder } from '../redux/reminderSlice';
 import ProfileImage from "./profileFeature/ProfileImage";
-import { LogOutButton, ThemeButton } from "./Buttons";
+import { ThemeButton } from "./Buttons";
 import { Surface, useTheme,IconButton } from 'react-native-paper';
 import { styles } from "../utils/styles";
 
@@ -20,7 +20,7 @@ export default function Header() {
                 [
                     styles.headerContainer,
                     {
-                        backgroundColor: theme.colors.primaryContainer
+                      
                     }
                 ]
             }
@@ -42,7 +42,6 @@ export default function Header() {
                     }
                 }
             />
-            <LogOutButton size={36} color={'#fff'} />
             <ThemeButton />
         </Surface>
     )

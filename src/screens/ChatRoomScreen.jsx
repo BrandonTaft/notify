@@ -5,7 +5,7 @@ import { styles } from "../utils/styles";
 import socket from "../utils/socket";
 import { useSelector } from "react-redux";
 import { useTheme } from "react-native-paper";
-import { AvatarButton, LogOutButton, BackButton } from "../components/Buttons";
+import { AvatarButton, BackButton } from "../components/Buttons";
 
 const ChatRoomScreen = ({ route, navigation }) => {
     const { name, roomId } = route.params;
@@ -22,7 +22,6 @@ console.log("NOTIFY USER", notifyUser)
                     size={50}
                     handlePress={() => navigation.navigate("ProfileScreen")}
                 />
-                <LogOutButton size={50} color="#000" />
             </View>
         )
     };
@@ -72,7 +71,7 @@ console.log("NOTIFY USER", notifyUser)
                 message,
                 roomId: roomId,
                 user: notifyUser.userName,
-                userId: notifyUser.id,
+                userId: notifyUser.userId,
                 profileImage: notifyUser.profileImage,
                 org: notifyUser.organization,
                 reactions: { thumbsUp: 0, thumbsDown: 0, heart: 0 },

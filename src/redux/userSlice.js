@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { logOutUser } from "../utils/api";
 
 export const userSlice = createSlice({
   name: "user",
@@ -35,9 +34,10 @@ export const userSlice = createSlice({
       }
     },
     editUserProfileImage: (state, action) => {
+      const {imageType, image} = action.payload;
       return {
         ...state,
-        profileImage: action.payload
+        [imageType]: image
       }
     },
     editUserBanner: (state, action) => {
@@ -47,7 +47,6 @@ export const userSlice = createSlice({
       }
     },
     logOut: (state, action) => {
-      logOutUser(state)
       return { isLoggedIn: false }
     },
   }

@@ -6,20 +6,12 @@ export const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-evenly',
-        padding:10,
-        borderRadius:15
+        padding:3
     },
    
 
     /*********HEADER*********/
-    header: {
-        flex: 1,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        paddingTop: 5,
-        paddingHorizontal: 20
-    },
+   
     headerTitle: {
         // fontFamily: "Rubik-Black",
         color: '#8789f7',
@@ -43,7 +35,7 @@ export const styles = StyleSheet.create({
     // },
     profileImageContainer: {
         position: 'relative',
-        flex: 3
+        flex: 2
     },
     profileImage: {
         position: 'absolute',

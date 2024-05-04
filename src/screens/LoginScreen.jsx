@@ -1,29 +1,22 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch } from 'react-redux';
-import { createUser } from "../redux/userSlice";
 import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { logInUser } from "../utils/api";
 import RegisterModal from "../components/RegisterModal";
 import Alert from "../components/Alert";
+import { logInUser } from "../utils/api";
+import { useDispatch } from 'react-redux';
+import { createUser } from "../redux/userSlice";
 import { View, Image } from "react-native";
-import { 
-    Modal,
-    Button, 
-    Text, 
-    TextInput, 
-    useTheme, 
-    Icon
-} from "react-native-paper";
+import { Button, Text, TextInput, useTheme, Icon } from "react-native-paper";
 
 const LoginScreen = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [hidePassWord, setHidePassWord] = useState(true);
+    const [message, setMessage] = useState('');
     const [notifyUser, setNotifyUser] = useState({
         userName: '',
         password: '',
     });
-    const [message, setMessage] = useState('');
     const dispatch = useDispatch();
     const theme = useTheme();
 
@@ -51,7 +44,6 @@ const LoginScreen = () => {
         } else if (!notifyUser.password.trim()) {
             setMessage("You must enter a password")
         } else {
-            setIsLoading(true)
             logInUser(notifyUser).then(async (result) => {
                 if (result.success) {
                     dispatch(createUser({ ...result.existingUser, isLoggedIn: true }))
@@ -61,7 +53,6 @@ const LoginScreen = () => {
                 } else {
                     setMessage(result.message)
                 }
-                setIsLoading(false)
             })
         }
     };

@@ -1,48 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from 'react-redux';
-import { nanoid } from "@reduxjs/toolkit";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { styles } from "../../utils/styles";
+import * as SecureStore from 'expo-secure-store';
+import Alert from "../Alert";
 import { Text, Button, TextInput, Surface, useTheme } from 'react-native-paper';
 import * as ImagePicker from 'expo-image-picker';
-import { storeProfileImage } from "../../utils/api";
-import { editUserProfileImage, editUserBanner, editUserCredentials } from '../../redux/userSlice';
-import {
+import { storeProfileImage, updateUserProfile, deleteUser, logOutUser } from "../../utils/api";
+import { editUserProfileImage, editUserBanner, editUserCredentials, logOut } from '../../redux/userSlice';
 
-    SafeAreaView,
-    View,
-
-    Pressable,
-    Alert,
-    Platform,
-    Image,
-    Modal
-} from "react-native";
-
-const createFormData = (photo, body = {}) => {
-    const data = new FormData();
-
-    data.append('photo', {
-        name: photo.fileName,
-        type: photo.type,
-        uri: photo.uri,
-    });
-
-    Object.keys(body).forEach((key) => {
-        data.append(key, body[key]);
-    });
-    console.log("DATA", data)
-    return data;
-};
-
-const ProfileFormModal = ({ setShowProfileFormModal }) => {
-    const [isLoading, setIsLoading] = useState(false)
-    const [userNameToEdit, setUserNameToEdit] = useState("")
+const ProfileFormModal = () => {
     const [notifyUser, setNotifyUser] = useState({});
-    const dispatch = useDispatch();
+    const [showUserNameEdit, setShowUserNameEdit] = useState(false);
+    const [showOrgEdit, setShowOrgEdit] = useState(false);
+    const [message, setMessage] = useState('');
     const theme = useTheme();
-
-    const user = useSelector(state => state.user)
+    const user = useSelector(state => state.user);
+    const dispatch = useDispatch();
 
     useEffect(() => {
         const checkForCameraRollPermission = async () => {
@@ -55,93 +28,20 @@ const ProfileFormModal = ({ setShowProfileFormModal }) => {
         setNotifyUser({ userName: user.userName, organization: user.organization })
     }, [])
 
-    // useEffect(() => {
-    //     setIsLoading(true)
-    //     const checkForExistingUser = async () => {
-    //         const existingUser = await AsyncStorage.getItem("notify_user");
-    //         if (existingUser !== null) {
-    //             const persistedUser = JSON.parse(existingUser)
-    //             dispatch(createUser({...persistedUser, isLoggedIn: true}))
-    //         } else {
-    //             setIsLoading(false)
-    //         }
-    //     }
-    //     checkForExistingUser()
-    // }, []);
-
-    const storeCredentials = async () => {
-        try {
-            const jsonValue = JSON.stringify(notifyUser)
-            await AsyncStorage.mergeItem("notify_user", jsonValue);
-            dispatch(editUserCredentials(notifyUser))
-        } catch (e) {
-            console.log(e)
-            Alert.alert("Error! While saving userName");
-        } finally {
-            setShowProfileFormModal(false)
-        }
+    const handleProfileEdit = async () => {
+        await updateUserProfile(user.userId, notifyUser).then(async (result) => {
+            if (result.success) {
+                dispatch(editUserCredentials(notifyUser))
+                const jsonValue = JSON.stringify(notifyUser)
+                await AsyncStorage.mergeItem("notify_user", jsonValue);
+            } else {
+                setMessage(result.message);
+                setNotifyUser({ userName: user.userName, organization: user.organization });
+            }
+        })
+        setShowOrgEdit(false);
+        setShowUserNameEdit(false);
     };
-
-    const handleProfileEdit = () => {
-        if (notifyUser.userName.trim() && notifyUser.organization.trim()) {
-            storeCredentials();
-        } else {
-            Alert.alert(
-                "TRY AGAIN",
-                "UserName and Organization are required to chat.",
-                [
-                    {
-                        "text": "OK"
-                    }
-                ],
-                {
-                    cancelable: true
-                }
-            );
-        }
-    };
-
-
-    // const takeProfileImageWithCamera = async () => {
-    //     const pictureTaken = await ImagePicker.launchCameraAsync({
-    //         allowsEditing: true,
-    //         quality: 0.5,
-    //     });
-    //     if (!pictureTaken.canceled) {
-    //         dispatch(editUserProfileImage(pictureTaken.assets[0].uri))
-    //         const pic = JSON.stringify({ profileImage: pictureTaken.assets[0].uri })
-    //         await AsyncStorage.mergeItem('notify_user', pic)
-    //     }
-    // }
-
-    // const storeProfileImage = async (uri) => {
-    //     let uriParts = uri.split('.');
-    //     let fileType = uriParts[uriParts.length - 1];
-    //     let formData = new FormData();
-    //     formData.append('photo', {
-    //         uri,
-    //         name: `photo.${fileType}`,
-    //         type: `image/${fileType}`,
-    //         user: "123"
-    //     });
-    //     formData.append('userId', "123")
-    //     return await fetch("https://593b-2600-6c5a-4a7f-463a-61b3-94e3-5c2a-117f.ngrok-free.app/api/profile-image",
-    //         {
-    //             method: 'POST',
-    //             body: formData,
-    //             headers: {
-    //                 Accept: 'application/json',
-    //                 'Content-Type': 'multipart/form-data',
-    //             },
-    //         })
-    //         .then((response) => response.json())
-    //         .then((response) => {
-    //             console.log('response', response);
-    //         })
-    //         .catch((error) => {
-    //             console.log('error', error);
-    //         })
-    // }
 
     const addImageFromLibrary = async (imageType) => {
         let _image = await ImagePicker.launchImageLibraryAsync({
@@ -150,31 +50,24 @@ const ProfileFormModal = ({ setShowProfileFormModal }) => {
             quality: 1,
         });
         if (!_image.canceled) {
-            let imageToStore;
-            if (imageType === "profile_image") {
-                dispatch(editUserProfileImage(_image.assets[0].uri));
-                imageToStore = JSON.stringify({ profileImage: _image.assets[0].uri })
-                await AsyncStorage.mergeItem('notify_user', imageToStore)
-                storeProfileImage(_image.assets[0].uri, user.userId)
-            } else {
-                dispatch(editUserBanner(_image.assets[0].uri))
-                imageToStore = JSON.stringify({ bannerImage: _image.assets[0].uri })
-                await AsyncStorage.mergeItem('notify_user', imageToStore)
-            }
+            dispatch(editUserProfileImage({imageType: imageType, image:_image.assets[0].uri}));
+            let imageToStore = JSON.stringify({ imageType: _image.assets[0].uri })
+            await AsyncStorage.mergeItem('notify_user', imageToStore)
+            storeProfileImage(imageType,_image.assets[0].uri, user.userId)
         }
-        setShowProfileFormModal(false);
-    };
 
+    };
 
     return (
         <Surface
-            elevation={3}
+            elevation={5}
             style={
                 {
                     justifyContent: 'center',
                     borderRadius: 20,
-                    paddingVertical: 50,
-                    paddingHorizontal:20,
+                    padding: 5,
+                    width: '100%',
+                    height: '100%',
                     alignItems: 'center'
                 }
             }
@@ -183,59 +76,135 @@ const ProfileFormModal = ({ setShowProfileFormModal }) => {
                 variant="headlineMedium"
                 style={{ color: theme.colors.primary }}
             >
-                Edit Profile
+                Profile
             </Text>
-            <Button icon="close" mode="contained-tonal" onPress={() => setShowProfileFormModal(false)}>
-                Close
-            </Button>
-            {/* <View style={styles.profileFormModalBtnContainer}> */}
+            {showUserNameEdit ?
+                <TextInput
+                    value={notifyUser.userName}
+                    mode="outlined"
+                    autoCorrect={false}
+                    label='Edit user name'
+                    theme={theme.roundness}
+                    style={{ width: '100%', margin: 5 }}
+                    onChangeText={(value) => {
+                        setNotifyUser({ ...notifyUser, userName: value })
+                    }}
+                    right={
+                        <TextInput.Icon
+                            icon="close"
+                            iconColor={theme.colors.primary}
+                            onPress={() => setShowUserNameEdit(false)}
+                        />
+                    }
+                />
+                :
+                <Surface elevation={3} style={{ flexDirection: 'row', width: '100%', justifyContent: 'space-evenly' }}>
+                    <Text
+                        variant="headlineSmall"
+                        style={{ color: theme.colors.secondary }}
+                    >
+                        User Name:
+                    </Text>
+                    <Text
+                        variant="headlineSmall"
+                        style={{ color: theme.colors.primary }}
+                    >
+                        {notifyUser.userName}
+                    </Text>
+                    <Button mode="text" onPress={() => setShowUserNameEdit(true)}>
+                        Edit
+                    </Button>
+                </Surface>
+            }
+            {showOrgEdit ?
+                <TextInput
+                    value={notifyUser.organization}
+                    mode="outlined"
+                    autoCorrect={false}
+                    label='Edit organization'
+                    theme={theme.roundness}
+                    style={{ width: '100%', margin: 5 }}
+                    onChangeText={(value) => {
+                        setNotifyUser({ ...notifyUser, organization: value })
+                    }}
+                    right={
+                        <TextInput.Icon
+                            icon="close"
+                            iconColor={theme.colors.primary}
+                            onPress={() => setShowOrgEdit(false)}
+                        />
+                    }
+                />
+                :
+                <Surface elevation={3} style={{ flexDirection: 'row', width: '100%', justifyContent: 'space-evenly' }}>
+                    <Text
+                        variant="headlineSmall"
+                        style={{ color: theme.colors.secondary }}
+                    >
+                        organization:
+                    </Text>
+                    <Text
+                        variant="headlineSmall"
+                        style={{ color: theme.colors.primary }}
+                    >
+                        {notifyUser.organization}
+                    </Text>
+                    <Button mode="text" onPress={() => setShowOrgEdit(true)}>
+                        Edit
+                    </Button>
+                    <Alert message={message} setMessage={setMessage} />
+                </Surface>
+
+            }
+
             {/* <Button icon="camera" mode="elevated" onPress={takeProfileImageWithCamera}>
                         Camera
                     </Button> */}
             <Button
-                icon="view-gallery"
+                icon="account"
                 mode="elevated"
-                onPress={() => addImageFromLibrary("profile_image")}
+                onPress={() => addImageFromLibrary("profileImage")}
             >
-                Edit Profile Picture
+                EditPicture
             </Button>
             <Button
                 icon="view-gallery"
                 mode="elevated"
-                onPress={() => addImageFromLibrary("banner_image")}
+                onPress={() => addImageFromLibrary("bannerImage")}
             >
-                Edit Banner Image
+                Edit Banner
             </Button>
             {/* </View> */}
 
-            <TextInput
-                value={notifyUser.userName}
-                mode="outlined"
-                autoCorrect={false}
-                label='Edit user name'
-                theme={theme.roundness}
-                style={{ width: '100%', margin: 5 }}
-                onChangeText={(value) => {
-                    setNotifyUser({ ...notifyUser, userName: value })
-                }}
-            />
-            <TextInput
-                value={notifyUser.organization}
-                mode="outlined"
-                autoCorrect={false}
-                label='Edit organization'
-                theme={theme.roundness}
-                style={{ width: '100%', margin: 5 }}
-                onChangeText={(value) => {
-                    setNotifyUser({ ...notifyUser, organization: value })
-                }}
-            />
 
-            <Pressable onPress={handleProfileEdit} style={styles.loginbutton}>
-                <View>
-                    <Text style={styles.loginbuttonText}>Get Started</Text>
-                </View>
-            </Pressable>
+
+            <Button
+                icon="view-gallery"
+                mode="elevated"
+                onPress={() => handleProfileEdit()}
+            >
+                Edit
+            </Button>
+            <Button
+                icon="view-gallery"
+                mode="elevated"
+                onPress={() => {
+                    logOutUser(user);
+                    dispatch(logOut(user));
+                }}
+            >
+                Log Out
+            </Button>
+            <Button
+                icon="view-gallery"
+                mode="elevated"
+                onPress={() => {
+                    deleteUser(user)
+                    dispatch(logOut(user));
+                }}
+            >
+                Delete Profile
+            </Button>
         </Surface>
     );
 };

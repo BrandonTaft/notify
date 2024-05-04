@@ -1,65 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { Image, View, ImageBackground, Text } from 'react-native';
-import { useSelector, useDispatch } from 'react-redux';
-import { AntDesign } from '@expo/vector-icons';
-import * as ImagePicker from 'expo-image-picker';
-import { Avatar, Button, FAB, IconButton, MD3Colors, Modal } from 'react-native-paper';
+import { View, ImageBackground } from 'react-native';
+import { useSelector } from 'react-redux';
+import { Avatar, useTheme, Surface } from 'react-native-paper';
 import { styles } from '../utils/styles';
-import { editUserProfileImage, editUserBanner } from '../redux/userSlice';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import ProfileFormModal from '../components/profileFeature/ProfileFormModal';
 
 export default function ProfileScreen() {
-  const [showProfileFormModal, setShowProfileFormModal] = useState(false);
   const user = useSelector(state => state.user);
-  const dispatch = useDispatch()
-
-  console.log(user)
-
-  // useEffect(() => {
-  //   const checkForCameraRollPermission = async () => {
-  //     const { status } = await ImagePicker.getCameraPermissionsAsync();
-  //     if (status !== 'granted') {
-  //       alert("Please grant camera roll permissions inside your system's settings");
-  //     }
-  //   };
-  //   checkForCameraRollPermission()
-  // }, [])
-
-  // const takeProfileImageWithCamera = async () => {
-  //   const pictureTaken = await ImagePicker.launchCameraAsync({
-  //     allowsEditing: true,
-  //     quality: 0.5,
-  //   });
-  //   if (!pictureTaken.canceled) {
-  //     dispatch(editUserProfileImage(pictureTaken.assets[0].uri))
-  //     const pic = JSON.stringify({ profileImage: pictureTaken.assets[0].uri })
-  //     await AsyncStorage.mergeItem('notify_user', pic)
-  //   }
-  // }
-
-  // const addImageFromLibrary = async (imageType) => {
-  //   let _image = await ImagePicker.launchImageLibraryAsync({
-  //     mediaTypes: ImagePicker.MediaTypeOptions.Images,
-  //     allowsEditing: true,
-  //     quality: 1,
-  //   });
-  //   if (!_image.canceled) {
-  //     let imageToStore;
-  //     if (imageType === "profile_image") {
-  //       dispatch(editUserProfileImage(_image.assets[0].uri));
-  //       imageToStore = JSON.stringify({ profileImage: _image.assets[0].uri })
-  //       await AsyncStorage.mergeItem('notify_user', imageToStore)
-
-  //     } else {
-
-  //       dispatch(editUserBanner(_image.assets[0].uri))
-  //       imageToStore = JSON.stringify({ bannerImage: _image.assets[0].uri })
-  //       await AsyncStorage.mergeItem('notify_user', imageToStore)
-  //     }
-  //   }
-  // };
-
+  const theme = useTheme();
+console.log(user)
   let banner;
   if (user.bannerImage) {
     banner = { uri: user.bannerImage }
@@ -69,14 +17,6 @@ export default function ProfileScreen() {
 
   return (
     <View style={{ flex: 1 }}>
-      <IconButton
-        icon="account-edit"
-        iconColor={MD3Colors.primary100}
-        size={40}
-        containerColor='grey'
-        style={styles.fab}
-        onPress={() => setShowProfileFormModal(true)}
-      />
       <View style={styles.profileImageContainer} >
         <ImageBackground source={{ uri: user.bannerImage }} resizeMode="cover" style={{ width: '100%', height: 200, justifyContent: 'flex-end', alignItems: 'center' }}>
           {
@@ -93,19 +33,24 @@ export default function ProfileScreen() {
           }
         </ImageBackground>
       </View>
-      <View style={styles.profileData}>
-        <Text style={styles.profileText}>{user.userName}</Text>
-        <Text style={styles.profileText}>{user.organization}</Text>
-      </View>
-      <Modal
-        visible={showProfileFormModal}
-        style={{ padding: 20 }}
-        onDismiss={() => {
-          setShowProfileFormModal(false);
-        }}
-      >
-        <ProfileFormModal setShowProfileFormModal={setShowProfileFormModal} />
-      </Modal>
+      <Surface
+            elevation={3}
+            style={
+                {
+                  flex:3,
+                    justifyContent: 'center',
+                    borderRadius: 20,
+                    padding: 10,
+                    
+                    alignItems: 'center',
+                    margin: 20,
+                    marginBottom: 30,
+                    marginTop:0
+                }
+            }
+        >
+        <ProfileFormModal/>
+      </Surface>
     </View>
   );
 };

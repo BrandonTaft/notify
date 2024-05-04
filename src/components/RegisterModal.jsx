@@ -40,9 +40,8 @@ export default function RegisterModal() {
     <>
       <Button
         mode='outlined'
-        
         uppercase
-        style={[{  width: '50%', borderRadius:16 }]}
+        style={[{ width: '50%', borderRadius: 16 }]}
         onPress={() => setShowRegisterModal(true)}
       >
         Register
@@ -57,12 +56,12 @@ export default function RegisterModal() {
           <Surface
             elevation={3}
             style={{
-                justifyContent: 'center',
-                borderRadius: 20,
-                paddingVertical: 50,
-                paddingHorizontal: 20,
-                alignItems: 'center'
-              }}
+              justifyContent: 'center',
+              borderRadius: 20,
+              paddingVertical: 50,
+              paddingHorizontal: 20,
+              alignItems: 'center'
+            }}
           >
             <Text
               variant="headlineMedium"

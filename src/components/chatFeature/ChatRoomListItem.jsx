@@ -20,11 +20,11 @@ console.log("ITEM", item.messages[item.messages.length - 1])
 
 
     const handleNavigation = () => {
-        console.log("ITEM", item.RoomId)
+        console.log("Idddd", item.roomId)
         navigation.navigate( {
             name: 'ChatRoomScreen',
             params: {
-                id: item.roomId,
+                roomId: item.roomId,
                 name: item.roomName,
             }
         });

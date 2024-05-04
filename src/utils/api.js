@@ -1,6 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Platform } from 'react-native';
-const BASE_URL = "https://2783-75-131-25-248.ngrok-free.app";
+const BASE_URL = "https://c39b-75-131-25-248.ngrok-free.app";
 import * as SecureStore from 'expo-secure-store';
 
 export const registerUser = async(user) => {
@@ -30,6 +29,8 @@ export const logInUser = async(user) => {
 };
 
 export const logOutUser = async(user) => {
+    await AsyncStorage.removeItem("notify_user");
+    await SecureStore.deleteItemAsync("secureToken")
     return await fetch(BASE_URL + '/api/users/logout', {
         method: 'POST',
         headers: {
@@ -39,10 +40,80 @@ export const logOutUser = async(user) => {
         body: JSON.stringify({ user : user })
     })
     .then(response => response.json())
+    .catch((error) => console.log("Server did not respond"))
+};
+
+export const deleteUser = async(user) => {
+    let token = await SecureStore.getItemAsync("secureToken");
+    await AsyncStorage.removeItem("notify_user"); 
+    return await fetch(BASE_URL + '/api/users/delete', {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ user : user })
+    })
+    .then(response => response.json())
+    .then(async (result) => {
+        await SecureStore.deleteItemAsync("secureToken")
+        if (!result.success) {
+            setMessage("There was an error deleting the profile");
+        }
+    })
+    .catch((error) => console.log("Server did not respond"))
+};
+
+export const updateUserProfile = async(userId, updatedProfileData) => {
+    let token = await SecureStore.getItemAsync("secureToken");
+    return await fetch(BASE_URL + '/api/users/update', {
+        method: 'PUT',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+            userId : userId, 
+            updatedProfileData: updatedProfileData
+        })
+    })
+    .then(response => response.json())
     .catch((error) => console.log("Server "))
 }
 
-export const storeProfileImage = async (uri, userId) => {
+export const storeProfileImage = async (imageType, uri, userId) => {
+    let uriParts = uri.split('.');
+    let fileType = uriParts[uriParts.length - 1];
+    let formData = new FormData();
+    formData.append(imageType, {
+        uri,
+        name: `${userId}.${fileType}`,
+        type: `image/${fileType}`,
+    });
+    formData.append('userId', userId)
+    formData.append('image',uri)
+    formData.append('imageType',imageType)
+    return await fetch(BASE_URL + '/api/users/profile-image',
+        {
+            method: 'POST',
+            body: formData,
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'multipart/form-data',
+            },
+        })
+        .then((response) => response.json())
+        .then((response) => {
+            console.log('response', response);
+        })
+        .catch((error) => {
+            console.log('error', error);
+        })
+};
+
+export const storeBannerImage = async (uri, userId) => {
     let uriParts = uri.split('.');
     let fileType = uriParts[uriParts.length - 1];
     let formData = new FormData();
@@ -52,7 +123,8 @@ export const storeProfileImage = async (uri, userId) => {
         type: `image/${fileType}`
     });
     formData.append('userId', userId)
-    return await fetch(BASE_URL + '/api/users/profile-image',
+    formData.append('bannerImage',uri)
+    return await fetch(BASE_URL + '/api/users/banner-image',
         {
             method: 'POST',
             body: formData,
@@ -106,10 +178,10 @@ export const fetchBackUpData = async () => {
     // .catch((error) => console.log("Server did not respond"))
 };
 
-export const fetchGroups = async (org) => {
+export const fetchGroups = async () => {
     return await fetch(BASE_URL + '/chatrooms/${org}')
       .then((res) => res.json())
-      .catch((error) => console.log("Chat Server did not respond"))
+      .catch((error) => console.log("Chat Server did not respond", error))
   }
 
   

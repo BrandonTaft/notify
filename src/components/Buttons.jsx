@@ -16,26 +16,21 @@ export function ThemeButton({ styles, size }) {
             icon="theme-light-dark"
             iconColor={theme.colors.onPrimaryContainer}
             size={40}
-            // onPress={async () => {
-            //     await AsyncStorage.removeItem("notify_user")
-            //     dispatch(logOutUser())
-            // }}
             onPress={() => Appearance.setColorScheme(colorScheme === 'dark' ? 'light' : 'dark')}
         />
     )
 }
 
-export function LogOutButton({ styles, size }) {
+export function DeleteProfileButton({ styles, size }) {
     const user = useSelector(state => state.user);
     const dispatch = useDispatch();
     const theme = useTheme();
     return (
         <IconButton
-            icon="logout"
+            icon="trash-can"
             iconColor={theme.colors.onPrimaryContainer}
             size={40}
             onPress={async () => {
-                
                 dispatch(logOut(user))
                 await SecureStore.deleteItemAsync("secureToken")
                 await AsyncStorage.removeItem("notify_user")
@@ -104,7 +99,8 @@ export function ReactionButtons({ message }) {
 
     useEffect(() => {
         socket.on("newReaction", (reaction) => {
-            if(message.id === reaction.id){
+            console.log(message.messageId, reaction.messageId)
+            if(message.messageId === reaction.messageId){
             setChatReaction(reaction.reactions)
             }
         });
