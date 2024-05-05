@@ -4,7 +4,7 @@ import { fetchGroups } from "../../utils/api";
 import { useSelector, useDispatch } from 'react-redux';
 import { addChatRoom, addAllRoomsFromServer } from "../../redux/chatRoomSlice";
 import ChatRoomListItem from "./ChatRoomListItem";
-import { Text, useTheme, Chip } from 'react-native-paper';
+import { Text, useTheme, Chip, FAB } from 'react-native-paper';
 import socket from "../../utils/socket";
 import CreateChatComponent from "./CreateChatComponent";
 
@@ -41,11 +41,21 @@ export default function ChatRoomPreview() {
   return (
     <View style={[{ flex: 1 }]}>
       {rooms.length > 0 ? (
+        <>
         <FlatList
           data={rooms}
           renderItem={({ item }) => <ChatRoomListItem item={item} />}
           keyExtractor={(item) => item.roomId}
         />
+         <FAB
+    icon="plus"
+    style={{position: 'absolute',
+    margin: 16,
+    right: 0,
+    bottom: 0,}}
+    onPress={() => setShowCreateChatComponent(true)}
+  />
+        </>
       ) : (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
           <Text variant="headlineSmall" style={{ color: theme.colors.text }}>No rooms created!</Text>

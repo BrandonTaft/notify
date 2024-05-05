@@ -11,8 +11,8 @@ export const registerUser = async(user) => {
         },
         body: JSON.stringify({ user : user })
     })
-    .then(response => response.json()) 
-    .catch((error) => console.log("Server did not respond"))
+    .then(response => response.json())
+    .catch((error) => console.log("An unexpected error has occurred :", error))
 }
 
 export const logInUser = async(user) => {
@@ -25,7 +25,7 @@ export const logInUser = async(user) => {
         body: JSON.stringify({ user : user })
     })
     .then(response => response.json()) 
-    .catch((error) => console.log("Server did not respond"))
+    .catch((error) => console.log("An unexpected error has occurred :", error))
 };
 
 export const logOutUser = async(user) => {

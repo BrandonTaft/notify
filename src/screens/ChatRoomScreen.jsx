@@ -1,10 +1,10 @@
 import React, { useLayoutEffect, useState, useEffect } from "react";
-import { View, TextInput, Text, FlatList, Pressable } from "react-native";
+import { View, TextInput, FlatList, Keyboard } from "react-native";
 import ChatRoomMessage from "../components/chatFeature/ChatRoomMessage";
 import { styles } from "../utils/styles";
 import socket from "../utils/socket";
 import { useSelector } from "react-redux";
-import { useTheme } from "react-native-paper";
+import { useTheme, IconButton, Button, Text } from "react-native-paper";
 import { AvatarButton, BackButton } from "../components/Buttons";
 
 const ChatRoomScreen = ({ route, navigation }) => {
@@ -13,14 +13,25 @@ const ChatRoomScreen = ({ route, navigation }) => {
     const [message, setMessage] = useState("");
     const notifyUser = useSelector(state => state.user)
     const theme = useTheme();
-console.log("NOTIFY USER", notifyUser)
+    console.log("NOTIFY USER", notifyUser)
     const RightHeaderButtons = () => {
         return (
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal:10 }}>
+                <IconButton
+                    icon="home"
+                    iconColor={theme.colors.onPrimaryContainer}
+                    size={40}
+                    onPress={() => {
+                        Keyboard.dismiss()
+                        navigation.navigate("HomeScreen")
+                    }}
+                />
                 <AvatarButton
-                    styles={styles.avatarButtonImage}
-                    size={50}
-                    handlePress={() => navigation.navigate("ProfileScreen")}
+                    size={40}
+                    handlePress={() => {
+                        Keyboard.dismiss()
+                        navigation.navigate("ProfileScreen")
+                    }}
                 />
             </View>
         )
@@ -41,6 +52,7 @@ console.log("NOTIFY USER", notifyUser)
     useLayoutEffect(() => {
         navigation.setOptions({
             headerTitle: name,
+            headerTitleStyle: { color:theme.colors.primary, fontWeight:600, fontSize:24 },
             headerStyle: { backgroundColor: theme.colors.primaryContainer },
             headerRight: (props) => <RightHeaderButtons {...props} />,
             headerLeft: (props) => <LeftHeaderButtons {...props} />
@@ -110,14 +122,14 @@ console.log("NOTIFY USER", notifyUser)
                     onChangeText={(value) => setMessage(value)}
                     value={message}
                 />
-                <Pressable
-                    style={styles.messagingbuttonContainer}
+                <Button
+                    style={{backgroundColor: theme.colors.primary, paddingHorizontal:5, justifyContent:'center'}}
+                    labelStyle={{fontWeight:900}}
+                    textColor={theme.colors.primaryContainer}
                     onPress={handleNewMessage}
                 >
-                    <View>
-                        <Text style={{ color: "#f2f0f1", fontSize: 20 }}>SEND</Text>
-                    </View>
-                </Pressable>
+                    SEND
+                </Button>
             </View>
         </View>
     );

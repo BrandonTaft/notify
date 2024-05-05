@@ -1,5 +1,5 @@
-import { View, Text } from "react-native";
-import { Avatar, useTheme } from 'react-native-paper';
+import { View } from "react-native";
+import { Avatar, useTheme, Text } from 'react-native-paper';
 import { styles } from "../../utils/styles";
 import { ReactionButtons } from "../Buttons";
 
@@ -44,23 +44,24 @@ export default function ChatRoomMessage({ message, user }) {
                     <View
                         style={
                             isFromMe
-                                ? [styles.mmessage, { backgroundColor: "aqua", marginRight: 5 }]
+                                ? [styles.mmessage, { backgroundColor: theme.colors.primary , marginRight: 5 }]
                                 : styles.mmessage
                         }
                     >
                         
-                        <Text style={styles.mmessageText}>
+                        <Text variant='titleMedium' style={{ color: theme.colors.text }}>
                             {message.text}
                         </Text>
 
-                        <Text style={{}}>{message.time}</Text>
+                        <Text variant="bodySmall" style={{ color: theme.colors.textMuted }}>{message.time}</Text>
 
                         <View
-                            style={
+                            style={[
                                 isFromMe
                                     ? styles.rightArrow
-                                    : styles.leftArrow
-                            }
+                                    : styles.leftArrow,
+                                    { backgroundColor: theme.colors.primary }
+                              ]}
                         >
                         </View>
                         <View

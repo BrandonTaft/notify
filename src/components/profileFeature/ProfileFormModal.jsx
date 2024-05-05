@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
+import { View } from "react-native";
 import { useDispatch, useSelector } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as SecureStore from 'expo-secure-store';
 import Alert from "../Alert";
-import { Text, Button, TextInput, Surface, useTheme } from 'react-native-paper';
-import * as ImagePicker from 'expo-image-picker';
+import { Text, Button, IconButton, TextInput, Surface, useTheme } from 'react-native-paper';
+
 import { storeProfileImage, updateUserProfile, deleteUser, logOutUser } from "../../utils/api";
 import { editUserProfileImage, editUserBanner, editUserCredentials, logOut } from '../../redux/userSlice';
 
-const ProfileFormModal = () => {
+export const ProfileFormModal = () => {
     const [notifyUser, setNotifyUser] = useState({});
     const [showUserNameEdit, setShowUserNameEdit] = useState(false);
     const [showOrgEdit, setShowOrgEdit] = useState(false);
@@ -18,13 +18,6 @@ const ProfileFormModal = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        const checkForCameraRollPermission = async () => {
-            const { status } = await ImagePicker.getCameraPermissionsAsync();
-            if (status !== 'granted') {
-                alert("Please grant camera roll permissions inside your system's settings");
-            }
-        };
-        checkForCameraRollPermission()
         setNotifyUser({ userName: user.userName, organization: user.organization })
     }, [])
 
@@ -43,40 +36,28 @@ const ProfileFormModal = () => {
         setShowUserNameEdit(false);
     };
 
-    const addImageFromLibrary = async (imageType) => {
-        let _image = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: true,
-            quality: 1,
-        });
-        if (!_image.canceled) {
-            dispatch(editUserProfileImage({imageType: imageType, image:_image.assets[0].uri}));
-            let imageToStore = JSON.stringify({ imageType: _image.assets[0].uri })
-            await AsyncStorage.mergeItem('notify_user', imageToStore)
-            storeProfileImage(imageType,_image.assets[0].uri, user.userId)
-        }
-
-    };
-
     return (
         <Surface
             elevation={5}
             style={
                 {
+                    flex: 3,
                     justifyContent: 'center',
                     borderRadius: 20,
-                    padding: 5,
-                    width: '100%',
-                    height: '100%',
-                    alignItems: 'center'
+                    padding: 10,
+                    alignItems: 'center',
+                    margin: 20,
+                    marginBottom: 30,
+                    marginTop: 0,
+                    backgroundColor: theme.colors.surface
                 }
             }
         >
             <Text
-                variant="headlineMedium"
+                variant="headlineSmall"
                 style={{ color: theme.colors.primary }}
             >
-                Profile
+               Edit Profile
             </Text>
             {showUserNameEdit ?
                 <TextInput
@@ -85,9 +66,9 @@ const ProfileFormModal = () => {
                     autoCorrect={false}
                     label='Edit user name'
                     theme={theme.roundness}
-                    style={{ width: '100%', margin: 5 }}
+                    style={{ width: '100%', margin: 10 }}
                     onChangeText={(value) => {
-                        setNotifyUser({ ...notifyUser, userName: value })
+                        setNotifyUser({ ...notifyUser, userName: value.trim() })
                     }}
                     right={
                         <TextInput.Icon
@@ -98,22 +79,34 @@ const ProfileFormModal = () => {
                     }
                 />
                 :
-                <Surface elevation={3} style={{ flexDirection: 'row', width: '100%', justifyContent: 'space-evenly' }}>
+                <Surface
+                    elevation={3}
+                    style={{
+                        flexDirection: 'row',
+                        width: '100%',
+                        justifyContent: 'space-evenly',
+                        alignItems: 'center',
+                        borderRadius: 20,
+                        margin:12
+                    }}
+                >
                     <Text
-                        variant="headlineSmall"
+                        variant="titleMedium"
                         style={{ color: theme.colors.secondary }}
                     >
                         User Name:
                     </Text>
                     <Text
-                        variant="headlineSmall"
+                        variant="titleMedium"
                         style={{ color: theme.colors.primary }}
                     >
                         {notifyUser.userName}
                     </Text>
-                    <Button mode="text" onPress={() => setShowUserNameEdit(true)}>
-                        Edit
-                    </Button>
+                    <IconButton
+                        icon="account-edit"
+                        onPress={() => setShowUserNameEdit(true)}
+                    />
+
                 </Surface>
             }
             {showOrgEdit ?
@@ -123,9 +116,9 @@ const ProfileFormModal = () => {
                     autoCorrect={false}
                     label='Edit organization'
                     theme={theme.roundness}
-                    style={{ width: '100%', margin: 5 }}
+                    style={{ width: '100%', margin: 10 }}
                     onChangeText={(value) => {
-                        setNotifyUser({ ...notifyUser, organization: value })
+                        setNotifyUser({ ...notifyUser, organization: value.trim() })
                     }}
                     right={
                         <TextInput.Icon
@@ -136,56 +129,48 @@ const ProfileFormModal = () => {
                     }
                 />
                 :
-                <Surface elevation={3} style={{ flexDirection: 'row', width: '100%', justifyContent: 'space-evenly' }}>
+                <Surface
+                    elevation={3}
+                    style={{
+                        flexDirection: 'row',
+                        width: '100%',
+                        justifyContent: 'space-evenly',
+                        alignItems: 'center',
+                        borderRadius: 20,
+                        margin:12
+                    }}
+                >
                     <Text
-                        variant="headlineSmall"
+                        variant="titleMedium"
                         style={{ color: theme.colors.secondary }}
                     >
-                        organization:
+                        Organization:
                     </Text>
                     <Text
-                        variant="headlineSmall"
+                        variant="titleMedium"
                         style={{ color: theme.colors.primary }}
                     >
                         {notifyUser.organization}
                     </Text>
-                    <Button mode="text" onPress={() => setShowOrgEdit(true)}>
-                        Edit
-                    </Button>
+                    <IconButton
+                        icon="account-edit"
+                        onPress={() => setShowOrgEdit(true)}
+                    />
                     <Alert message={message} setMessage={setMessage} />
                 </Surface>
 
             }
-
-            {/* <Button icon="camera" mode="elevated" onPress={takeProfileImageWithCamera}>
-                        Camera
-                    </Button> */}
             <Button
-                icon="account"
-                mode="elevated"
-                onPress={() => addImageFromLibrary("profileImage")}
-            >
-                EditPicture
-            </Button>
-            <Button
-                icon="view-gallery"
-                mode="elevated"
-                onPress={() => addImageFromLibrary("bannerImage")}
-            >
-                Edit Banner
-            </Button>
-            {/* </View> */}
-
-
-
-            <Button
+            style={{ width:"50%"}}
                 icon="view-gallery"
                 mode="elevated"
                 onPress={() => handleProfileEdit()}
             >
                 Edit
             </Button>
+            <View style={{flexDirection:'column', marginVertical:25, width:"100%", alignItems:'center'}}>
             <Button
+            style={{ width:'90%'}}
                 icon="view-gallery"
                 mode="elevated"
                 onPress={() => {
@@ -196,6 +181,7 @@ const ProfileFormModal = () => {
                 Log Out
             </Button>
             <Button
+                style={{backgroundColor:"red", width:"90%", marginVertical:10}}
                 icon="view-gallery"
                 mode="elevated"
                 onPress={() => {
@@ -205,8 +191,7 @@ const ProfileFormModal = () => {
             >
                 Delete Profile
             </Button>
+            </View>
         </Surface>
     );
 };
-
-export default ProfileFormModal;

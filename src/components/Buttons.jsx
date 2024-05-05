@@ -39,12 +39,12 @@ export function DeleteProfileButton({ styles, size }) {
     )
 }
 
-export function BackButton({ onPressButton }) {
+export function BackButton({ onPressButton, iconColor }) {
     const theme = useTheme();
     return (
         <IconButton
             icon="arrow-left"
-            iconColor={"#000"}
+            iconColor={iconColor}
             size={25}
             onPress={async () => onPressButton()}
         />
@@ -119,7 +119,7 @@ export function ReactionButtons({ message }) {
             <Pressable key={emojiName} style={{}} onPress={() =>
                 handleNewReaction(emojiName)
             }>
-                <Text style={{ color: colors.text, fontSize:18, marginHorizontal:3 }}>{emoji} {chatReaction[emojiName]}</Text>
+                <Text style={{ color: colors.primary, fontSize:18, marginHorizontal:3 }}>{emoji} {chatReaction[emojiName]}</Text>
             </Pressable>
         )
     });

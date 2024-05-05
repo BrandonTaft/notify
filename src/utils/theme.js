@@ -1,6 +1,6 @@
 export const darkColors = {
-    "text": "rgb(240, 219, 255)",
-    "textMuted": "rgba(240, 219, 255, .25)",
+    "text": "rgb(0,0,0)",
+    "textMuted": "rgba(0, 0, 0, .5)",
     "primary": "rgb(220, 184, 255)",
     "onPrimary": "rgb(71, 12, 122)",
     "primaryContainer": "rgb(95, 43, 146)",
@@ -44,8 +44,8 @@ export const darkColors = {
 }
 
 export const lightColors = {
-    "text": "rgb(255, 255, 255)",
-    "textMuted": "rgba(255, 255, 255, .25)",
+    "text": "rgb(0,0,0)",
+    "textMuted": "rgba(0, 0, 0, .5)",
     "primary": "rgb(120, 69, 172)",
     "onPrimary": "rgb(255, 255, 255)",
     "primaryContainer": "rgb(240, 219, 255)",

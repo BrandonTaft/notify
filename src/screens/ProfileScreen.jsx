@@ -1,13 +1,28 @@
+import React, { useEffect } from "react";
 import { View, ImageBackground } from 'react-native';
 import { useSelector } from 'react-redux';
-import { Avatar, useTheme, Surface } from 'react-native-paper';
+import { Avatar, useTheme, Surface, Button } from 'react-native-paper';
 import { styles } from '../utils/styles';
-import ProfileFormModal from '../components/profileFeature/ProfileFormModal';
+import { ProfileFormModal } from '../components/profileFeature/ProfileFormModal';
+import { ProfileImagePicker } from '../components/profileFeature/ProfileImagePicker';
+import * as ImagePicker from 'expo-image-picker';
 
 export default function ProfileScreen() {
   const user = useSelector(state => state.user);
   const theme = useTheme();
-console.log(user)
+
+  useEffect(() => {
+    const checkForCameraRollPermission = async () => {
+      const { status } = await ImagePicker.getCameraPermissionsAsync();
+      if (status !== 'granted') {
+        alert("Please grant camera roll permissions inside your system's settings");
+      }
+    };
+    checkForCameraRollPermission()
+  }, [])
+
+
+  console.log(user)
   let banner;
   if (user.bannerImage) {
     banner = { uri: user.bannerImage }
@@ -32,25 +47,22 @@ console.log(user)
 
           }
         </ImageBackground>
-      </View>
-      <Surface
-            elevation={3}
-            style={
-                {
-                  flex:3,
-                    justifyContent: 'center',
-                    borderRadius: 20,
-                    padding: 10,
-                    
-                    alignItems: 'center',
-                    margin: 20,
-                    marginBottom: 30,
-                    marginTop:0
-                }
-            }
+        <View style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between'
+        }}
         >
-        <ProfileFormModal/>
-      </Surface>
+          <ProfileImagePicker
+            buttonText={"Avatar"}
+            imageDescription={"profileImage"}
+          />
+          <ProfileImagePicker
+            buttonText={" Banner"}
+            imageDescription={"bannerImage"}
+          />
+        </View>
+      </View>
+        <ProfileFormModal />
     </View>
   );
 };

@@ -30,9 +30,6 @@ export const styles = StyleSheet.create({
         bottom: 1
     },
     /**********PROFILE SCREEN*********/
-    // profileScreen: {
-    //     flex: 1,
-    // },
     profileImageContainer: {
         position: 'relative',
         flex: 2
@@ -149,17 +146,16 @@ export const styles = StyleSheet.create({
     },
     messaginginputContainer: {
         width: "100%",
-        minHeight: 100,
+        
         backgroundColor: "white",
-        paddingVertical: 30,
-        paddingHorizontal: 15,
+        padding: 15,
         justifyContent: "center",
         flexDirection: "row",
     },
     messaginginput: {
         borderWidth: 1,
         backgroundColor:"#FFF",
-        padding: 10,
+        padding: 5,
         flex: 1,
         marginRight: 10,
         borderRadius: 20,
