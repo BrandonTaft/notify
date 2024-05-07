@@ -45,7 +45,7 @@ export default function ChatRoomPreview() {
         <FlatList
           data={rooms}
           renderItem={({ item }) => <ChatRoomListItem item={item} />}
-          keyExtractor={(item) => item.roomId}
+          keyExtractor={(item) => item._id}
         />
          <FAB
     icon="plus"

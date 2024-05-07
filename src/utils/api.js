@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-const BASE_URL = "https://c39b-75-131-25-248.ngrok-free.app";
+const BASE_URL = "https://4ab2-75-131-25-248.ngrok-free.app";
 import * as SecureStore from 'expo-secure-store';
 
 export const registerUser = async(user) => {
@@ -179,7 +179,7 @@ export const fetchBackUpData = async () => {
 };
 
 export const fetchGroups = async () => {
-    return await fetch(BASE_URL + '/chatrooms/${org}')
+    return await fetch(BASE_URL + '/chatrooms')
       .then((res) => res.json())
       .catch((error) => console.log("Chat Server did not respond", error))
   }
