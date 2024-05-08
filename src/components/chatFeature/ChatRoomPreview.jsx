@@ -19,11 +19,13 @@ export default function ChatRoomPreview() {
 
   useLayoutEffect(() => {
     setIsLoading(true)
-    fetchGroups(user.organization)
-      .then((rooms) => {
+    fetchGroups()
+      .then((result) => {
+        if(result.success){
         setIsLoading(false)
-        setChatRooms(rooms)
-        dispatch(addAllRoomsFromServer(rooms))
+        setChatRooms(result.chatRooms)
+        dispatch(addAllRoomsFromServer(result.chatRooms))
+        }
       })
       .catch((err) => {
         console.error(err)
