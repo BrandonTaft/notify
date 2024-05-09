@@ -15,6 +15,19 @@ export const registerUser = async(user) => {
     .catch((error) => console.log("An unexpected error has occurred :", error))
 }
 
+export const createNewOrg = async(org) => {
+    return await fetch(BASE_URL + '/api/org/create', {
+        method: 'POST',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ organization : org })
+    })
+    .then(response => response.json())
+    .catch((error) => console.log("An unexpected error has occurred :", error))
+}
+
 export const logInUser = async(user) => {
     return await fetch(BASE_URL + '/api/users/login', {
         method: 'POST',

@@ -1,57 +1,64 @@
 import { useState } from 'react';
-import { Surface, useTheme, Button, Text, TextInput, Modal, Portal } from 'react-native-paper';
-import { registerUser } from '../utils/api';
-import Alert from './Alert';
+import { 
+    Surface, 
+    useTheme, 
+    Button, 
+    Text, 
+    TextInput, 
+    Modal, 
+    Portal,
+    RadioButton 
+} from 'react-native-paper';
+import { createNewOrg } from '../../utils/api';
+import Alert from '../Alert';
 
-export default function RegisterModal() {
-  const [showRegisterModal, setShowRegisterModal] = useState(false);
+export default function CreateOrgModal() {
+  const [showModal, setShowModal] = useState(false);
   const [hidePassWord, setHidePassWord] = useState(true);
   const [hidePassWordCopy, setHidePassWordCopy] = useState(true);
   const [passwordCopy, setPasswordCopy] = useState("");
-  const [newUser, setNewUser] = useState({
-    userName: '',
+  const [newOrg, setNewOrg] = useState({
+    name: '',
     password: '',
-    organization: ''
+    isPrivate: false
   });
   const [message, setMessage] = useState('');
   const theme = useTheme();
 
-  const registerNewUser = () => {
-    if (!newUser.userName.trim()) {
-      setMessage("You must enter a user name")
-    } else if (!newUser.password.trim()) {
-      setMessage("You must enter a password")
-    } else if (!newUser.organization.trim()) {
-      setMessage("You must enter an organization")
-    } else if (newUser.password !== passwordCopy) {
-      setMessage("Passwords do not match")
-    } else {
-      registerUser(newUser).then(result => {
+  const registerNewOrg = () => {
+    if (!newOrg.name.trim()) {
+      setMessage("You must enter a name")
+    } else if (newOrg.isPrivate && !newOrg.password.trim()) {
+            setMessage("You must enter a password")
+    } else if (newOrg.isPrivate && (newOrg.password !== passwordCopy)) {
+            setMessage("Passwords do not match")
+    }
+    else {
+      createNewOrg(newOrg).then(result => {
         if (result.success) {
-          setShowRegisterModal(false)
+          setShowModal(false)
         } else {
           setMessage(result.message)
         }
       })
     }
   };
-
+console.log(newOrg)
   return (
     <>
       <Button
-        mode='outlined'
+        mode='text'
         uppercase
-        style={[{ width: '50%', borderRadius: 16 }]}
-        onPress={() => setShowRegisterModal(true)}
+        onPress={() => setShowModal(true)}
       >
-        Register
+        Create New Organization
       </Button>
       <Portal>
         <Modal
-          visible={showRegisterModal}
+          visible={showModal}
           style={{ padding: 20 }}
           onDismiss={() => {
-            setShowRegisterModal(false);
+            setShowModal(false);
           }}>
           <Surface
             elevation={3}
@@ -64,22 +71,29 @@ export default function RegisterModal() {
             }}
           >
             <Text
-              variant="headlineMedium"
+              variant="titleLarge"
               style={{ color: theme.colors.primary }}
             >
-              Register
+              Create New Organization
             </Text>
             <TextInput
               mode="outlined"
               autoCorrect={false}
-              label='User Name'
+              label='Organization Name'
               theme={theme.roundness}
               style={{ width: '100%', margin: 5 }}
               onChangeText={(value) => {
-                setNewUser({ ...newUser, userName: value.trim() })
+                setNewOrg({ ...newOrg, name: value.trim() })
               }}
             />
+            <RadioButton.Item 
+                label="Private"
+                 value={newOrg.isPrivate} 
+                 status={newOrg.isPrivate ? 'checked' : 'unchecked'} 
+                 onPress={() => setNewOrg({...newOrg, isPrivate: !newOrg.isPrivate})}
+                 />
             <TextInput
+            disabled={!newOrg.isPrivate}
               mode="outlined"
               autoCorrect={false}
               autoCapitalize="none"
@@ -99,6 +113,7 @@ export default function RegisterModal() {
               }
             />
             <TextInput
+             disabled={!newOrg.isPrivate}
               mode="outlined"
               autoCorrect={false}
               autoCapitalize="none"
@@ -109,7 +124,7 @@ export default function RegisterModal() {
               textContentType="password"
               secureTextEntry={hidePassWordCopy ? true : false}
               onChangeText={(value) => {
-                setNewUser({ ...newUser, password: value.trim() })
+                setNewOrg({ ...newOrg, password: value.trim() })
               }}
               right={
                 <TextInput.Icon
@@ -118,24 +133,14 @@ export default function RegisterModal() {
                   onPress={() => setHidePassWordCopy(!hidePassWordCopy)}
                 />
               }
-            />
-            <TextInput
-              mode="outlined"
-              autoCorrect={false}
-              label='Organization'
-              theme={theme.roundness}
-              style={{ width: '100%', margin: 5 }}
-              onChangeText={(value) => {
-                setNewUser({ ...newUser, organization: value.trim() })
-              }}
-            />
+            />         
             <Button
-              onPress={() => registerNewUser(newUser)}
+              onPress={() => registerNewOrg(newOrg)}
               style={[{ backgroundColor: theme.colors.primary, margin: 15, width: '50%' }]}
               theme={theme.buttonRoundness}
               textColor={theme.colors.onPrimary}
             >
-              Register
+              DONE
             </Button>
             <Alert message={message} setMessage={setMessage} />
           </Surface>

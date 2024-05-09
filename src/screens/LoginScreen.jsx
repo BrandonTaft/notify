@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import RegisterModal from "../components/RegisterModal";
+import RegisterModal from "../components/logInFeature/RegisterModal";
 import Alert from "../components/Alert";
 import { logInUser } from "../utils/api";
 import { useDispatch } from 'react-redux';
