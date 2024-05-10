@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-const BASE_URL = "https://bae7-75-131-25-248.ngrok-free.app";
+const BASE_URL = "https://497c-207-5-20-197.ngrok-free.app";
 import * as SecureStore from 'expo-secure-store';
 
 export const registerUser = async(user) => {
@@ -15,18 +15,7 @@ export const registerUser = async(user) => {
     .catch((error) => console.log("An unexpected error has occurred :", error))
 }
 
-export const createNewOrg = async(org) => {
-    return await fetch(BASE_URL + '/api/org/create', {
-        method: 'POST',
-        headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ organization : org })
-    })
-    .then(response => response.json())
-    .catch((error) => console.log("An unexpected error has occurred :", error))
-}
+
 
 export const logInUser = async(user) => {
     return await fetch(BASE_URL + '/api/users/login', {
@@ -192,9 +181,28 @@ export const fetchBackUpData = async () => {
 };
 
 export const fetchGroups = async () => {
-    return await fetch(BASE_URL + '/chatrooms')
+    return await fetch(BASE_URL + '/api/chatrooms')
       .then((res) => res.json())
       .catch((error) => console.log("Chat Server did not respond", error))
-  }
+  };
+
+  export const fetchOrgs = async () => {
+    return await fetch(BASE_URL + '/api/org')
+      .then((res) => res.json())
+      .catch((error) => console.log("Unable to retrieve organizations", error))
+  };
+
+  export const createNewOrg = async(org) => {
+    return await fetch(BASE_URL + '/api/org/create', {
+        method: 'POST',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ organization : org })
+    })
+    .then(response => response.json())
+    .catch((error) => console.log("An unexpected error has occurred :", error))
+}
 
   

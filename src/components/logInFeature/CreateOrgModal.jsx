@@ -43,7 +43,7 @@ export default function CreateOrgModal() {
       })
     }
   };
-console.log(newOrg)
+
   return (
     <>
       <Button

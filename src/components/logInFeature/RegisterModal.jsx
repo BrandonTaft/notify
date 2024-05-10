@@ -1,6 +1,7 @@
-import { useState } from 'react';
-import { Surface, useTheme, Button, Text, TextInput, Modal, Portal } from 'react-native-paper';
-import { registerUser } from '../../utils/api';
+import { useState, useEffect } from 'react';
+import { Surface, useTheme, Button, Text, TextInput, Modal, Portal, List } from 'react-native-paper';
+import DropDownPicker from 'react-native-dropdown-picker';
+import { registerUser, fetchOrgs } from '../../utils/api';
 import Alert from '../Alert';
 import CreateOrgModal from './CreateOrgModal';
 
@@ -9,6 +10,9 @@ export default function RegisterModal() {
   const [hidePassWord, setHidePassWord] = useState(true);
   const [hidePassWordCopy, setHidePassWordCopy] = useState(true);
   const [passwordCopy, setPasswordCopy] = useState("");
+  const [expanded, setExpanded] = useState(false);
+  const [value, setValue] = useState(null);
+  const [orgList, setOrgList] = useState([]);
   const [newUser, setNewUser] = useState({
     userName: '',
     password: '',
@@ -17,6 +21,13 @@ export default function RegisterModal() {
   const [message, setMessage] = useState('');
   const theme = useTheme();
 
+  useEffect(() => {
+    fetchOrgs().then((result) => {
+      setOrgList(result.orgs)
+    })
+  }, [])
+  console.log(orgList)
+  console.log(newUser)
   const registerNewUser = () => {
     if (!newUser.userName.trim()) {
       setMessage("You must enter a user name")
@@ -120,7 +131,7 @@ export default function RegisterModal() {
                 />
               }
             />
-            <TextInput
+            {/* <TextInput
               mode="outlined"
               autoCorrect={false}
               label='Organization'
@@ -129,7 +140,22 @@ export default function RegisterModal() {
               onChangeText={(value) => {
                 setNewUser({ ...newUser, organization: value.trim() })
               }}
-            />
+            /> */}
+            <DropDownPicker
+              schema={{
+                label: 'name',
+                value: 'name'
+              }}
+              itemKey="_id"
+              open={expanded}
+              value={value}
+              items={[{ _id: 0, name: "" }, ...orgList]}
+              setOpen={setExpanded}
+              setValue={setValue}
+              onSelectItem={(item) => {
+                setNewUser({...newUser, organization: item.name})
+              }}
+            /> 
             <Button
               onPress={() => registerNewUser(newUser)}
               style={[{ backgroundColor: theme.colors.primary, margin: 15, width: '50%' }]}
