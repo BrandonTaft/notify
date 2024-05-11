@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Surface, useTheme, Button, Text, TextInput, Modal, Portal, List } from 'react-native-paper';
+import { Surface, useTheme, Button, Text, TextInput, Modal, Portal, Divider } from 'react-native-paper';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { registerUser, fetchOrgs } from '../../utils/api';
 import Alert from '../Alert';
 import CreateOrgModal from './CreateOrgModal';
+import { Keyboard } from 'react-native';
 
 export default function RegisterModal() {
   const [showRegisterModal, setShowRegisterModal] = useState(false);
@@ -25,9 +26,8 @@ export default function RegisterModal() {
     fetchOrgs().then((result) => {
       setOrgList(result.orgs)
     })
-  }, [])
-  console.log(orgList)
-  console.log(newUser)
+  }, []);
+  
   const registerNewUser = () => {
     if (!newUser.userName.trim()) {
       setMessage("You must enter a user name")
@@ -48,6 +48,21 @@ export default function RegisterModal() {
     }
   };
 
+  const closeModal = () => {
+    setShowRegisterModal(false);
+    setValue("")
+    setNewUser({userName: '',
+    password: '',
+    organization: ''})
+  };
+
+  const expandDropDown = (isOpen) => {
+    if(isOpen) {
+      Keyboard.dismiss()
+    }
+    setExpanded(isOpen)
+  };
+
   return (
     <>
       <Button
@@ -62,9 +77,7 @@ export default function RegisterModal() {
         <Modal
           visible={showRegisterModal}
           style={{ padding: 20 }}
-          onDismiss={() => {
-            setShowRegisterModal(false);
-          }}>
+          onDismiss={() => closeModal()}>
           <Surface
             elevation={3}
             style={{
@@ -87,6 +100,7 @@ export default function RegisterModal() {
               label='User Name'
               theme={theme.roundness}
               style={{ width: '100%', margin: 5 }}
+              onFocus={() => setExpanded(false)}
               onChangeText={(value) => {
                 setNewUser({ ...newUser, userName: value.trim() })
               }}
@@ -101,6 +115,7 @@ export default function RegisterModal() {
               style={{ width: '100%', margin: 5 }}
               textContentType="password"
               secureTextEntry={hidePassWord ? true : false}
+              onFocus={() => setExpanded(false)}
               onChangeText={(value) => setPasswordCopy(value)}
               right={
                 <TextInput.Icon
@@ -114,12 +129,13 @@ export default function RegisterModal() {
               mode="outlined"
               autoCorrect={false}
               autoCapitalize="none"
-              blurOnSubmit={false}
+              blurOnSubmit={true}
               label='Re-enter Password'
               theme={theme.roundness}
               style={{ width: '100%', margin: 5 }}
               textContentType="password"
               secureTextEntry={hidePassWordCopy ? true : false}
+              onFocus={() => setExpanded(false)}
               onChangeText={(value) => {
                 setNewUser({ ...newUser, password: value.trim() })
               }}
@@ -131,32 +147,51 @@ export default function RegisterModal() {
                 />
               }
             />
-            {/* <TextInput
-              mode="outlined"
-              autoCorrect={false}
-              label='Organization'
-              theme={theme.roundness}
-              style={{ width: '100%', margin: 5 }}
-              onChangeText={(value) => {
-                setNewUser({ ...newUser, organization: value.trim() })
-              }}
-            /> */}
             <DropDownPicker
               schema={{
                 label: 'name',
                 value: 'name'
               }}
               itemKey="_id"
+              placeholder='Select an organization'
+              style={[{
+                marginTop: 10,
+                marginBottom: 5,
+                backgroundColor: theme.colors.background,
+
+                borderRadius: 16
+              },
+              expanded ? { borderColor: theme.colors.primary, borderWidth: 2 } : { borderColor: theme.colors.outline },
+              ]}
+              textStyle={{
+                fontSize: 17,
+                color: theme.colors.secondary
+              }}
+              itemProps={{style:{padding:5,alignItems:'center',justifyContent:'center',backgroundColor: theme.colors.background}}}
+              dropDownContainerStyle={{
+                backgroundColor: theme.colors.background,
+                borderColor: theme.colors.primary,
+                 borderWidth: 2,
+                 paddingVertical:5,
+                 paddingHorizontal:20
+              }}
               open={expanded}
               value={value}
-              items={[{ _id: 0, name: "" }, ...orgList]}
-              setOpen={setExpanded}
+              items={orgList}
+              itemSeparator={true}
+              setOpen={(isOpen) => expandDropDown(isOpen)}
               setValue={setValue}
               onSelectItem={(item) => {
-                setNewUser({...newUser, organization: item.name})
+                setNewUser({ ...newUser, organization: item.name })
               }}
-            /> 
+            />
+            <Text>
+              OR
+            </Text>
+            <CreateOrgModal />
             <Button
+              mode='elevated'
+              elevation={5}
               onPress={() => registerNewUser(newUser)}
               style={[{ backgroundColor: theme.colors.primary, margin: 15, width: '50%' }]}
               theme={theme.buttonRoundness}
@@ -164,7 +199,7 @@ export default function RegisterModal() {
             >
               Register
             </Button>
-            <CreateOrgModal />
+
             <Alert message={message} setMessage={setMessage} />
           </Surface>
         </Modal>

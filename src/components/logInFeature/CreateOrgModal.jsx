@@ -47,8 +47,9 @@ export default function CreateOrgModal() {
   return (
     <>
       <Button
-        mode='text'
+        mode= 'outlined'
         uppercase
+        style={{ width: '100%', margin: 5 }}
         onPress={() => setShowModal(true)}
       >
         Create New Organization
