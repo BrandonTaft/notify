@@ -98,7 +98,7 @@ const ChatRoomScreen = ({ route, navigation }) => {
             <View
                 style={[
                     styles.messagingscreen,
-                    { paddingVertical: 5, paddingHorizontal: 10 },
+                    { paddingHorizontal: 10 },
                 ]}
             >
                 {chatMessages[0] ? (

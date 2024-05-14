@@ -67,7 +67,7 @@ console.log("ITEM", item.messages[item.messages.length - 1])
 
                 <View style={styles.chatRoomListItemText}>
                     <View>
-                        <Text variant="headlineSmall" style={{ color: theme.colors.text }}>{item.roomName}</Text>
+                        <Text variant="titleLarge" style={{ color: theme.colors.text }}>{item.roomName}</Text>
 
                         <Text variant="bodyMedium" style={{ color: theme.colors.text, opacity: .5 }}>
                             {messages?.text ? messages.text : "Tap to start chatting"}
@@ -90,9 +90,10 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         borderRadius: 20,
+        paddingVertical:5,
         paddingHorizontal: 15,
         backgroundColor: "#312e3f",
-        height: 80,
+        
         margin: 5,
         elevation:4,
         overflow: 'hidden'

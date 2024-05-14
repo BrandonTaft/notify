@@ -36,11 +36,11 @@ export default function Header() {
             <CreateReminderComponent
                 showCreateReminderComponent={showCreateReminderComponent}
                 setShowCreateReminderComponent={setShowCreateReminderComponent}
-                handleSave={
-                    (title, selectedDate, token) => {
-                        dispatch(createReminder(title, selectedDate, token))
-                    }
-                }
+                // handleSave={
+                //     (title, selectedDate, token) => {
+                //         dispatch(createReminder(title, selectedDate, token))
+                //     }
+                // }
             />
             <ThemeButton />
         </Surface>

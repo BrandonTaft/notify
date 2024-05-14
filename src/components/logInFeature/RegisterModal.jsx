@@ -62,7 +62,7 @@ export default function RegisterModal() {
     }
     setExpanded(isOpen)
   };
-
+console.log(newUser)
   return (
     <>
       <Button
@@ -83,7 +83,7 @@ export default function RegisterModal() {
             style={{
               justifyContent: 'center',
               borderRadius: 20,
-              paddingVertical: 50,
+              paddingVertical: 80,
               paddingHorizontal: 20,
               alignItems: 'center'
             }}
@@ -167,14 +167,15 @@ export default function RegisterModal() {
                 fontSize: 17,
                 color: theme.colors.secondary
               }}
-              itemProps={{style:{padding:5,alignItems:'center',justifyContent:'center',backgroundColor: theme.colors.background}}}
+              itemProps={{style:{padding:5,backgroundColor: theme.colors.background}}}
               dropDownContainerStyle={{
                 backgroundColor: theme.colors.background,
                 borderColor: theme.colors.primary,
                  borderWidth: 2,
                  paddingVertical:5,
-                 paddingHorizontal:20
+                 paddingHorizontal:8,
               }}
+              searchable={true}
               open={expanded}
               value={value}
               items={orgList}

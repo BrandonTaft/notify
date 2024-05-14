@@ -28,7 +28,7 @@ export default function ChatRoomMessage({ message, user }) {
                                 ?
                                 <Avatar.Image 
                                 size={60} 
-                                source={{ uri: `https://497c-207-5-20-197.ngrok-free.app/images/${message.userId}.jpeg` }} 
+                                source={{ uri: `https://4852-75-131-25-248.ngrok-free.app/images/${message.userId}.jpeg` }} 
                                 style={{ position: 'relative', zIndex: 999 }}
                                 />
                                 :

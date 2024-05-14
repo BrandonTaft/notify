@@ -5,6 +5,8 @@ import { DatePickerModal, TimePickerModal } from 'react-native-paper-dates';
 import { IconButton, useTheme, Button, Text, TextInput, Modal, Portal } from 'react-native-paper';
 import { styles } from '../../utils/styles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { createReminder } from '../../redux/reminderSlice';
+import { addReminder } from '../../utils/api';
 
 
 export default function CreateReminderComponent({
@@ -38,8 +40,8 @@ export default function CreateReminderComponent({
   },[showCreateReminderComponent]);
 
   const onSubmit = () => {
-    console.log(title, selectedDate, token)
-    handleSave(title, selectedDate, token)
+    dispatch(createReminder(title, selectedDate, token))
+    addReminder({title, selectedDate, token})
     setTitle('');
       setSelectedDate("");
       setShowCreateReminderComponent(false);

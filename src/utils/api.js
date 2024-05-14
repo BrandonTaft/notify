@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-const BASE_URL = "https://497c-207-5-20-197.ngrok-free.app";
+const BASE_URL = "https://4852-75-131-25-248.ngrok-free.app";
 import * as SecureStore from 'expo-secure-store';
 
 export const registerUser = async(user) => {
@@ -142,7 +142,44 @@ export const storeBannerImage = async (uri, userId) => {
         .catch((error) => {
             console.log('error', error);
         })
+};
+
+export const addReminde = async (reminders) => {
+    // await AsyncStorage.setItem('reminders', JSON.stringify(reminders));
+    // const deviceId = await AsyncStorage.getItem('deviceId');
+    // return await fetch(BASE_URL + '/store', {
+    //     method: 'POST',
+    //     headers: {
+    //         Accept: 'application/json',
+    //         'Content-Type': 'application/json',
+    //     },
+    //     body: JSON.stringify({
+    //         deviceId: deviceId,
+    //         reminders: reminders
+    //     })
+    // })
+    // .then(response => response.json())
+    // .catch((error) => console.log("Server did not respond"))
+};
+
+export const addReminder = async(reminder) => {
+    let token = await SecureStore.getItemAsync("secureToken");
+    let user = await AsyncStorage.getItem("notify_user")
+    let userId = JSON.parse(user)._id; 
+    console.log("USERRR", userId)
+    return await fetch(BASE_URL + '/api/reminders/add-reminder', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({userId: userId})
+    })
+    .then(response => response.json())
+    .catch((error) => console.log("An unexpected error has occurred :", error))
 }
+
 
 
 

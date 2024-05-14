@@ -21,10 +21,10 @@ export default function ChatRoomPreview() {
     setIsLoading(true)
     fetchGroups()
       .then((result) => {
-        if(result.success){
-        setIsLoading(false)
-        setChatRooms(result.chatRooms)
-        dispatch(addAllRoomsFromServer(result.chatRooms))
+        if (result.success) {
+          setIsLoading(false)
+          setChatRooms(result.chatRooms)
+          dispatch(addAllRoomsFromServer(result.chatRooms))
         }
       })
       .catch((err) => {
@@ -44,19 +44,21 @@ export default function ChatRoomPreview() {
     <View style={[{ flex: 1 }]}>
       {rooms.length > 0 ? (
         <>
-        <FlatList
-          data={rooms}
-          renderItem={({ item }) => <ChatRoomListItem item={item} />}
-          keyExtractor={(item) => item._id}
-        />
-         <FAB
-    icon="plus"
-    style={{position: 'absolute',
-    margin: 16,
-    right: 0,
-    bottom: 0,}}
-    onPress={() => setShowCreateChatComponent(true)}
-  />
+          <FlatList
+            data={rooms}
+            renderItem={({ item }) => <ChatRoomListItem item={item} />}
+            keyExtractor={(item) => item._id}
+          />
+          <FAB
+            icon="plus"
+            style={{
+              position: 'absolute',
+              margin: 16,
+              right: 0,
+              bottom: 0,
+            }}
+            onPress={() => setShowCreateChatComponent(true)}
+          />
         </>
       ) : (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>

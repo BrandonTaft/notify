@@ -8,13 +8,13 @@ import { Surface, useTheme, Divider } from 'react-native-paper';
 const HomeScreen = () => {
     const theme = useTheme();
     return (
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 2 }}>
             <Header />
-            <Surface style={{ flexDirection: 'column', flex: 1, backgroundColor: theme.colors.surface, margin: 10, borderRadius: 10 }} elevation={2}>
+            <Surface style={{ flexDirection: 'column', flex: 2, backgroundColor: theme.colors.surface, margin: 10, borderRadius: 10 }} elevation={2}>
                 <ChatRoomPreview />
             </Surface>
             <Divider horizontalInset />
-            <Surface style={{ flexDirection: 'column', flex: 1, backgroundColor: theme.colors.surface, margin: 10, borderRadius: 10 }} elevation={2}>
+            <Surface style={{ flexDirection: 'column', flex: 2, backgroundColor: theme.colors.surface, margin: 10, borderRadius: 10 }} elevation={2}>
                 <UpcomingReminders />
             </Surface>
             <Divider horizontalInset />
