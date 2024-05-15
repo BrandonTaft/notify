@@ -12,7 +12,16 @@ export const userSlice = createSlice({
         return action.payload
       },
       prepare(notifyUser) {
-        const { _id, userName, organization, profileImage, bannerImage, isLoggedIn, notes } = notifyUser
+        const { 
+          _id, 
+          userName, 
+          organization, 
+          profileImage, 
+          bannerImage, 
+          isLoggedIn, 
+          expoPushToken, 
+          notes 
+        } = notifyUser
         return {
           payload: {
             userId: _id,
@@ -21,6 +30,7 @@ export const userSlice = createSlice({
             profileImage,
             bannerImage,
             isLoggedIn: isLoggedIn,
+            expoPushToken: expoPushToken,
             notes: notes
           }
         }

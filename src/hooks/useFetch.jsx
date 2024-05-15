@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { fetchBackUpData } from '../api';
-import usePushNotification from '../hooks/usePushNotification';
+import usePushNotification from './usePushNotification';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 

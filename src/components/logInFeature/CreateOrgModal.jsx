@@ -12,7 +12,7 @@ import {
 import { createNewOrg } from '../../utils/api';
 import Alert from '../Alert';
 
-export default function CreateOrgModal() {
+export default function CreateOrgModal({setRefresh, refresh}) {
   const [showModal, setShowModal] = useState(false);
   const [hidePassWord, setHidePassWord] = useState(true);
   const [hidePassWordCopy, setHidePassWordCopy] = useState(true);
@@ -36,6 +36,7 @@ export default function CreateOrgModal() {
     else {
       createNewOrg(newOrg).then(result => {
         if (result.success) {
+          setRefresh(!refresh)
           setShowModal(false)
         } else {
           setMessage(result.message)
@@ -49,6 +50,8 @@ export default function CreateOrgModal() {
       <Button
         mode= 'outlined'
         uppercase
+        theme={theme.buttonRoundness}
+        elevation={5}
         style={{ width: '100%', margin: 5 }}
         onPress={() => setShowModal(true)}
       >

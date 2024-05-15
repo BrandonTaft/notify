@@ -6,6 +6,7 @@ import Alert from "../components/Alert";
 import { logInUser } from "../utils/api";
 import { useDispatch } from 'react-redux';
 import { createUser } from "../redux/userSlice";
+
 import { View, Image } from "react-native";
 import { Button, Text, TextInput, useTheme, Icon } from "react-native-paper";
 
@@ -22,6 +23,7 @@ const LoginScreen = () => {
 
     useEffect(() => {
         (async () => {
+            // await AsyncStorage.clear()
             try {
                 setIsLoading(true)
                 let token = await SecureStore.getItemAsync("secureToken");

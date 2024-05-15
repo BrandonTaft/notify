@@ -6,7 +6,7 @@ import CreateReminderComponent from './CreateReminderComponent';
 
 
 
-import usePushNotification from '../hooks/usePushNotification';
+import usePushNotification from '../../hooks/usePushNotification';
 
 import ReminderItems from './ReminderItems';
 

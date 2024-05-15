@@ -166,7 +166,7 @@ export const addReminder = async(reminder) => {
     let token = await SecureStore.getItemAsync("secureToken");
     let user = await AsyncStorage.getItem("notify_user")
     let userId = JSON.parse(user)._id; 
-    console.log("USERRR", userId)
+    
     return await fetch(BASE_URL + '/api/reminders/add-reminder', {
         method: 'POST',
         headers: {
@@ -174,7 +174,7 @@ export const addReminder = async(reminder) => {
             Accept: 'application/json',
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({userId: userId})
+        body: JSON.stringify({userId: userId, reminder:reminder})
     })
     .then(response => response.json())
     .catch((error) => console.log("An unexpected error has occurred :", error))

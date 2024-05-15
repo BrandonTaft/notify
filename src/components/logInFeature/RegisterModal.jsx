@@ -1,33 +1,37 @@
 import { useState, useEffect } from 'react';
-import { Surface, useTheme, Button, Text, TextInput, Modal, Portal, Divider } from 'react-native-paper';
+import { Surface, useTheme, Button, Text, TextInput, Modal, Portal } from 'react-native-paper';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { registerUser, fetchOrgs } from '../../utils/api';
 import Alert from '../Alert';
 import CreateOrgModal from './CreateOrgModal';
+import usePushNotification from '../hooks/usePushNotification';
 import { Keyboard } from 'react-native';
 
 export default function RegisterModal() {
   const [showRegisterModal, setShowRegisterModal] = useState(false);
-  const [hidePassWord, setHidePassWord] = useState(true);
   const [hidePassWordCopy, setHidePassWordCopy] = useState(true);
+  const [hidePassWord, setHidePassWord] = useState(true);
   const [passwordCopy, setPasswordCopy] = useState("");
   const [expanded, setExpanded] = useState(false);
-  const [value, setValue] = useState(null);
+  const [refresh, setRefresh] = useState(false);
   const [orgList, setOrgList] = useState([]);
+  const [message, setMessage] = useState('');
+  const [value, setValue] = useState(null);
   const [newUser, setNewUser] = useState({
     userName: '',
     password: '',
-    organization: ''
+    organization: '',
+    expoPushToken: ''
   });
-  const [message, setMessage] = useState('');
+  const { expoPushToken } = usePushNotification();
   const theme = useTheme();
 
   useEffect(() => {
     fetchOrgs().then((result) => {
       setOrgList(result.orgs)
     })
-  }, []);
-  
+  }, [refresh]);
+
   const registerNewUser = () => {
     if (!newUser.userName.trim()) {
       setMessage("You must enter a user name")
@@ -38,7 +42,7 @@ export default function RegisterModal() {
     } else if (newUser.password !== passwordCopy) {
       setMessage("Passwords do not match")
     } else {
-      registerUser(newUser).then(result => {
+      registerUser({...newUser, expoPushToken: expoPushToken}).then(result => {
         if (result.success) {
           setShowRegisterModal(false)
         } else {
@@ -51,18 +55,19 @@ export default function RegisterModal() {
   const closeModal = () => {
     setShowRegisterModal(false);
     setValue("")
-    setNewUser({userName: '',
-    password: '',
-    organization: ''})
+    setNewUser({
+      userName: '',
+      password: '',
+      organization: '',
+      expoPushToken: ''
+    })
   };
 
   const expandDropDown = (isOpen) => {
-    if(isOpen) {
-      Keyboard.dismiss()
-    }
+    if (isOpen) { Keyboard.dismiss() }
     setExpanded(isOpen)
   };
-console.log(newUser)
+
   return (
     <>
       <Button
@@ -105,6 +110,7 @@ console.log(newUser)
                 setNewUser({ ...newUser, userName: value.trim() })
               }}
             />
+           
             <TextInput
               mode="outlined"
               autoCorrect={false}
@@ -167,13 +173,13 @@ console.log(newUser)
                 fontSize: 17,
                 color: theme.colors.secondary
               }}
-              itemProps={{style:{padding:5,backgroundColor: theme.colors.background}}}
+              itemProps={{ style: { padding: 5, backgroundColor: theme.colors.background } }}
               dropDownContainerStyle={{
                 backgroundColor: theme.colors.background,
                 borderColor: theme.colors.primary,
-                 borderWidth: 2,
-                 paddingVertical:5,
-                 paddingHorizontal:8,
+                borderWidth: 2,
+                paddingVertical: 5,
+                paddingHorizontal: 8,
               }}
               searchable={true}
               open={expanded}
@@ -189,7 +195,7 @@ console.log(newUser)
             <Text>
               OR
             </Text>
-            <CreateOrgModal />
+            <CreateOrgModal setRefresh={setRefresh} refresh={refresh} />
             <Button
               mode='elevated'
               elevation={5}
@@ -197,6 +203,7 @@ console.log(newUser)
               style={[{ backgroundColor: theme.colors.primary, margin: 15, width: '50%' }]}
               theme={theme.buttonRoundness}
               textColor={theme.colors.onPrimary}
+              labelStyle={{fontWeight:'bold', fontSize:17}}
             >
               Register
             </Button>
