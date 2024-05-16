@@ -11,7 +11,6 @@ export const chatRoomSlice = createSlice({
         },
         addChatRoom: {
             reducer(state, action) {
-                console.log("CHATSLICE", action.payload)
                 return action.payload
             }
         },

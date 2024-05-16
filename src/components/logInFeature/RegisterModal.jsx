@@ -4,7 +4,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import { registerUser, fetchOrgs } from '../../utils/api';
 import Alert from '../Alert';
 import CreateOrgModal from './CreateOrgModal';
-import usePushNotification from '../hooks/usePushNotification';
+import usePushNotification from '../../hooks/usePushNotification';
 import { Keyboard } from 'react-native';
 
 export default function RegisterModal() {
@@ -32,6 +32,17 @@ export default function RegisterModal() {
     })
   }, [refresh]);
 
+  const closeModal = () => {
+    setShowRegisterModal(false);
+    setValue("")
+    setNewUser({
+      userName: '',
+      password: '',
+      organization: '',
+      expoPushToken: ''
+    })
+  };
+
   const registerNewUser = () => {
     if (!newUser.userName.trim()) {
       setMessage("You must enter a user name")
@@ -44,7 +55,7 @@ export default function RegisterModal() {
     } else {
       registerUser({...newUser, expoPushToken: expoPushToken}).then(result => {
         if (result.success) {
-          setShowRegisterModal(false)
+          closeModal()
         } else {
           setMessage(result.message)
         }
@@ -52,17 +63,7 @@ export default function RegisterModal() {
     }
   };
 
-  const closeModal = () => {
-    setShowRegisterModal(false);
-    setValue("")
-    setNewUser({
-      userName: '',
-      password: '',
-      organization: '',
-      expoPushToken: ''
-    })
-  };
-
+  
   const expandDropDown = (isOpen) => {
     if (isOpen) { Keyboard.dismiss() }
     setExpanded(isOpen)

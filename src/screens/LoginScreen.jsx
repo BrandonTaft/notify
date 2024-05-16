@@ -48,6 +48,7 @@ const LoginScreen = () => {
         } else {
             logInUser(notifyUser).then(async (result) => {
                 if (result.success) {
+                    console.log(result)
                     dispatch(createUser({ ...result.existingUser, isLoggedIn: true }))
                     const jsonValue = JSON.stringify(result.existingUser)
                     await AsyncStorage.setItem("notify_user", jsonValue);

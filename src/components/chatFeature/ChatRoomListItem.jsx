@@ -9,7 +9,6 @@ const ChatRoomListItem = ({ item }) => {
     const navigation = useNavigation();
     const [messages, setMessages] = useState({});
     const theme = useTheme();
-console.log("ITEM", item.messages[item.messages.length - 1])
     useLayoutEffect(() => {
         setMessages(item.messages[item.messages.length - 1]);
     }, []);
@@ -20,7 +19,6 @@ console.log("ITEM", item.messages[item.messages.length - 1])
 
 
     const handleNavigation = () => {
-        console.log("Idddd", item._id)
         navigation.navigate( {
             name: 'ChatRoomScreen',
             params: {

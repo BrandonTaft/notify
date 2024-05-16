@@ -22,9 +22,9 @@ export default function UpcomingReminders() {
     const reminders = useSelector(state => state.reminders)
 
     useEffect(() => {
-        setUpcomingReminders(reminders.filter((item) => item.selectedDate && !item.isCompleted && !item.isDeleted).sort((a, b) => {
-            if (a.selectedDate !== null && b.selectedDate !== null) {
-                return new Date(JSON.parse(a.selectedDate)) - new Date(JSON.parse(b.selectedDate));
+        setUpcomingReminders(reminders.filter((item) => item.dueDay && !item.isCompleted && !item.isDeleted).sort((a, b) => {
+            if (a.dueDay !== null && b.dueDay !== null) {
+                return new Date(JSON.parse(a.dueDay)) - new Date(JSON.parse(b.dueDay));
             }
         })
        )

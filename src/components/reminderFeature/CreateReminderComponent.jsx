@@ -17,17 +17,17 @@ export default function CreateReminderComponent({
 }) {
   const dispatch = useDispatch()
   const [title, setTitle] = useState("");
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [selectedDay, setSelectedDay] = useState(null);
+  const [selectedTime, setSelectedTime] = useState(null);
+  const [dueDay, setDueDay] = useState(null);
   const [isDateTimePickerVisible, setIsDateTimePickerVisible] = useState(false);
   const [isTimePickerVisible, setIsTimePickerVisible] = useState(false);
-  const [token, setToken] = useState();
+  const [expoPushToken, setExpoPushToken] = useState();
   const theme = useTheme()
 
   useEffect(() => {
     const getToken = async () => {
       const pushToken = await AsyncStorage.getItem('token')
-      setToken(pushToken)
+      setExpoPushToken(pushToken)
     }
     getToken()
   }, [])
@@ -35,15 +35,20 @@ export default function CreateReminderComponent({
   useEffect(()=> {
     if(itemToEdit) {
     setTitle(itemToEdit.title || "")
-    setSelectedDate(itemToEdit.selectedDate || null)
+    setSelectedTime(itemToEdit.selectedTime || null)
     }
   },[showCreateReminderComponent]);
 
+  const clearState = () => {
+    setDueDay(null)
+    setSelectedTime(null)
+    setTitle("")
+  }
+
   const onSubmit = () => {
-    dispatch(createReminder(title, selectedDate, token))
-    addReminder({title, selectedDate, token})
-    setTitle('');
-      setSelectedDate("");
+    dispatch(createReminder(title, JSON.stringify(dueDay), expoPushToken))
+    addReminder({title, dueDay, expoPushToken})
+    clearState()
       setShowCreateReminderComponent(false);
   }
 
@@ -53,21 +58,23 @@ export default function CreateReminderComponent({
 
   const onCalendarConfirm = useCallback((params) => {
     setIsDateTimePickerVisible(false);
-    setSelectedDay(params.date);
+    console.log("DAAAAAAAA", params.date)
+    setDueDay(params.date);
     setIsTimePickerVisible(true);
-  }, [setIsDateTimePickerVisible, setSelectedDate]);
+  }, [setIsDateTimePickerVisible, setSelectedTime]);
 
   const onTimePickerDismiss = useCallback(() => {
     setIsTimePickerVisible(false);
   }, [setIsTimePickerVisible]);
 
   const onTimePickerConfirm = useCallback(({ hours, minutes }) => {
-    const x = new Date(selectedDay).setHours(hours, minutes);
-    setSelectedDate(JSON.stringify(x));
+    const x = new Date(dueDay).setHours(hours, minutes);
+    setSelectedTime(JSON.stringify(x));
     setIsTimePickerVisible(false);
-  }, [setIsTimePickerVisible, selectedDay, setSelectedDate]);
+  }, [setIsTimePickerVisible, dueDay, setSelectedTime]);
 
   const onModalDismiss = useCallback(() => {
+    clearState()
     setShowCreateReminderComponent(false)
   }, [setIsDateTimePickerVisible]);
 
@@ -94,9 +101,9 @@ export default function CreateReminderComponent({
           <Button icon={'content-save-check-outline'} uppercase={false} mode="elevated" onPress={()=> setIsDateTimePickerVisible(true)}>
             <Text style={styles.mainText}>
               {
-                selectedDate
+                selectedTime
                   ?
-                  new Date(JSON.parse(selectedDate)).toLocaleDateString([], { weekday: 'short', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+                  new Date(JSON.parse(selectedTime)).toLocaleDateString([], { weekday: 'short', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })
                   :
                   'Add Time'
               }
@@ -104,7 +111,7 @@ export default function CreateReminderComponent({
           </Button>
           <View>
 
-            <Button icon={'content-save-check-outline'} onPress={() => onSubmit(title,selectedDate,token)} uppercase={false} mode="elevated">
+            <Button icon={'content-save-check-outline'} onPress={() => onSubmit()} uppercase={false} mode="elevated">
               Save
             </Button>
 
@@ -117,7 +124,7 @@ export default function CreateReminderComponent({
             mode="single"
             visible={isDateTimePickerVisible}
             onDismiss={onCalendarDismiss}
-            date={selectedDay}
+            date={dueDay}
             onConfirm={onCalendarConfirm}
           />
           <TimePickerModal

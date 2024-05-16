@@ -4,8 +4,16 @@ import UpcomingReminders from '../components/reminderFeature/UpcomingReminders';
 import Tools from '../components/Tools';
 import ChatRoomPreview from '../components/chatFeature/ChatRoomPreview';
 import { Surface, useTheme, Divider } from 'react-native-paper';
+import { fetchReminders } from '../utils/api';
 
 const HomeScreen = () => {
+    (async () => {
+        const a = await fetchReminders()
+        const x= await a.json() 
+        console.log("XX", x)
+    })()
+    
+    
     const theme = useTheme();
     return (
         <View style={{ flex: 2 }}>

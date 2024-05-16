@@ -13,7 +13,7 @@ function ReminderItems({ list }) {
     const prevOpenedRow = useRef();
     const dispatch = useDispatch();
     const theme = useTheme();
-  
+  console.log(list)
     const renderRightActions = (item) => {
         return (
             <View style={{ flexDirection: 'row' }} >
@@ -98,16 +98,16 @@ function ReminderItems({ list }) {
                         showCreateReminderComponent={showCreateReminderComponent}
                         setShowCreateReminderComponent={setShowCreateReminderComponent}
                         handleSave={
-                            (title, selectedDate, itemToEdit) => {
+                            (title, dueDay, itemToEdit) => {
                                 dispatch( updateReminder({
                                     title,
-                                    selectedDate,
+                                    dueDay,
                                     id: itemToEditRef.current.id,
                                   }))
                             }
                         }
                     />
-                    {list.filter((item) => item.selectedDate && !item.isCompleted && !item.isDeleted).map((item, index) => {
+                    {list.filter((item) => item.dueDay && !item.isCompleted && !item.isDeleted).map((item, index) => {
                         return (
                             <Swipeable
                                 renderLeftActions={() => renderLeftActions(item)}
@@ -123,9 +123,9 @@ function ReminderItems({ list }) {
                                     <Text style={{ color: theme.colors.scrim }} variant="titleMedium">
                                         {item.title}
                                     </Text>
-                                    {item.selectedDate &&
+                                    {item.dueDay &&
                                         <Text style={{ color: theme.colors.onPrimary }} variant="labelMedium">
-                                            {new Date(JSON.parse(item.selectedDate)).toLocaleDateString([], {
+                                            {new Date(JSON.parse(item.dueDay)).toLocaleDateString([], {
                                                 weekday: 'short', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit'
                                             })}
                                         </Text>

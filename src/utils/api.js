@@ -163,6 +163,7 @@ export const addReminde = async (reminders) => {
 };
 
 export const addReminder = async(reminder) => {
+    console.log("REMINDER", reminder)
     let token = await SecureStore.getItemAsync("secureToken");
     let user = await AsyncStorage.getItem("notify_user")
     let userId = JSON.parse(user)._id; 
@@ -180,41 +181,20 @@ export const addReminder = async(reminder) => {
     .catch((error) => console.log("An unexpected error has occurred :", error))
 }
 
-
-
-
-export const storeBackUpData = async (reminders) => {
-    // await AsyncStorage.setItem('reminders', JSON.stringify(reminders));
-    // const deviceId = await AsyncStorage.getItem('deviceId');
-    // return await fetch(BASE_URL + '/store', {
-    //     method: 'POST',
-    //     headers: {
-    //         Accept: 'application/json',
-    //         'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify({
-    //         deviceId: deviceId,
-    //         reminders: reminders
-    //     })
-    // })
+export const fetchReminders = async (userId) => {
+    let token = await SecureStore.getItemAsync("secureToken");
+    let user = await AsyncStorage.getItem("notify_user")
+     await fetch(BASE_URL + '/api/reminders', {
+    method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({userId: JSON.parse(user)._id})
+    })
     // .then(response => response.json())
-    // .catch((error) => console.log("Server did not respond"))
-};
-
-export const fetchBackUpData = async () => {
-    // const deviceId = await AsyncStorage.getItem('deviceId');
-    // return await fetch(BASE_URL, {
-    //     method: 'POST',
-    //     headers: {
-    //         Accept: 'application/json',
-    //         'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify({
-    //         deviceId: deviceId
-    //     })
-    // })
-    // .then(response => response.json())
-    // .catch((error) => console.log("Server did not respond"))
+    // .catch((error) => console.log("An unexpected error has occurred :", error))
 };
 
 export const fetchGroups = async () => {

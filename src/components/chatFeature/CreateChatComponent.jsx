@@ -1,19 +1,32 @@
 import { View, Text, TextInput, Pressable } from "react-native";
 import { Modal, Portal, RadioButton } from "react-native-paper";
-import React, { useState } from "react";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useEffect, useState } from "react";
 import { styles } from "../../utils/styles";
 import socket from "../../utils/socket";
 
 const CreateChatComponent = ({ showCreateChatComponent, setShowCreateChatComponent }) => {
     const [roomName, setRoomName] = useState("");
+    const [organization, setOrganization] = useState("");
     const [isPrivate, setIsPrivate] = useState(false);
-    const closeModal = () => setShowCreateChatComponent(false);
+
+    useEffect(() => {
+        const getOrgFromStorage = async () => {
+        const jsonValue = await AsyncStorage.getItem('notify_user');
+        setOrganization(JSON.parse(jsonValue).organization)
+        }
+        if(showCreateChatComponent) getOrgFromStorage()
+    },[showCreateChatComponent])
+    const closeModal = () => {
+        setOrganization("")
+        setShowCreateChatComponent(false)
+    };
     const handleCreateRoom = () => {
         socket.emit(
             "createRoom",
             {
                 roomName: roomName,
-                organization: "brandon's org",
+                organization: organization,
                 isPrivate: isPrivate
             }
         );
