@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-const BASE_URL = "https://4852-75-131-25-248.ngrok-free.app";
+const BASE_URL = "https://c1b6-75-131-25-248.ngrok-free.app";
 import * as SecureStore from 'expo-secure-store';
 
 export const registerUser = async(user) => {
@@ -14,8 +14,6 @@ export const registerUser = async(user) => {
     .then(response => response.json())
     .catch((error) => console.log("An unexpected error has occurred :", error))
 }
-
-
 
 export const logInUser = async(user) => {
     return await fetch(BASE_URL + '/api/users/login', {
@@ -144,22 +142,20 @@ export const storeBannerImage = async (uri, userId) => {
         })
 };
 
-export const addReminde = async (reminders) => {
-    // await AsyncStorage.setItem('reminders', JSON.stringify(reminders));
-    // const deviceId = await AsyncStorage.getItem('deviceId');
-    // return await fetch(BASE_URL + '/store', {
-    //     method: 'POST',
-    //     headers: {
-    //         Accept: 'application/json',
-    //         'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify({
-    //         deviceId: deviceId,
-    //         reminders: reminders
-    //     })
-    // })
-    // .then(response => response.json())
-    // .catch((error) => console.log("Server did not respond"))
+export const fetchReminders = async (userId) => {
+    let token = await SecureStore.getItemAsync("secureToken");
+    let user = await AsyncStorage.getItem("notify_user")
+    return await fetch(BASE_URL + '/api/reminders', {
+    method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({userId: JSON.parse(user)._id})
+    })
+    .then(response => response.json())
+    .catch((error) => console.log("An unexpected error has occurred :", error))
 };
 
 export const addReminder = async(reminder) => {
@@ -179,23 +175,82 @@ export const addReminder = async(reminder) => {
     })
     .then(response => response.json())
     .catch((error) => console.log("An unexpected error has occurred :", error))
-}
+};
 
-export const fetchReminders = async (userId) => {
+export const updateReminderApi = async(reminder) => {
     let token = await SecureStore.getItemAsync("secureToken");
     let user = await AsyncStorage.getItem("notify_user")
-     await fetch(BASE_URL + '/api/reminders', {
-    method: 'POST',
+    let userId = JSON.parse(user)._id; 
+    
+    return await fetch(BASE_URL + '/api/reminders/update', {
+        method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`,
             Accept: 'application/json',
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({userId: JSON.parse(user)._id})
+        body: JSON.stringify({userId: userId, updatedReminder:reminder})
     })
-    // .then(response => response.json())
-    // .catch((error) => console.log("An unexpected error has occurred :", error))
+    .then(response => response.json())
+    .catch((error) => console.log("An unexpected error has occurred :", error))
+}
+
+
+export const deleteReminderApi = async(reminderId) => {
+    let token = await SecureStore.getItemAsync("secureToken");
+    let user = await AsyncStorage.getItem("notify_user")
+    let userId = JSON.parse(user)._id; 
+    
+    return await fetch(BASE_URL + '/api/reminders/delete', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({userId: userId, reminderId:reminderId})
+    })
+    .then(response => response.json())
+    .catch((error) => console.log("An unexpected error has occurred :", error))
+}
+
+export const clearReminder = async(reminderId) => {
+    let token = await SecureStore.getItemAsync("secureToken");
+    let user = await AsyncStorage.getItem("notify_user")
+    let userId = JSON.parse(user)._id; 
+    
+    return await fetch(BASE_URL + '/api/reminders/clear', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({userId: userId, reminderId:reminderId})
+    })
+    .then(response => response.json())
+    .catch((error) => console.log("An unexpected error has occurred :", error))
 };
+
+export const completeReminderApi = async(reminderId) => {
+    let token = await SecureStore.getItemAsync("secureToken");
+    let user = await AsyncStorage.getItem("notify_user")
+    let userId = JSON.parse(user)._id; 
+    
+    return await fetch(BASE_URL + '/api/reminders/complete', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({userId: userId, reminderId:reminderId})
+    })
+    .then(response => response.json())
+    .catch((error) => console.log("An unexpected error has occurred :", error))
+}
+
+
 
 export const fetchGroups = async () => {
     return await fetch(BASE_URL + '/api/chatrooms')

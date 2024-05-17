@@ -6,13 +6,15 @@ import { DatePickerModal, TimePickerModal } from 'react-native-paper-dates';
 import { IconButton, useTheme, Button, Text, TextInput, Modal, Portal } from 'react-native-paper';
 import { styles } from '../../utils/styles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { createReminder } from '../../redux/reminderSlice';
-import { addReminder } from '../../utils/api';
+import { updateReminder } from '../../redux/reminderSlice';
+import { updateReminderApi } from '../../utils/api';
 
 
-export default function CreateReminderComponent({
-  showCreateReminderComponent,
-  setShowCreateReminderComponent
+export default function UpdateReminderComponent({
+  showUpdateReminderComponent,
+  setShowUpdateReminderComponent,
+  handleSave,
+  itemToEdit
 }) {
   const dispatch = useDispatch()
   const [title, setTitle] = useState("");
@@ -22,7 +24,6 @@ export default function CreateReminderComponent({
   const [isTimePickerVisible, setIsTimePickerVisible] = useState(false);
   const [expoPushToken, setExpoPushToken] = useState();
   const theme = useTheme()
-  const reminderId = nanoid()
 
   useEffect(() => {
     const getToken = async () => {
@@ -32,6 +33,13 @@ export default function CreateReminderComponent({
     getToken()
   }, [])
 
+  useEffect(() => {
+    if (itemToEdit) {
+      setTitle(itemToEdit.title || "")
+      setDueDay(JSON.stringify(itemToEdit.dueDay) || null)
+    }
+  }, [showUpdateReminderComponent]);
+
   const clearState = () => {
     setDueDay(null)
     setSelectedTime(null)
@@ -39,18 +47,14 @@ export default function CreateReminderComponent({
   }
 
   const onSubmit = () => {
-    dispatch(createReminder(title, JSON.stringify(dueDay), expoPushToken, reminderId))
-    addReminder({
-      reminderId,
+    dispatch(updateReminder({reminderId:itemToEdit.reminderId, title, dueDay:JSON.stringify(dueDay)}))
+    updateReminderApi({
+      reminderId:itemToEdit.reminderId,
       title,
-      dueDay,
-      expoPushToken,
-      isChecked: false,
-      isCompleted: false,
-      isDeleted: false
+      dueDay
     })
     clearState()
-    setShowCreateReminderComponent(false);
+    setShowUpdateReminderComponent(false);
   }
 
   const onCalendarDismiss = useCallback(() => {
@@ -59,6 +63,7 @@ export default function CreateReminderComponent({
 
   const onCalendarConfirm = useCallback((params) => {
     setIsDateTimePickerVisible(false);
+    console.log("DAAAAAAAA", params.date)
     setDueDay(params.date);
     setIsTimePickerVisible(true);
   }, [setIsDateTimePickerVisible, setSelectedTime]);
@@ -75,17 +80,17 @@ export default function CreateReminderComponent({
 
   const onModalDismiss = useCallback(() => {
     clearState()
-    setShowCreateReminderComponent(false)
+    setShowUpdateReminderComponent(false)
   }, [setIsDateTimePickerVisible]);
 
   return (
     <Portal>
       <Modal
-        visible={showCreateReminderComponent}
+        visible={showUpdateReminderComponent}
         style={{ padding: 20 }}
         contentContainerStyle={{ backgroundColor: 'red', padding: 20 }}
         onDismiss={() => {
-          setShowCreateReminderComponent(false);
+          setShowUpdateReminderComponent(false);
         }}>
 
         <Text>Add a New Reminder</Text>
@@ -101,7 +106,7 @@ export default function CreateReminderComponent({
         <Button icon={'content-save-check-outline'} uppercase={false} mode="elevated" onPress={() => setIsDateTimePickerVisible(true)}>
           <Text style={styles.mainText}>
             {
-              selectedTime
+              dueDay
                 ?
                 new Date(JSON.parse(selectedTime)).toLocaleDateString([], { weekday: 'short', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })
                 :

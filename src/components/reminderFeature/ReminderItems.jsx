@@ -1,19 +1,26 @@
 import { StyleSheet, View, Pressable } from 'react-native';
 import { List, MD3Colors, Icon, useTheme, Text, Button } from 'react-native-paper';
 import { useDispatch } from 'react-redux';
-import CreateReminderComponent from './CreateReminderComponent';
-import { completeReminder, deleteReminder,updateReminder } from '../../redux/reminderSlice';
-import { useState, useRef } from 'react';
+import UpdateReminderComponent from './UpdateReminderComponent';
+import { completeReminder, deleteReminder } from '../../redux/reminderSlice';
+import { useState, useRef, useEffect } from 'react';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
+import { deleteReminderApi, completeReminderApi } from '../../utils/api';
 
 function ReminderItems({ list }) {
-    const [showCreateReminderComponent, setShowCreateReminderComponent] = useState(false)
+    const [showUpdateReminderComponent, setShowUpdateReminderComponent] = useState(false);
+    const [upcomingReminders, setUpcomingReminders] = useState([]);
     const itemToEditRef = useRef({});
     const reminderItemRef = useRef([]);
     const prevOpenedRow = useRef();
     const dispatch = useDispatch();
     const theme = useTheme();
-  console.log(list)
+  console.log("Reminderitems",list)
+
+  useEffect(() => {
+    setUpcomingReminders(list.filter((item) => !item.isCompleted && !item.isDeleted))
+  },[list])
+
     const renderRightActions = (item) => {
         return (
             <View style={{ flexDirection: 'row' }} >
@@ -28,7 +35,7 @@ function ReminderItems({ list }) {
                     style={styles.reminderItemRightInsideButton}
                     onPress={() => {
                         itemToEditRef.current = item
-                        setShowCreateReminderComponent(true)
+                        setShowUpdateReminderComponent(true)
                         prevOpenedRow.current.close();
                     }}>
                     <Icon
@@ -47,7 +54,8 @@ function ReminderItems({ list }) {
                     }
                     style={styles.reminderItemRightButton}
                     onPress={() => {
-                        dispatch(completeReminder(item.id))
+                        dispatch(completeReminder(item.reminderId))
+                        completeReminderApi(item.reminderId)
                     }}>
                     <Icon
                         source="check-outline"
@@ -71,7 +79,8 @@ function ReminderItems({ list }) {
                 }
                 style={styles.reminderItemLeftButton}
                 onPress={() => {
-                    dispatch(deleteReminder(item.id))
+                    dispatch(deleteReminder(item.reminderId))
+                    deleteReminderApi(item.reminderId)
                 }}>
                 <Icon
                     source="delete"
@@ -91,23 +100,15 @@ function ReminderItems({ list }) {
 
     return (
         <>
-            {list.length > 0 ?
+            {upcomingReminders.length > 0 ?
                 <>
-                    <CreateReminderComponent
+                    <UpdateReminderComponent
                         itemToEdit={itemToEditRef.current}
-                        showCreateReminderComponent={showCreateReminderComponent}
-                        setShowCreateReminderComponent={setShowCreateReminderComponent}
-                        handleSave={
-                            (title, dueDay, itemToEdit) => {
-                                dispatch( updateReminder({
-                                    title,
-                                    dueDay,
-                                    id: itemToEditRef.current.id,
-                                  }))
-                            }
-                        }
+                        showUpdateReminderComponent={showUpdateReminderComponent}
+                        setShowUpdateReminderComponent={setShowUpdateReminderComponent}
                     />
-                    {list.filter((item) => item.dueDay && !item.isCompleted && !item.isDeleted).map((item, index) => {
+                    {/* {list.filter((item) => item.dueDay && !item.isCompleted && !item.isDeleted).map((item, index) => { */}
+                    {upcomingReminders.filter((item) => !item.isCompleted && !item.isDeleted).map((item, index) => {
                         return (
                             <Swipeable
                                 renderLeftActions={() => renderLeftActions(item)}
@@ -115,7 +116,7 @@ function ReminderItems({ list }) {
                                 onSwipeableWillOpen={() => closeRow(index)}
                                 containerStyle={[styles.swipeableContainerBack, { backgroundColor: theme.colors.primaryContainer }]}
                                 childrenContainerStyle={[styles.swipeableContainerFront, { backgroundColor: theme.colors.primary }]}
-                                key={item.id}
+                                key={item.reminderId}
                                 ref={ref => reminderItemRef.current[index] = ref}
                             >
                                 <List.Icon color={theme.colors.onPrimary} icon="chevron-left" />
@@ -125,7 +126,7 @@ function ReminderItems({ list }) {
                                     </Text>
                                     {item.dueDay &&
                                         <Text style={{ color: theme.colors.onPrimary }} variant="labelMedium">
-                                            {new Date(JSON.parse(item.dueDay)).toLocaleDateString([], {
+                                            {new Date(item.dueDay).toLocaleDateString([], {
                                                 weekday: 'short', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit'
                                             })}
                                         </Text>
@@ -148,7 +149,6 @@ function ReminderItems({ list }) {
 
 const styles = StyleSheet.create({
     swipeableContainerBack: {
-        flex: 1,
         flexDirection: 'row',
         backgroundColor: "black",
         borderRadius: 15,
@@ -192,7 +192,8 @@ const styles = StyleSheet.create({
     empty: {
         textAlign: 'center',
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        flex:1
     },
     emptyText: {
         // fontFamily: "Rubik-Medium",
