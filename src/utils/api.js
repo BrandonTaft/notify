@@ -276,5 +276,3 @@ export const fetchGroups = async () => {
     .then(response => response.json())
     .catch((error) => console.log("An unexpected error has occurred :", error))
 }
-
-  

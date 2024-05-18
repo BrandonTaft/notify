@@ -98,6 +98,9 @@ function ReminderItems({ list }) {
         prevOpenedRow.current = reminderItemRef.current[index];
     }
 
+    let x =new Date('5/18/2024')
+    let y =x.getDay()
+
     return (
         <>
             {upcomingReminders.length > 0 ?
@@ -126,9 +129,7 @@ function ReminderItems({ list }) {
                                     </Text>
                                     {item.dueDay &&
                                         <Text style={{ color: theme.colors.onPrimary }} variant="labelMedium">
-                                            {new Date(item.dueDay).toLocaleDateString([], {
-                                                weekday: 'short', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit'
-                                            })}
+                                           {item.dueDay}, {((item.dueTime.hours + 11) % 12 + 1)}:{item.dueTime.minutes} {item.dueTime.hours >= 12 ? 'PM' : 'AM'}
                                         </Text>
                                     }
                                 </View>

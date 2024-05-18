@@ -25,7 +25,7 @@ export default function UpcomingReminders() {
     return (
 
         <View style={{ flex: 1, paddingHorizontal: 5}}>
-            <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{flex:1}}>
+            <ScrollView keyboardShouldPersistTaps="handled" >
                 <ReminderItems
                     list={reminders}
                 />

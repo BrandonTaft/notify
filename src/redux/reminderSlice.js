@@ -45,12 +45,13 @@ const reminderSlice = createSlice({
             reducer(state, action) {
                 state.reminders.push(action.payload)
             },
-            prepare(title, dueDay, token, reminderId) {
+            prepare(title, dueDay, dueTime, token, reminderId) {
                 return {
                     payload: {
                         reminderId,
                         title,
-                        dueDay: JSON.parse(dueDay),
+                        dueDay: dueDay,
+                        dueTime: dueTime,
                         token,
                         isChecked: false,
                         isCompleted: false,
@@ -60,12 +61,13 @@ const reminderSlice = createSlice({
             }
         },
         updateReminder: (state, action) => {
-            const { reminderId, title, dueDay } = action.payload
+            const { reminderId, title, dueDay, dueTime } = action.payload
             console.log("EDITTTTTT", action.payload)
             const existingReminder = state.reminders.find(reminder => reminder.reminderId === reminderId)
             if (existingReminder) {
                 existingReminder.title = title
                 existingReminder.dueDay = dueDay
+                existingReminder.dueTime = dueTime
             }
         },
         completeReminder: (state, action) => {
