@@ -10,15 +10,15 @@ const HomeScreen = () => {
     return (
         <View style={{ flex: 1 }}>
             <Header />
-            <Surface style={{ flexDirection: 'column', flex: 2, backgroundColor: theme.colors.surface, margin: 10, borderRadius: 10 }} elevation={2}>
+            <Surface style={{ flexDirection: 'column', flex: 2, margin: 10, borderRadius: 10 }} elevation={2}>
                 <ChatRoomPreview />
             </Surface>
             <Divider horizontalInset />
-            <Surface style={{ flexDirection: 'column', flex: 2, backgroundColor: theme.colors.surface, margin: 10, borderRadius: 10 }} elevation={2}>
+            <Surface style={{ flexDirection: 'column', flex: 2, margin: 10, borderRadius: 10 }} elevation={2}>
                 <UpcomingReminders />
             </Surface>
             <Divider horizontalInset />
-            <Surface style={{ flexDirection: 'column', flex: 1, backgroundColor: theme.colors.surface, margin: 10, borderRadius: 10 }} elevation={2}>
+            <Surface style={{ flexDirection: 'column', flex: 1,  margin: 10, borderRadius: 10 }} elevation={2}>
                 <Tools />
             </Surface>
         </View>

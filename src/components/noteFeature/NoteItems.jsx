@@ -13,7 +13,7 @@ function NoteItems({ list }) {
     const listItemRef = useRef([]);
     const prevOpenedRow = useRef();
     const dispatch = useDispatch()
- console.log(list)
+ console.log("MYNOYES",list)
     const renderRightActions = (item) => {
         return (
             <View style={{ flexDirection: 'row' }} >
@@ -79,7 +79,7 @@ function NoteItems({ list }) {
                         setShowUpdateNoteModal={setShowUpdateNoteModal}
                         itemToEdit={itemToEditRef.current}
                     />
-                    {list.filter((item) => item.isNote && !item.isCompleted && !item.isDeleted).map((item, index) => {
+                    {list.filter((item) => !item.isCompleted && !item.isDeleted).map((item, index) => {
                         return (
                             <Swipeable
                                 renderLeftActions={() => renderLeftActions(item)}
@@ -93,7 +93,7 @@ function NoteItems({ list }) {
                                 <List.Icon color={MD3Colors.tertiary70} icon="chevron-left" />
                                 <View style={styles.listItemContents}>
                                     <Text style={styles.listItemTitle}>
-                                        {item.content}
+                                        {item.body}
                                     </Text>
                                     <ElapsedTime timestamp={item.timeStamp} />
                                     <View style={{flexDirection:'row', justifyContent:'space-evenly'}}>

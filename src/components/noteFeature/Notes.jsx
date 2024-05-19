@@ -1,83 +1,107 @@
 import { useState } from "react";
-import { Pressable, View, Text, StyleSheet, ScrollView } from "react-native";
-import { Button } from 'react-native-paper';
+import { Pressable, View, StyleSheet, ScrollView } from "react-native";
+import { Portal, Button, Modal, Text, useTheme, IconButton, FAB } from 'react-native-paper';
 import { FontAwesome5, MaterialIcons } from '@expo/vector-icons';
-import CreateNote from './CreateNote';
 import { useSelector } from 'react-redux';
 import NoteItems from "./NoteItems";
+import CreateNoteModal from "./CreateNoteModal";
 //import { styles } from '../utils/styles';
 
 export default function Notes() {
-    
-    const notes = useSelector(state => state.notes)
-    const [showNotes, setShowNotes] = useState(false)
-    
-
-    
+    const theme = useTheme();
+    const user = useSelector(state => state.user)
+    const [showNotes, setShowNotes] = useState(false);
+    const [showCreateNoteModal, setShowCreateNoteModal] = useState(false);
+    const showModal = () => setShowNotes(true);
+    const hideModal = () => setShowNotes(false);
+    const containerStyle = { backgroundColor: theme.colors.background, flex: 1 };
+    console.log("NOTESSSS PAGE", user.notes)
     return (
+
         <View style={{ justifyContent: 'center', flex: 1, alignItems: 'center' }}>
-        {/* <CreateNote /> */}
-        <Button icon={'pencil'} onPress={() => setShowNotes(!showNotes)} uppercase={false} mode="elevated">
-         Notes
-        </Button>
-            {/* <Pressable
-                android_ripple={
-                    RippleConfig = {
-                        color: "#8789f7",
-                        borderless: false,
-                        foreground: false
-                    }
-                }
-                style={[styles.menuBtn, showNotes && styles.active]}
-                onPress={() => {
-                    setShowNotes(!showNotes)
-                }}
-            >
-                <MaterialIcons
-                    name="event-note"
-                    size={28}
-                    color="#8789f7"
-                />
-                <Text style={styles.menuBtnText}>
-                    Notes
-                </Text>
-                {showNotes ?
-                    <FontAwesome5
-                        name="chevron-circle-down"
-                        size={30} color="#fff"
-                        style={{
-                            marginLeft: 'auto',
-                            marginTop: "auto",
-                            marginBottom: 'auto'
-                        }}
+            <Portal>
+                <Modal visible={showNotes} onDismiss={hideModal} contentContainerStyle={containerStyle}>
+                    <Text variant="titleLarge">Notes</Text>
+                    <IconButton
+                        mode='contained'
+                        icon="close"
+                        size={20}
+                        onPress={hideModal}
                     />
-                    :
-                    <FontAwesome5
-                        name="chevron-circle-right"
-                        size={30} color="#fff"
-                        style={{
-                            marginLeft: 'auto',
-                            marginTop: "auto",
-                            marginBottom: 'auto'
-                        }}
-                    />
-                }
-            </Pressable> */}
-            {showNotes &&
-                <>
-                     <ScrollView keyboardShouldPersistTaps="handled">
-                        <NoteItems list={notes} />
+                    <ScrollView keyboardShouldPersistTaps="handled">
+                        <NoteItems list={user.notes} />
                     </ScrollView>
-                </>
-            }
-            
+                    <CreateNoteModal />
+                </Modal>
+            </Portal>
+            <Button icon={'pencil'} onPress={showModal} uppercase={false} mode="elevated">
+                Notes
+            </Button>
         </View>
+
+        //     <View style={{ justifyContent: 'center', flex: 1, alignItems: 'center' }}>
+        //     {/* <CreateNote /> */}
+        //     <Button icon={'pencil'} onPress={() => setShowNotes(!showNotes)} uppercase={false} mode="elevated">
+        //      Notes
+        //     </Button>
+        //         {/* <Pressable
+        //             android_ripple={
+        //                 RippleConfig = {
+        //                     color: "#8789f7",
+        //                     borderless: false,
+        //                     foreground: false
+        //                 }
+        //             }
+        //             style={[styles.menuBtn, showNotes && styles.active]}
+        //             onPress={() => {
+        //                 setShowNotes(!showNotes)
+        //             }}
+        //         >
+        //             <MaterialIcons
+        //                 name="event-note"
+        //                 size={28}
+        //                 color="#8789f7"
+        //             />
+        //             <Text style={styles.menuBtnText}>
+        //                 Notes
+        //             </Text>
+        //             {showNotes ?
+        //                 <FontAwesome5
+        //                     name="chevron-circle-down"
+        //                     size={30} color="#fff"
+        //                     style={{
+        //                         marginLeft: 'auto',
+        //                         marginTop: "auto",
+        //                         marginBottom: 'auto'
+        //                     }}
+        //                 />
+        //                 :
+        //                 <FontAwesome5
+        //                     name="chevron-circle-right"
+        //                     size={30} color="#fff"
+        //                     style={{
+        //                         marginLeft: 'auto',
+        //                         marginTop: "auto",
+        //                         marginBottom: 'auto'
+        //                     }}
+        //                 />
+        //             }
+        //         </Pressable> */}
+        //         {showNotes &&
+        //             <>
+        //                  <ScrollView keyboardShouldPersistTaps="handled">
+        //                     <NoteItems list={notes} />
+        //                 </ScrollView>
+        //             </>
+        //         }
+
+        //     </View>
     )
 }
 
 const styles = StyleSheet.create({
-   
-    
+
+
     topHorizontal: {
         flexDirection: 'row',
         justifyContent: 'space-evenly',

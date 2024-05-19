@@ -12,7 +12,7 @@ export const fetchAllReminders = createAsyncThunk('posts/fetchAllReminders', asy
     let token = await SecureStore.getItemAsync("secureToken");
 
     let user = await AsyncStorage.getItem("notify_user")
-    const rawReminders = await fetch('https://c1b6-75-131-25-248.ngrok-free.app' + '/api/reminders', {
+    const rawReminders = await fetch('https://d8a9-75-131-25-248.ngrok-free.app' + '/api/reminders', {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`,

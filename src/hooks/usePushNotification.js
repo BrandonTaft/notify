@@ -71,7 +71,7 @@ const usePushNotification = () => {
     }, []);
 
 
-    
+    // Send notification from client
     async function sendPushNotification(expoPushToken, notification) {
         const message = {
             to: expoPushToken,

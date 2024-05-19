@@ -1,5 +1,5 @@
 import { useState } from "react";
-import CreateNote from "./noteFeature/CreateNote";
+import CreateNote from "./noteFeature/CreateNoteModal";
 import CreateReminderComponent from "./reminderFeature/CreateReminderComponent";
 import { useDispatch } from 'react-redux';
 import { createReminder } from '../redux/reminderSlice';

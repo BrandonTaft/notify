@@ -23,7 +23,7 @@ export default function RegisterModal() {
     organization: '',
     expoPushToken: ''
   });
-  const { expoPushToken } = usePushNotification();
+  const { expoPushToken, sendPushNotification } = usePushNotification();
   const theme = useTheme();
 
   useEffect(() => {
@@ -200,7 +200,8 @@ export default function RegisterModal() {
             <Button
               mode='elevated'
               elevation={5}
-              onPress={() => registerNewUser(newUser)}
+               onPress={() => registerNewUser(newUser)}
+              //onPress={() => sendPushNotification(expoPushToken, "HELLO WORLD")}
               style={[{ backgroundColor: theme.colors.primary, margin: 15, width: '50%' }]}
               theme={theme.buttonRoundness}
               textColor={theme.colors.onPrimary}

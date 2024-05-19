@@ -1,20 +1,21 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { createNote } from '../../redux/noteSlice';
-import { Text, View, TextInput, Pressable, Modal } from 'react-native';
-import { IconButton, useTheme } from 'react-native-paper';
+import { postNoteToDb } from '../../redux/userSlice';
+import { Text, View, Pressable } from 'react-native';
+import { Button, useTheme, Modal, FAB, TextInput, } from 'react-native-paper';
 import { styles } from '../../utils/styles';
 
-export default function CreateNote() {
+export default function CreateNoteModal() {
   const dispatch = useDispatch()
   const [content, setContent] = useState("");
   const [showCreateNoteModal, setShowCreateNoteModal] = useState(false)
   const theme = useTheme()
 
 
-  const onSaveNotePress = () => {
+  const saveNote = () => {
     if (content) {
-      dispatch(createNote(content))
+      console.log("IRAN")
+      dispatch(postNoteToDb(content))
       setContent('')
       setShowCreateNoteModal(false)
     }
@@ -22,32 +23,35 @@ export default function CreateNote() {
 
   return (
     <>
-      <IconButton
+      <FAB
         icon="note-edit"
-        iconColor={theme.colors.onPrimaryContainer}
-        size={40}
+        style={{
+          position: 'absolute',
+          margin: 8,
+          right: 0,
+          bottom: 0,
+        }}
         onPress={() => setShowCreateNoteModal(true)}
       />
       <Modal
-        animationType="slide"
-        transparent={true}
         visible={showCreateNoteModal}
-        onRequestClose={() => {
+        contentContainerStyle={{ flex: 1 }}
+        onSubmit={() => {
           setShowCreateNoteModal(false);
         }}>
-        <View style={styles.modalView}>
-          <Text>Add a New Note</Text>
+        <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
           <TextInput
+            editable
             multiline={true}
             numberOfLines={6}
             placeholderTextColor="#fff"
-            style={styles.input}
+            style={{}}
             onChangeText={setContent}
             value={content}
             placeholder=""
           />
           <View style={styles.horizontalView}>
-            <Pressable
+            {/* <Pressable
               android_ripple={
                 RippleConfig = {
                   color: "#312e3f",
@@ -56,12 +60,15 @@ export default function CreateNote() {
                 }
               }
               style={styles.round}
-              onPress={() => onSaveNotePress()}
+              onPress={() => saveNote()}
             >
               <Text style={{ fontSize: 18, color: 'white', fontWeight: 'bold' }}>
                 Save
               </Text>
-            </Pressable>
+            </Pressable> */}
+            <Button  mode="contained" onPress={() => saveNote()}>
+              Save
+            </Button>
             <Pressable
               android_ripple={
                 RippleConfig = {
