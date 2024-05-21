@@ -22,7 +22,7 @@ export const fetchAllReminders = createAsyncThunk('posts/fetchAllReminders', asy
         body: JSON.stringify({ userId: JSON.parse(user)._id })
     });
     const reminders = await rawReminders.json();
-    console.log("REMINDERSLICE", reminders.reminders)
+    console.log("REMINDERSLICE", reminders.success, reminders.reminders)
 
     return reminders
 

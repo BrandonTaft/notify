@@ -60,11 +60,11 @@ export default function CreateReminderComponent({
 
   const onCalendarConfirm = useCallback((params) => {
     setIsDateTimePickerVisible(false);
-     setDueDay(params.date.toLocaleDateString('en-US'));
+     setDueDay(params.date.toString());
      setIsTimePickerVisible(true);
     
     //console.log(params.date)
-    console.log(params.date.toLocaleDateString('en-US'))
+    console.log(params.date.toString())
   }, [setIsDateTimePickerVisible, setDueTime]);
 
   const onTimePickerDismiss = useCallback(() => {

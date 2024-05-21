@@ -11,13 +11,10 @@ export default function Notes() {
     const theme = useTheme();
     const user = useSelector(state => state.user)
     const [showNotes, setShowNotes] = useState(false);
-    const [showCreateNoteModal, setShowCreateNoteModal] = useState(false);
     const showModal = () => setShowNotes(true);
     const hideModal = () => setShowNotes(false);
     const containerStyle = { backgroundColor: theme.colors.background, flex: 1 };
-    console.log("NOTESSSS PAGE", user.notes)
     return (
-
         <View style={{ justifyContent: 'center', flex: 1, alignItems: 'center' }}>
             <Portal>
                 <Modal visible={showNotes} onDismiss={hideModal} contentContainerStyle={containerStyle}>

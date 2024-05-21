@@ -79,7 +79,7 @@ function NoteItems({ list }) {
                         setShowUpdateNoteModal={setShowUpdateNoteModal}
                         itemToEdit={itemToEditRef.current}
                     />
-                    {list.filter((item) => !item.isCompleted && !item.isDeleted).map((item, index) => {
+                    {list.filter((item) => !item.isDeleted).map((item, index) => {
                         return (
                             <Swipeable
                                 renderLeftActions={() => renderLeftActions(item)}
@@ -87,7 +87,7 @@ function NoteItems({ list }) {
                                 onSwipeableWillOpen={() => closeRow(index)}
                                 containerStyle={styles.swipeableContainerBack}
                                 childrenContainerStyle={styles.swipeableContainerFront}
-                                key={item.id}
+                                key={item._id}
                                 ref={ref => listItemRef.current[index] = ref}
                             >
                                 <List.Icon color={MD3Colors.tertiary70} icon="chevron-left" />

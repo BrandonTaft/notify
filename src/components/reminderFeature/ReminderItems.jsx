@@ -16,9 +16,14 @@ function ReminderItems({ list }) {
     const dispatch = useDispatch();
     const theme = useTheme();
   console.log("Reminderitems",list)
-
+  console.log("DATESSSSS",new Date("5-20-2024"))
   useEffect(() => {
-    setUpcomingReminders(list.filter((item) => !item.isCompleted && !item.isDeleted))
+    setUpcomingReminders(list.filter((item) => !item.isCompleted && !item.isDeleted).sort((a, b) => {
+        if (a.dueDay !== null && b.dueDay !== null) {
+            
+            return new Date(b.dueDay) - new Date(a.dueDay);
+        }
+    }))
   },[list])
 
     const renderRightActions = (item) => {
@@ -111,7 +116,7 @@ function ReminderItems({ list }) {
                         setShowUpdateReminderComponent={setShowUpdateReminderComponent}
                     />
                     {/* {list.filter((item) => item.dueDay && !item.isCompleted && !item.isDeleted).map((item, index) => { */}
-                    {upcomingReminders.filter((item) => !item.isCompleted && !item.isDeleted).map((item, index) => {
+                    {upcomingReminders.map((item, index) => {
                         return (
                             <Swipeable
                                 renderLeftActions={() => renderLeftActions(item)}
@@ -129,7 +134,11 @@ function ReminderItems({ list }) {
                                     </Text>
                                     {item.dueDay &&
                                         <Text style={{ color: theme.colors.onPrimary }} variant="labelMedium">
-                                           {item.dueDay}, {((item.dueTime.hours + 11) % 12 + 1)}:{item.dueTime.minutes} {item.dueTime.hours >= 12 ? 'PM' : 'AM'}
+                                           {/* {item.dueDay}, {((item.dueTime.hours + 11) % 12 + 1)}:{item.dueTime.minutes} {item.dueTime.hours >= 12 ? 'PM' : 'AM'} */}
+                                           {new Date(item.dueDay).toLocaleDateString([], {
+                                                weekday: 'short', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit'
+                                            })}
+                                            {/* {new Date(item.dueDay)} */}
                                         </Text>
                                     }
                                 </View>

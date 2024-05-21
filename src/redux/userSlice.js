@@ -111,9 +111,7 @@ export const userSlice = createSlice({
             state.loading = false;
             
             if (action.payload.success) {
-                console.log("STATE",action.payload)
                 state.notes = action.payload.notes
-                // return action.payload.reminders
             } else {
                 return state
             }
