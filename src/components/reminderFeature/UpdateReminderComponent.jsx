@@ -16,10 +16,12 @@ export default function UpdateReminderComponent({
   handleSave,
   itemToEdit
 }) {
+  console.log("ITEMTOEDIT", itemToEdit)
   const dispatch = useDispatch()
   const [title, setTitle] = useState("");
   const [selectedTime, setSelectedTime] = useState(null);
   const [dueDay, setDueDay] = useState(null);
+  const [dueTime, setDueTime] = useState(null);
   const [isDateTimePickerVisible, setIsDateTimePickerVisible] = useState(false);
   const [isTimePickerVisible, setIsTimePickerVisible] = useState(false);
   const [expoPushToken, setExpoPushToken] = useState();
@@ -36,7 +38,8 @@ export default function UpdateReminderComponent({
   useEffect(() => {
     if (itemToEdit) {
       setTitle(itemToEdit.title || "")
-      setDueDay(JSON.stringify(itemToEdit.dueDay) || null)
+      setDueDay(itemToEdit.dueDay || null);
+      setDueTime(itemToEdit.dueTime || null);
     }
   }, [showUpdateReminderComponent]);
 
@@ -47,10 +50,16 @@ export default function UpdateReminderComponent({
   }
 
   const onSubmit = () => {
-    dispatch(updateReminder({reminderId:itemToEdit.reminderId, title, dueDay:JSON.stringify(dueDay)}))
+    dispatch(updateReminder({
+      reminderId:itemToEdit.reminderId, 
+      title, 
+      dueDay,
+    dueTime
+  }))
     updateReminderApi({
       reminderId:itemToEdit.reminderId,
       title,
+      dueTime,
       dueDay
     })
     clearState()
@@ -63,10 +72,9 @@ export default function UpdateReminderComponent({
 
   const onCalendarConfirm = useCallback((params) => {
     setIsDateTimePickerVisible(false);
-    console.log("DAAAAAAAA", params.date)
-    setDueDay(params.date);
+    setDueDay(params.date.toString());
     setIsTimePickerVisible(true);
-  }, [setIsDateTimePickerVisible, setSelectedTime]);
+  }, [setIsDateTimePickerVisible, setDueTime]);
 
   const onTimePickerDismiss = useCallback(() => {
     setIsTimePickerVisible(false);
@@ -74,10 +82,9 @@ export default function UpdateReminderComponent({
 
   const onTimePickerConfirm = useCallback(({ hours, minutes }) => {
     const x = new Date(dueDay).setHours(hours, minutes);
-    setSelectedTime(JSON.stringify(x));
+    setDueTime({ hours, minutes });
     setIsTimePickerVisible(false);
-  }, [setIsTimePickerVisible, dueDay, setSelectedTime]);
-
+  }, [setIsTimePickerVisible, dueDay, setDueTime]);
   const onModalDismiss = useCallback(() => {
     clearState()
     setShowUpdateReminderComponent(false)
@@ -104,15 +111,21 @@ export default function UpdateReminderComponent({
           placeholder=""
         />
         <Button icon={'content-save-check-outline'} uppercase={false} mode="elevated" onPress={() => setIsDateTimePickerVisible(true)}>
-          <Text style={styles.mainText}>
-            {
-              dueDay
-                ?
-                new Date(JSON.parse(selectedTime)).toLocaleDateString([], { weekday: 'short', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })
-                :
-                'Add Time'
-            }
-          </Text>
+        {dueTime
+            ?
+            <>
+              <Text >
+                {new Date(dueDay).toLocaleDateString([], {
+                  weekday: 'short', month: 'numeric', day: 'numeric'
+                })}
+              </Text>
+              <Text >
+                &nbsp;&nbsp;{((dueTime.hours + 11) % 12 + 1)}:{dueTime.minutes.toString().padStart(2, '0')} {dueTime.hours >= 12 ? 'PM' : 'AM'}
+              </Text>
+            </>
+            :
+            <Text>Add Time</Text>
+          }
         </Button>
         <View>
 
@@ -129,7 +142,7 @@ export default function UpdateReminderComponent({
           mode="single"
           visible={isDateTimePickerVisible}
           onDismiss={onCalendarDismiss}
-          date={dueDay}
+          date={dueDay ? new Date(dueDay) : null}
           onConfirm={onCalendarConfirm}
         />
         <TimePickerModal

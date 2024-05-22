@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-const BASE_URL = "https://d8a9-75-131-25-248.ngrok-free.app";
+export const BASE_URL = "https://aaf9-75-131-25-248.ngrok-free.app";
 import * as SecureStore from 'expo-secure-store';
 
 export const registerUser = async(user) => {

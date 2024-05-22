@@ -1,6 +1,7 @@
 import { createSlice, nanoid, createAsyncThunk } from "@reduxjs/toolkit";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as SecureStore from 'expo-secure-store';
+import { BASE_URL } from "../utils/api";
 
 
 export const postNoteToDb = createAsyncThunk('posts/postNoteToDb', async (note) => {
@@ -8,7 +9,7 @@ console.log("POSTNOTETOCB", note)
   let token = await SecureStore.getItemAsync("secureToken");
 
   let user = await AsyncStorage.getItem("notify_user")
-  const apiResponse = await fetch('https://d8a9-75-131-25-248.ngrok-free.app' + '/api/users/add-note', {
+  const apiResponse = await fetch(BASE_URL + '/api/users/add-note', {
       method: 'POST',
       headers: {
           'Authorization': `Bearer ${token}`,

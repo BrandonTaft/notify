@@ -60,11 +60,8 @@ export default function CreateReminderComponent({
 
   const onCalendarConfirm = useCallback((params) => {
     setIsDateTimePickerVisible(false);
-     setDueDay(params.date.toString());
-     setIsTimePickerVisible(true);
-    
-    //console.log(params.date)
-    console.log(params.date.toString())
+    setDueDay(params.date.toString());
+    setIsTimePickerVisible(true);
   }, [setIsDateTimePickerVisible, setDueTime]);
 
   const onTimePickerDismiss = useCallback(() => {
@@ -72,8 +69,9 @@ export default function CreateReminderComponent({
   }, [setIsTimePickerVisible]);
 
   const onTimePickerConfirm = useCallback(({ hours, minutes }) => {
-    const x = new Date(dueDay).setHours(hours, minutes);
-    setDueTime({hours, minutes});
+    const x = new Date('August 19, 1975 23:15:30');
+    console.log("TIMEEEEEE",x.setHours(hours))
+    setDueTime({ hours, minutes });
     setIsTimePickerVisible(false);
   }, [setIsTimePickerVisible, dueDay, setDueTime]);
 
@@ -103,16 +101,21 @@ export default function CreateReminderComponent({
           placeholder=""
         />
         <Button icon={'content-save-check-outline'} uppercase={false} mode="elevated" onPress={() => setIsDateTimePickerVisible(true)}>
-          <Text style={styles.mainText}>
-            {
-              dueTime
-                ?
-                // new Date(JSON.parse(dueTime)).toLocaleDateString([], { weekday: 'short', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })
-                dueDay
-                :
-                'Add Time'
-            }
-          </Text>
+          {dueTime
+            ?
+            <>
+              <Text >
+                {new Date(dueDay).toLocaleDateString([], {
+                  weekday: 'short', month: 'numeric', day: 'numeric'
+                })}
+              </Text>
+              <Text >
+                &nbsp;&nbsp;{((dueTime.hours + 11) % 12 + 1)}:{dueTime.minutes.toString().padStart(2, '0')} {dueTime.hours >= 12 ? 'PM' : 'AM'}
+              </Text>
+            </>
+            :
+            <Text>Add Time</Text>
+          }
         </Button>
         <View>
 
@@ -129,7 +132,7 @@ export default function CreateReminderComponent({
           mode="single"
           visible={isDateTimePickerVisible}
           onDismiss={onCalendarDismiss}
-          date={dueDay}
+          date={dueDay ? new Date(dueDay) : null}
           onConfirm={onCalendarConfirm}
         />
         <TimePickerModal

@@ -9,22 +9,11 @@ import { deleteReminderApi, completeReminderApi } from '../../utils/api';
 
 function ReminderItems({ list }) {
     const [showUpdateReminderComponent, setShowUpdateReminderComponent] = useState(false);
-    const [upcomingReminders, setUpcomingReminders] = useState([]);
     const itemToEditRef = useRef({});
     const reminderItemRef = useRef([]);
     const prevOpenedRow = useRef();
     const dispatch = useDispatch();
     const theme = useTheme();
-  console.log("Reminderitems",list)
-  console.log("DATESSSSS",new Date("5-20-2024"))
-  useEffect(() => {
-    setUpcomingReminders(list.filter((item) => !item.isCompleted && !item.isDeleted).sort((a, b) => {
-        if (a.dueDay !== null && b.dueDay !== null) {
-            
-            return new Date(b.dueDay) - new Date(a.dueDay);
-        }
-    }))
-  },[list])
 
     const renderRightActions = (item) => {
         return (
@@ -108,15 +97,14 @@ function ReminderItems({ list }) {
 
     return (
         <>
-            {upcomingReminders.length > 0 ?
+            {list.length > 0 ?
                 <>
                     <UpdateReminderComponent
                         itemToEdit={itemToEditRef.current}
                         showUpdateReminderComponent={showUpdateReminderComponent}
                         setShowUpdateReminderComponent={setShowUpdateReminderComponent}
                     />
-                    {/* {list.filter((item) => item.dueDay && !item.isCompleted && !item.isDeleted).map((item, index) => { */}
-                    {upcomingReminders.map((item, index) => {
+                    {list.map((item, index) => {
                         return (
                             <Swipeable
                                 renderLeftActions={() => renderLeftActions(item)}
@@ -132,13 +120,15 @@ function ReminderItems({ list }) {
                                     <Text style={{ color: theme.colors.scrim }} variant="titleMedium">
                                         {item.title}
                                     </Text>
-                                    {item.dueDay &&
+                                    {item.dueTime &&
                                         <Text style={{ color: theme.colors.onPrimary }} variant="labelMedium">
-                                           {/* {item.dueDay}, {((item.dueTime.hours + 11) % 12 + 1)}:{item.dueTime.minutes} {item.dueTime.hours >= 12 ? 'PM' : 'AM'} */}
+                                           
                                            {new Date(item.dueDay).toLocaleDateString([], {
-                                                weekday: 'short', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit'
+                                                weekday: 'short', month: 'numeric', day: 'numeric'
                                             })}
-                                            {/* {new Date(item.dueDay)} */}
+                                            &nbsp;&nbsp;
+                                            { ((item.dueTime.hours + 11) % 12 + 1)}:{item.dueTime.minutes.toString().padStart(2, '0')} {item.dueTime.hours >= 12 ? 'PM' : 'AM'}
+                                            
                                         </Text>
                                     }
                                 </View>
