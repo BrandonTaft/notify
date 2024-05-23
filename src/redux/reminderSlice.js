@@ -11,6 +11,7 @@ export const fetchAllReminders = createAsyncThunk('posts/fetchAllReminders', asy
     let token = await SecureStore.getItemAsync("secureToken");
 
     let user = await AsyncStorage.getItem("notify_user")
+    console.log("TOKENNNNN", token)
     const rawReminders = await fetch(BASE_URL + '/api/reminders', {
         method: 'POST',
         headers: {

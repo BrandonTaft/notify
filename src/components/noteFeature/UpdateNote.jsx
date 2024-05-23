@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { updateNote, deleteNote } from '../../redux/noteSlice';
+import { updateNote } from '../../redux/userSlice';
 import { Text, View, TextInput, Pressable, Modal } from 'react-native';
 import { IconButton, MD3Colors } from 'react-native-paper';
 import { styles } from '../../utils/styles';
+import { updateNoteApi } from '../../utils/api';
 
 
 
@@ -16,17 +17,21 @@ export default function UpdateNote({showUpdateNoteModal, setShowUpdateNoteModal,
 
   useEffect(()=> {
     if(itemToEdit) {
-    setContent(itemToEdit.content || "")
+    setContent(itemToEdit.body || "")
     }
   },[showUpdateNoteModal])
 
   const onSaveNotePress = () => {
       dispatch(
         updateNote({
-          id: itemToEdit.id,
-          content
+          noteId: itemToEdit._id,
+          content: content
         })
       )
+      updateNoteApi({
+        noteId: itemToEdit._id,
+        content
+      })
       setContent('')
       setShowUpdateNoteModal (false)
   }

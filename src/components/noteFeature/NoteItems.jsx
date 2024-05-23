@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, Pressable } from 'react-native';
 import { List, MD3Colors, Icon } from 'react-native-paper';
 import { useDispatch } from 'react-redux';
 import { ElapsedTime } from '../ElapsedTime';
-import { deleteNote } from '../../redux/noteSlice';
+import { deleteNote } from '../../redux/userSlice';
 import { useState, useRef } from 'react';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import UpdateNote from './UpdateNote';

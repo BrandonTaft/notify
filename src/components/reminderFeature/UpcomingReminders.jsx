@@ -25,7 +25,8 @@ export default function UpcomingReminders() {
     useEffect(() => {
         setUpcomingReminders(reminders.filter((item) => item.dueDay && !item.isCompleted && !item.isDeleted).sort((a, b) => {
             if (a.dueDay !== null && b.dueDay !== null) {
-                return new Date(a.dueDay) - new Date(b.dueDay);
+                console.log("SORT",new Date(a.dueDay).setHours(0))
+                return new Date(a.dueDay).setHours(a.dueTime.hours,a.dueTime.minutes) - new Date(b.dueDay).setHours(b.dueTime.hours,b.dueTime.minutes);
             }
         }))
       },[reminders])

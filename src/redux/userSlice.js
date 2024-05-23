@@ -99,6 +99,20 @@ export const userSlice = createSlice({
         }
     }
     },
+    updateNote: (state, action) => {
+      const { noteId, content } = action.payload
+      console.log(noteId, content)
+      const existingNote = state.notes.find(note => note._id === noteId)
+      if (existingNote) {
+          existingNote.body = content
+      }
+  },
+  deleteNote: (state, action) => {
+    const existingNote = state.find(note => note.id === action.payload)
+    if (existingNote) {
+        existingNote.isDeleted = true
+    }
+},
     logOut: (state, action) => {
       return { isLoggedIn: false }
     },
@@ -124,6 +138,6 @@ export const userSlice = createSlice({
 },
 });
 
-export const { createUser, createNote, logOut, editUserProfileImage, editUserBanner, editUserCredentials } = userSlice.actions;
+export const { createUser, createNote, deleteNote, updateNote, logOut, editUserProfileImage, editUserBanner, editUserCredentials } = userSlice.actions;
 
 export default userSlice.reducer; 
