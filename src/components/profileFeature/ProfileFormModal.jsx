@@ -25,7 +25,7 @@ export const ProfileFormModal = () => {
         await updateUserProfile(user.userId, notifyUser).then(async (result) => {
             if (result.success) {
                 dispatch(editUserCredentials(notifyUser))
-                const jsonValue = JSON.stringify(notifyUser)
+                const jsonValue = JSON.stringify(result.upDatedProfile)
                 await AsyncStorage.mergeItem("notify_user", jsonValue);
             } else {
                 setMessage(result.message);

@@ -28,6 +28,22 @@ export const logInUser = async(user) => {
     .catch((error) => console.log("An unexpected error has occurred :", error))
 };
 
+export const refreshUser = async(userId) => {
+    let token = await SecureStore.getItemAsync("secureToken");
+    return await fetch(BASE_URL + '/api/users/refresh', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId : userId })
+    })
+    .then(response => response.json()) 
+    .catch((error) => console.log("An unexpected error has occurred :", error))
+};
+
+
 export const logOutUser = async(user) => {
     await AsyncStorage.removeItem("notify_user");
     await SecureStore.deleteItemAsync("secureToken")
@@ -42,6 +58,7 @@ export const logOutUser = async(user) => {
     .then(response => response.json())
     .catch((error) => console.log("Server did not respond"))
 };
+
 
 export const deleteUser = async(user) => {
     let token = await SecureStore.getItemAsync("secureToken");
@@ -267,8 +284,6 @@ export const updateNoteApi = async(note) => {
     .then(response => response.json())
     .catch((error) => console.log("An unexpected error has occurred :", error))
 }
-
-
 
 export const fetchGroups = async () => {
     return await fetch(BASE_URL + '/api/chatrooms')

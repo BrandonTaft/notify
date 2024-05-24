@@ -3,7 +3,7 @@ import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import RegisterModal from "../components/logInFeature/RegisterModal";
 import Alert from "../components/Alert";
-import { logInUser } from "../utils/api";
+import { logInUser, refreshUser } from "../utils/api";
 import { useDispatch } from 'react-redux';
 import { createUser } from "../redux/userSlice";
 
@@ -28,14 +28,22 @@ const LoginScreen = () => {
                 let token = await SecureStore.getItemAsync("secureToken");
                 const existingUser = await AsyncStorage.getItem("notify_user");
                 if (token !== null && existingUser) {
-                    const persistedUser = JSON.parse(existingUser)
-                    dispatch(createUser({ ...persistedUser, isLoggedIn: true }))
+                    let user =JSON.parse(existingUser)
+                    console.log("EXISTINGUSERRR", token)
+                    refreshUser(user._id).then(async (result) => {
+                        if (result.success) {
+                            dispatch(createUser({ ...result.existingUser, isLoggedIn: true }))
+                            const jsonValue = JSON.stringify(result.existingUser)
+                            await AsyncStorage.setItem("notify_user", jsonValue);
+                            setIsLoading(false)
+                        } else {
+                            setMessage(result.message)
+                        }
+                    })
                 }
             } catch (error) {
                 console.log("Unable to access token", error);
-            } finally {
-                setIsLoading(false)
-            }
+            } 
         })();
     }, []);
 
@@ -51,6 +59,7 @@ const LoginScreen = () => {
                     const jsonValue = JSON.stringify(result.existingUser)
                     await AsyncStorage.setItem("notify_user", jsonValue);
                     await SecureStore.setItemAsync("secureToken", result.token);
+                    console.log("SECURETOKENNNN", result.token)
                 } else {
                     setMessage(result.message)
                 }
