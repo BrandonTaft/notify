@@ -3,6 +3,7 @@ import { List, MD3Colors, Icon } from 'react-native-paper';
 import { useDispatch } from 'react-redux';
 import { ElapsedTime } from '../ElapsedTime';
 import { deleteNote } from '../../redux/userSlice';
+import { deleteNoteApi } from '../../utils/api';
 import { useState, useRef } from 'react';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import UpdateNote from './UpdateNote';
@@ -13,7 +14,7 @@ function NoteItems({ list }) {
     const listItemRef = useRef([]);
     const prevOpenedRow = useRef();
     const dispatch = useDispatch()
- console.log("MYNOYES",list)
+
     const renderRightActions = (item) => {
         return (
             <View style={{ flexDirection: 'row' }} >
@@ -54,7 +55,8 @@ function NoteItems({ list }) {
                 }
                 style={styles.listItemLeftButton}
                 onPress={() => {
-                    dispatch(deleteNote(item.id))
+                    dispatch(deleteNote(item._id))
+                    deleteNoteApi(item._id)
                 }}>
                 <Icon
                     source="delete"

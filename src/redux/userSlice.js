@@ -108,7 +108,7 @@ export const userSlice = createSlice({
       }
   },
   deleteNote: (state, action) => {
-    const existingNote = state.find(note => note.id === action.payload)
+    const existingNote = state.notes.find(note => note._id === action.payload)
     if (existingNote) {
         existingNote.isDeleted = true
     }

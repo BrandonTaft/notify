@@ -7,6 +7,7 @@ import ChatRoomListItem from "./ChatRoomListItem";
 import { Text, useTheme, Chip, FAB } from 'react-native-paper';
 import socket from "../../utils/socket";
 import CreateChatComponent from "./CreateChatComponent";
+import PagerView from 'react-native-pager-view';
 
 export default function ChatRoomPreview() {
   const [isLoading, setIsLoading] = useState(false);
@@ -44,11 +45,20 @@ export default function ChatRoomPreview() {
     <View style={[{ flex: 1 }]}>
       {rooms.length > 0 ? (
         <>
-          <FlatList
+          {/* <FlatList
             data={rooms}
             renderItem={({ item }) => <ChatRoomListItem item={item} />}
             keyExtractor={(item) => item._id}
-          />
+          /> */}
+          <PagerView style={{flex: 1}} initialPage={0}>
+            {rooms.map((room, index) => {
+              return(
+                <View key={index}>
+              <ChatRoomListItem item={room} />
+              </View>
+              )
+            })}
+          </PagerView>
           <FAB
             icon="plus"
             style={{

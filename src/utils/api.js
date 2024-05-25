@@ -2,6 +2,20 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export const BASE_URL = "https://aaf9-75-131-25-248.ngrok-free.app";
 import * as SecureStore from 'expo-secure-store';
 
+export const fetchAllUsers = async () => {
+    let token = await SecureStore.getItemAsync("secureToken");
+    return await fetch(BASE_URL + '/api/users', {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        }
+    })
+    .then((res) => res.json())
+      .catch((error) => console.log("Server did not respond", error))
+  };
+
 export const registerUser = async(user) => {
     return await fetch(BASE_URL + '/api/users/register', {
         method: 'POST',
@@ -280,6 +294,24 @@ export const updateNoteApi = async(note) => {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({userId: userId, updatedNote:note})
+    })
+    .then(response => response.json())
+    .catch((error) => console.log("An unexpected error has occurred :", error))
+};
+
+export const deleteNoteApi = async(noteId) => {
+    let token = await SecureStore.getItemAsync("secureToken");
+    let user = await AsyncStorage.getItem("notify_user")
+    let userId = JSON.parse(user)._id; 
+    
+    return await fetch(BASE_URL + '/api/users/delete-note', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({userId: userId, noteId: noteId})
     })
     .then(response => response.json())
     .catch((error) => console.log("An unexpected error has occurred :", error))

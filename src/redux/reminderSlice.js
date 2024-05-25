@@ -7,11 +7,8 @@ import { BASE_URL } from "../utils/api";
 
 
 export const fetchAllReminders = createAsyncThunk('posts/fetchAllReminders', async () => {
-
     let token = await SecureStore.getItemAsync("secureToken");
-
     let user = await AsyncStorage.getItem("notify_user")
-    console.log("TOKENNNNN", token)
     const rawReminders = await fetch(BASE_URL + '/api/reminders', {
         method: 'POST',
         headers: {
@@ -22,11 +19,7 @@ export const fetchAllReminders = createAsyncThunk('posts/fetchAllReminders', asy
         body: JSON.stringify({ userId: JSON.parse(user)._id })
     });
     const reminders = await rawReminders.json();
-    console.log("REMINDERSLICE", reminders.success, reminders.reminders)
-
     return reminders
-
-
 })
 
   const initialState = {
