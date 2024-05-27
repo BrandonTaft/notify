@@ -95,6 +95,55 @@ export const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: 'center'
     },
+    /*******CHAT PREVIEW *************** */
+    chatRoomPreviewItemContainer: {
+        flex: 1,
+        flexDirection: "row",
+        alignItems: "center",
+        borderRadius: 20,
+        paddingVertical:5,
+        paddingHorizontal: 15,
+        backgroundColor: "#312e3f",
+        
+        margin: 5,
+        elevation:4,
+        overflow: 'hidden'
+    },
+    chatRoomPreviewContent: {
+        flexDirection: "column",
+        justifyContent: "space-between",
+        flex: 1,
+    },
+    previewMessageWrapper: {
+        width: "100%",
+        alignItems: "flex-start",
+        marginBottom: 15,
+    },
+
+    pagination: {
+        position: 'absolute',
+       
+        bottom: 40,
+        flexDirection: 'row',
+        height: 40,
+      },
+      paginationDot: {
+        width: 40 * 0.3,
+        height: 40 * 0.3,
+        borderRadius: 40 * 0.15,
+      },
+      paginationDotContainer: {
+        width: 40,
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
+      paginationIndicator: {
+        width: 40,
+        height: 40,
+        borderRadius: 40 / 2,
+        borderWidth: 2,
+        borderColor: '#ddd',
+      },
     /*******CHAT ROOM LIST SCREEN *******/
     reactions: {
         flexDirection: 'row'

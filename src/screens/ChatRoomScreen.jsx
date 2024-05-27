@@ -105,7 +105,7 @@ const ChatRoomScreen = ({ route, navigation }) => {
                     <FlatList
                         data={[...chatMessages].reverse()}
                         renderItem={({ item }) => (
-                            <ChatRoomMessage message={item} user={notifyUser.userName} />
+                            <ChatRoomMessage message={item} />
                         )}
                         inverted
                         keyExtractor={(item) => item.messageId}

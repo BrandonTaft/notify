@@ -1,0 +1,183 @@
+import { View, Pressable } from "react-native";
+import { useLayoutEffect, useState, useEffect } from "react";
+import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import { useSelector } from "react-redux";
+import { useTheme, Text, TouchableRipple, Avatar } from "react-native-paper";
+import { styles } from "../../utils/styles";
+import ChatRoomMessage from "./ChatRoomMessage";
+
+export const ChatRoomPreviewItem = ({ item }) => {
+    const user = useSelector(state => state.user)
+    const navigation = useNavigation();
+    const [messages, setMessages] = useState([]);
+    const theme = useTheme();
+    // useLayoutEffect(() => {
+    //     setMessages(item.messages[item.messages.length - 1]);
+    // }, []);
+
+    // useEffect(() => {
+    //     setMessages(item.messages[item.messages.length - 1]);
+    // }, [item]);
+
+    useLayoutEffect(() => {
+        if (item.messages.length > 1) {
+            setMessages([item.messages[item.messages.length - 1],  item.messages[item.messages.length - 2]]);
+        } else if (item.messages.length){
+            setMessages([item.messages[item.messages.length - 1]]);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (item.messages.length > 1) {
+            setMessages([item.messages[item.messages.length - 1],  item.messages[item.messages.length - 2]]);
+        }else if (item.messages.length) {
+            setMessages([item.messages[item.messages.length - 1]]);
+        }
+    }, [item]);
+
+    console.log("MESSAGE", messages)
+    const handleNavigation = () => {
+        navigation.navigate({
+            name: 'ChatRoomScreen',
+            params: {
+                _id: item._id,
+                name: item.roomName,
+            }
+        });
+    };
+
+    function MessagePreview({ message }) {
+        const isFromMe = message.user === user.userName;
+        return (
+            <View
+                style={
+                    isFromMe
+                        ? [styles.previewMessageWrapper, { alignItems: "flex-end" }]
+                        : styles.previewMessageWrapper
+                }
+            >
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    {isFromMe
+                        ?
+                        null
+                        :
+                        <>
+                            {
+                                message.profileImage
+                                    ?
+                                    <Avatar.Image
+                                        size={60}
+                                        source={{ uri: `https://4852-75-131-25-248.ngrok-free.app/images/${message.userId}.jpeg` }}
+                                        style={{ position: 'relative', zIndex: 999 }}
+                                    />
+                                    :
+                                    <Avatar.Text
+                                        size={60}
+                                        label={message.user.charAt(0).toUpperCase()}
+                                        style={{ backgroundColor: theme.colors.onPrimaryContainer, position: 'relative', zIndex: 999 }}
+                                        labelStyle={{ color: theme.colors.onPrimary, fontWeight: 'bold' }}
+                                    />
+                            }
+                        </>
+                    }
+                    <View
+                        style={
+                            isFromMe
+                                ? [styles.mmessage, { backgroundColor: theme.colors.primary, marginRight: 5 }]
+                                : styles.mmessage
+                        }
+                    >
+                        {message.text &&
+                        <Text variant='titleMedium' style={{ color: theme.colors.text }}>
+                            {message.text}
+                        </Text>
+                        }
+
+                        <Text variant="bodySmall" style={{ color: theme.colors.textMuted }}>{message.time}</Text>
+
+                        <View
+                            style={[
+                                isFromMe
+                                    ? styles.rightArrow
+                                    : styles.leftArrow,
+                                { backgroundColor: theme.colors.primary }
+                            ]}
+                        >
+                        </View>
+                        <View
+                            style={[
+                                isFromMe
+                                    ? styles.rightArrowOverlap
+                                    : styles.leftArrowOverlap,
+                                { backgroundColor: theme.colors.primaryContainer }
+                            ]}
+                        >
+                        </View>
+                    </View>
+                </View>
+                {/* <Text style={{ marginLeft: 40 }}>{message.time}</Text> */}
+            </View>
+
+        );
+    }
+
+    return (
+        <Pressable
+            android_ripple={
+                RippleConfig = {
+
+                    borderless: false,
+                    foreground: true
+                }
+            }
+
+            style={
+                [
+                    styles.chatRoomPreviewItemContainer,
+                    {
+                        backgroundColor: theme.colors.primaryContainer,
+                    }
+                ]
+            }
+            onPress={handleNavigation}
+        >
+
+            <Ionicons
+                name='chatbubble-ellipses-sharp'
+                size={50}
+                color={theme.colors.onPrimary}
+            />
+             <View style={styles.chatRoomPreviewContent}>
+             <Text variant="titleLarge" style={{ color: theme.colors.text }}>{item.roomName}</Text>
+            {messages.length > 0 ?
+                <>
+                    {messages.map((message, index) => {
+                        return (
+                           
+<>
+                                    <MessagePreview message={message} />
+
+
+                               
+                                <View>
+                                   
+                                </View>
+                           </>
+                        )
+                    })}
+                </>
+                :
+                <Text variant="bodyMedium" style={{ color: theme.colors.text, opacity: .5 }}>
+
+
+                    Tap to start chatting
+                    <Text variant="bodyMedium" style={{ color: theme.colors.text, opacity: .5 }}>
+                                       now
+                                    </Text>
+                </Text>
+            }
+            </View>
+        </Pressable>
+    );
+};

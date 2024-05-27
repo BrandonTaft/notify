@@ -3,7 +3,7 @@ import { View } from "react-native";
 import { styles } from "../utils/styles";
 import CreateChatComponent from "../components/chatFeature/CreateChatComponent";
 import { Text, useTheme, FAB } from 'react-native-paper';
-import ChatRoomPreview from "../components/chatFeature/ChatRoomPreview";
+import ChatRoomList from "../components/chatFeature/ChatRoomList";
 
 const ChatRoomListScreen = ({ navigation }) => {
   const [showCreateChatComponent, setShowCreateChatComponent] = useState(false);
@@ -27,7 +27,7 @@ const ChatRoomListScreen = ({ navigation }) => {
         onPress={() => setShowCreateChatComponent(true)}
       />
       <Text variant="titleLarge" style={{ color: theme.colors.textMuted, textAlign: 'center' }}>Chat Rooms</Text>
-      <ChatRoomPreview />
+      <ChatRoomList />
       <CreateChatComponent
         showCreateChatComponent={showCreateChatComponent}
         setShowCreateChatComponent={setShowCreateChatComponent}

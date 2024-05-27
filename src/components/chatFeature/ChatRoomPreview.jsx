@@ -1,13 +1,14 @@
-import { useState, useLayoutEffect, useEffect } from "react";
-import { View, FlatList } from "react-native";
+import { useState, useLayoutEffect, useEffect, useRef } from "react";
+import { View, FlatList, Animated } from "react-native";
 import { fetchGroups } from "../../utils/api";
 import { useSelector, useDispatch } from 'react-redux';
 import { addChatRoom, addAllRoomsFromServer } from "../../redux/chatRoomSlice";
-import ChatRoomListItem from "./ChatRoomListItem";
+import { ChatRoomPreviewItem } from "./ChatRoomPreviewItem";
 import { Text, useTheme, Chip, FAB } from 'react-native-paper';
 import socket from "../../utils/socket";
 import CreateChatComponent from "./CreateChatComponent";
 import PagerView from 'react-native-pager-view';
+import { styles } from "../../utils/styles";
 
 export default function ChatRoomPreview() {
   const [isLoading, setIsLoading] = useState(false);
@@ -16,7 +17,10 @@ export default function ChatRoomPreview() {
   const dispatch = useDispatch()
   const theme = useTheme();
   const rooms = useSelector(state => state.chatRooms);
-  const user = useSelector(state => state.user)
+  const user = useSelector(state => state.user);
+
+  const scrollOffsetAnimatedValue = useRef(new Animated.Value(0)).current;
+  const positionAnimatedValue = useRef(new Animated.Value(0)).current;
 
   useLayoutEffect(() => {
     setIsLoading(true)
@@ -40,25 +44,76 @@ export default function ChatRoomPreview() {
     });
   }, [socket]);
 
-
+  const Pagination = ({
+    scrollOffsetAnimatedValue,
+    positionAnimatedValue,
+  }) => {
+    const inputRange = [0, rooms.length];
+    const translateX = Animated.add(
+      scrollOffsetAnimatedValue,
+      positionAnimatedValue
+    ).interpolate({
+      inputRange,
+      outputRange: [0, rooms.length * 40 ],
+    });
+  
+    return (
+      <View style={[styles.pagination]}>
+        <Animated.View
+          style={[
+            styles.paginationIndicator,
+            {
+              position: 'absolute',
+              transform: [{ translateX: translateX }],
+            },
+          ]}
+        />
+        {rooms.map((item) => {
+          return (
+            <View key={item.key} style={styles.paginationDotContainer}>
+              <View
+                style={[styles.paginationDot, { backgroundColor: item.color }]}
+              />
+            </View>
+          );
+        })}
+      </View>
+    );
+  };
+  const AnimatedPagerView = Animated.createAnimatedComponent(PagerView);
   return (
     <View style={[{ flex: 1 }]}>
       {rooms.length > 0 ? (
         <>
-          {/* <FlatList
-            data={rooms}
-            renderItem={({ item }) => <ChatRoomListItem item={item} />}
-            keyExtractor={(item) => item._id}
-          /> */}
-          <PagerView style={{flex: 1}} initialPage={0}>
+          <AnimatedPagerView style={{ flex: 1 }} 
+          
+          initialPage={0}
+          onPageScroll={Animated.event(
+            [
+              {
+                nativeEvent: {
+                  offset: scrollOffsetAnimatedValue,
+                  position: positionAnimatedValue,
+                },
+              },
+            ],
+            {
+              listener: ({ nativeEvent: { offset, position } }) => {
+                console.log(`Position: ${position} Offset: ${offset}`);
+              },
+              useNativeDriver: true,
+            }
+          )}
+          
+          >
             {rooms.map((room, index) => {
-              return(
+              return (
                 <View key={index}>
-              <ChatRoomListItem item={room} />
-              </View>
+                  <ChatRoomPreviewItem item={room} />
+                </View>
               )
             })}
-          </PagerView>
+          </AnimatedPagerView>
           <FAB
             icon="plus"
             style={{
@@ -69,6 +124,10 @@ export default function ChatRoomPreview() {
             }}
             onPress={() => setShowCreateChatComponent(true)}
           />
+           <Pagination
+        scrollOffsetAnimatedValue={scrollOffsetAnimatedValue}
+        positionAnimatedValue={positionAnimatedValue}
+      />
         </>
       ) : (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
