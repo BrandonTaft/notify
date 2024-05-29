@@ -155,15 +155,15 @@ export const ChatRoomPreviewItem = ({ item }) => {
                     {messages.map((message, index) => {
                         return (
                            
-<>
-                                    <MessagePreview message={message} />
+
+                                    
 
 
                                
-                                <View>
-                                   
+                                <View key={message._id}>
+                                <MessagePreview message={message} />
                                 </View>
-                           </>
+                           
                         )
                     })}
                 </>

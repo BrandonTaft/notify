@@ -1,14 +1,17 @@
 import { useState, useLayoutEffect, useEffect, useRef } from "react";
-import { View, FlatList, Animated } from "react-native";
+import { View, FlatList, Animated, Dimensions, StyleSheet } from "react-native";
 import { fetchGroups } from "../../utils/api";
 import { useSelector, useDispatch } from 'react-redux';
 import { addChatRoom, addAllRoomsFromServer } from "../../redux/chatRoomSlice";
 import { ChatRoomPreviewItem } from "./ChatRoomPreviewItem";
-import { Text, useTheme, Chip, FAB } from 'react-native-paper';
+import { Text, useTheme, Chip, FAB, IconButton } from 'react-native-paper';
 import socket from "../../utils/socket";
 import CreateChatComponent from "./CreateChatComponent";
 import PagerView from 'react-native-pager-view';
-import { styles } from "../../utils/styles";
+
+const { width, height } = Dimensions.get('window');
+  const DOT_SIZE = 40;
+  const CIRCLE_SIZE = width * 0.6;
 
 export default function ChatRoomPreview() {
   const [isLoading, setIsLoading] = useState(false);
@@ -21,6 +24,8 @@ export default function ChatRoomPreview() {
 
   const scrollOffsetAnimatedValue = useRef(new Animated.Value(0)).current;
   const positionAnimatedValue = useRef(new Animated.Value(0)).current;
+
+  
 
   useLayoutEffect(() => {
     setIsLoading(true)
@@ -43,6 +48,43 @@ export default function ChatRoomPreview() {
       dispatch(addChatRoom(rooms))
     });
   }, [socket]);
+console.log("ROOMS",rooms)
+  // const Circle = ({
+  //   scrollOffsetAnimatedValue,
+  // }) => {
+  //   return (
+  //     <View style={[StyleSheet.absoluteFillObject, styles.circleContainer]}>
+  //       {rooms.map(({ color }, index) => {
+  //         const inputRange = [0, 0.5, 0.99];
+  //         const inputRangeOpacity = [0, 0.5, 0.99];
+  //         const scale = scrollOffsetAnimatedValue.interpolate({
+  //           inputRange,
+  //           outputRange: [1, 0, 1],
+  //           extrapolate: 'clamp',
+  //         });
+  
+  //         const opacity = scrollOffsetAnimatedValue.interpolate({
+  //           inputRange: inputRangeOpacity,
+  //           outputRange: [0.2, 0, 0.2],
+  //         });
+  
+  //         return (
+  //           <Animated.View
+  //             key={index}
+  //             style={[
+  //               styles.circle,
+  //               {
+  //                 backgroundColor: theme.colors.onPrimaryContainer,
+  //                 opacity,
+  //                 transform: [{ scale }],
+  //               },
+  //             ]}
+  //           />
+  //         );
+  //       })}
+  //     </View>
+  //   );
+  // };
 
   const Pagination = ({
     scrollOffsetAnimatedValue,
@@ -54,9 +96,9 @@ export default function ChatRoomPreview() {
       positionAnimatedValue
     ).interpolate({
       inputRange,
-      outputRange: [0, rooms.length * 40 ],
+      outputRange: [0, rooms.length * DOT_SIZE],
     });
-  
+
     return (
       <View style={[styles.pagination]}>
         <Animated.View
@@ -70,9 +112,9 @@ export default function ChatRoomPreview() {
         />
         {rooms.map((item) => {
           return (
-            <View key={item.key} style={styles.paginationDotContainer}>
+            <View key={item._id} style={styles.paginationDotContainer}>
               <View
-                style={[styles.paginationDot, { backgroundColor: item.color }]}
+                style={[styles.paginationDot, { backgroundColor: "white" }]}
               />
             </View>
           );
@@ -85,49 +127,55 @@ export default function ChatRoomPreview() {
     <View style={[{ flex: 1 }]}>
       {rooms.length > 0 ? (
         <>
-          <AnimatedPagerView style={{ flex: 1 }} 
-          
-          initialPage={0}
-          onPageScroll={Animated.event(
-            [
-              {
-                nativeEvent: {
-                  offset: scrollOffsetAnimatedValue,
-                  position: positionAnimatedValue,
+        
+          <AnimatedPagerView style={{ flex: 1 }}
+
+            initialPage={0}
+            onPageScroll={Animated.event(
+              [
+                {
+                  nativeEvent: {
+                    offset: scrollOffsetAnimatedValue,
+                    position: positionAnimatedValue,
+                  },
                 },
-              },
-            ],
-            {
-              listener: ({ nativeEvent: { offset, position } }) => {
-                console.log(`Position: ${position} Offset: ${offset}`);
-              },
-              useNativeDriver: true,
-            }
-          )}
-          
+              ],
+              {
+                listener: ({ nativeEvent: { offset, position } }) => {
+                  console.log(`Position: ${position} Offset: ${offset}`);
+                },
+                useNativeDriver: true,
+              }
+            )}
+
           >
             {rooms.map((room, index) => {
               return (
-                <View key={index}>
+                <View key={room._id}>
                   <ChatRoomPreviewItem item={room} />
                 </View>
               )
             })}
           </AnimatedPagerView>
-          <FAB
+
+          <IconButton
+            mode="contained"
             icon="plus"
+            iconColor={theme.colors.onPrimaryContainer}
+            size={27}
             style={{
+              backgroundColor: theme.colors.primaryContainer,
               position: 'absolute',
-              margin: 8,
+              margin: 0,
               right: 0,
               bottom: 0,
             }}
             onPress={() => setShowCreateChatComponent(true)}
           />
-           <Pagination
-        scrollOffsetAnimatedValue={scrollOffsetAnimatedValue}
-        positionAnimatedValue={positionAnimatedValue}
-      />
+          <Pagination
+            scrollOffsetAnimatedValue={scrollOffsetAnimatedValue}
+            positionAnimatedValue={positionAnimatedValue}
+          />
         </>
       ) : (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -150,4 +198,41 @@ export default function ChatRoomPreview() {
       />
     </View >
   );
-}
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  itemStyle: {
+    width,
+    height,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  pagination: {
+    backgroundColor:'blue',
+    position: 'absolute',
+    bottom:0,
+    flexDirection: 'row',
+    height: DOT_SIZE,
+   
+  },
+  paginationDot: {
+    width: DOT_SIZE * 0.3,
+    height: DOT_SIZE * 0.3,
+    borderRadius: DOT_SIZE * 0.15,
+  },
+  paginationDotContainer: {
+    width: DOT_SIZE,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  paginationIndicator: {
+    width: DOT_SIZE,
+    height: DOT_SIZE,
+    borderRadius: DOT_SIZE / 2,
+    borderWidth: 2,
+    borderColor: '#ddd',
+  }
+});

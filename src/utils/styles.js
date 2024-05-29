@@ -121,9 +121,9 @@ export const styles = StyleSheet.create({
     },
 
     pagination: {
-        position: 'absolute',
+        // position: 'absolute',
        
-        bottom: 40,
+        //bottom: 40,
         flexDirection: 'row',
         height: 40,
       },
