@@ -98,8 +98,7 @@ export const styles = StyleSheet.create({
     /*******CHAT PREVIEW *************** */
     chatRoomPreviewItemContainer: {
         flex: 1,
-        flexDirection: "row",
-        alignItems: "center",
+        flexDirection: "column",
         borderRadius: 20,
         paddingVertical:5,
         paddingHorizontal: 15,
@@ -109,17 +108,29 @@ export const styles = StyleSheet.create({
         elevation:4,
         overflow: 'hidden'
     },
+    chatRoomPreviewTitle: {
+        flexDirection: "row",
+        justifyContent: "center",
+       alignItems:'center'
+    },
     chatRoomPreviewContent: {
         flexDirection: "column",
         justifyContent: "space-between",
-        flex: 1,
     },
     previewMessageWrapper: {
         width: "100%",
         alignItems: "flex-start",
-        marginBottom: 15,
+        marginBottom: 10,
     },
-
+    previewMessage: {
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        borderRadius: 20,
+        marginLeft: 10,
+        maxWidth: '50%',
+        minWidth: "25%",
+        alignSelf: 'flex-start',
+    },
     pagination: {
         // position: 'absolute',
        
@@ -267,7 +278,6 @@ export const styles = StyleSheet.create({
         marginBottom: 15,
     },
     mmessage: {
-        backgroundColor: "#dedede",
         paddingHorizontal: 15,
         paddingVertical: 10,
         borderRadius: 20,
@@ -282,7 +292,6 @@ export const styles = StyleSheet.create({
     },
     leftArrow: {
         position: "absolute",
-        backgroundColor: "#dedede",
         width: 20,
         height: 25,
         bottom: 0,
@@ -301,7 +310,6 @@ export const styles = StyleSheet.create({
     },
     rightArrow: {
         position: "absolute",
-        backgroundColor: "aqua",
         width: 20,
         height: 25,
         bottom: 0,

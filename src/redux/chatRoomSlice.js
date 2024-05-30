@@ -14,15 +14,6 @@ export const chatRoomSlice = createSlice({
                 return action.payload
             }
         },
-        // addMessage: (state, action) => {
-        //     console.log("ADDMESSAGES", action.payload)
-        //     const { id, messages } = action.payload
-        //     const existingChatRoom = state.find(chatRoom => chatRoom.id === id)
-        //     console.log("EXISTING ROOM", existingChatRoom)
-        //     if (existingChatRoom) {
-        //         existingChatRoom.messages = messages
-        //     }
-        // },
         addChatReaction: (state, action) => {
             const { roomId, messageId, reaction } = action.payload
             console.log("REACTION", action.payload)
@@ -35,6 +26,6 @@ export const chatRoomSlice = createSlice({
     }
 })
 
-export const { addChatRoom, addMessage, addChatReaction, addAllRoomsFromServer } = chatRoomSlice.actions;
+export const { addChatRoom, addChatReaction, addAllRoomsFromServer } = chatRoomSlice.actions;
 
 export default chatRoomSlice.reducer;

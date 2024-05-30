@@ -22,16 +22,16 @@ export const ChatRoomPreviewItem = ({ item }) => {
 
     useLayoutEffect(() => {
         if (item.messages.length > 1) {
-            setMessages([item.messages[item.messages.length - 1],  item.messages[item.messages.length - 2]]);
-        } else if (item.messages.length){
+            setMessages([item.messages[item.messages.length - 1], item.messages[item.messages.length - 2]]);
+        } else if (item.messages.length) {
             setMessages([item.messages[item.messages.length - 1]]);
         }
     }, []);
 
     useEffect(() => {
         if (item.messages.length > 1) {
-            setMessages([item.messages[item.messages.length - 1],  item.messages[item.messages.length - 2]]);
-        }else if (item.messages.length) {
+            setMessages([item.messages[item.messages.length - 1], item.messages[item.messages.length - 2]]);
+        } else if (item.messages.length) {
             setMessages([item.messages[item.messages.length - 1]]);
         }
     }, [item]);
@@ -82,16 +82,16 @@ export const ChatRoomPreviewItem = ({ item }) => {
                         </>
                     }
                     <View
-                        style={
+                        style={[styles.previewMessage,
                             isFromMe
-                                ? [styles.mmessage, { backgroundColor: theme.colors.primary, marginRight: 5 }]
-                                : styles.mmessage
-                        }
+                                ? { backgroundColor: theme.colors.primary, marginRight: 5 }
+                                : { backgroundColor: theme.colors.secondary }
+                        ]}
                     >
                         {message.text &&
-                        <Text variant='titleMedium' style={{ color: theme.colors.text }}>
-                            {message.text}
-                        </Text>
+                            <Text variant='titleMedium' style={{ color: theme.colors.text }}>
+                                {message.text}
+                            </Text>
                         }
 
                         <Text variant="bodySmall" style={{ color: theme.colors.textMuted }}>{message.time}</Text>
@@ -99,9 +99,8 @@ export const ChatRoomPreviewItem = ({ item }) => {
                         <View
                             style={[
                                 isFromMe
-                                    ? styles.rightArrow
-                                    : styles.leftArrow,
-                                { backgroundColor: theme.colors.primary }
+                                    ? [styles.rightArrow, { backgroundColor: theme.colors.primary }]
+                                    : [styles.leftArrow,{ backgroundColor: theme.colors.secondary }]
                             ]}
                         >
                         </View>
@@ -126,57 +125,46 @@ export const ChatRoomPreviewItem = ({ item }) => {
         <Pressable
             android_ripple={
                 RippleConfig = {
-
                     borderless: false,
                     foreground: true
                 }
             }
-
-            style={
-                [
-                    styles.chatRoomPreviewItemContainer,
-                    {
-                        backgroundColor: theme.colors.primaryContainer,
-                    }
-                ]
-            }
+            style={[
+                styles.chatRoomPreviewItemContainer,
+                { backgroundColor: theme.colors.primaryContainer }
+            ]}
             onPress={handleNavigation}
         >
-
-            <Ionicons
-                name='chatbubble-ellipses-sharp'
-                size={50}
-                color={theme.colors.onPrimary}
-            />
-             <View style={styles.chatRoomPreviewContent}>
-             <Text variant="titleLarge" style={{ color: theme.colors.text }}>{item.roomName}</Text>
-            {messages.length > 0 ?
-                <>
-                    {messages.map((message, index) => {
-                        return (
-                           
-
-                                    
-
-
-                               
-                                <View key={message._id}>
-                                <MessagePreview message={message} />
-                                </View>
-                           
-                        )
-                    })}
-                </>
-                :
-                <Text variant="bodyMedium" style={{ color: theme.colors.text, opacity: .5 }}>
-
-
-                    Tap to start chatting
-                    <Text variant="bodyMedium" style={{ color: theme.colors.text, opacity: .5 }}>
-                                       now
-                                    </Text>
+            <View style={styles.chatRoomPreviewTitle}>
+                <Ionicons
+                    name='chatbubble-ellipses-sharp'
+                    size={30}
+                    color={theme.colors.onPrimaryContainer}
+                />
+                <Text variant="headlineSmall" style={{ color: theme.colors.onPrimaryContainer }}>
+                    {item.roomName}
                 </Text>
-            }
+            </View>
+
+            <View style={styles.chatRoomPreviewContent}>
+                {messages.length > 0 ?
+                    <>
+                        {messages.map((message, index) => {
+                            return (
+                                <View key={message._id} style={{backgroundColor:"RED"}}>
+                                    <MessagePreview message={message} />
+                                </View>
+                            )
+                        })}
+                    </>
+                    :
+                    <Text variant="bodyMedium" style={{ color: theme.colors.text, opacity: .5 }}>
+                        Tap to start chatting
+                        <Text variant="bodyMedium" style={{ color: theme.colors.text, opacity: .5 }}>
+                            now
+                        </Text>
+                    </Text>
+                }
             </View>
         </Pressable>
     );

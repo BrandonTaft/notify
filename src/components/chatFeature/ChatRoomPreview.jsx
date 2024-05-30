@@ -10,7 +10,7 @@ import CreateChatComponent from "./CreateChatComponent";
 import PagerView from 'react-native-pager-view';
 
 const { width, height } = Dimensions.get('window');
-  const DOT_SIZE = 40;
+  const DOT_SIZE = 35;
   const CIRCLE_SIZE = width * 0.6;
 
 export default function ChatRoomPreview() {
@@ -33,7 +33,7 @@ export default function ChatRoomPreview() {
       .then((result) => {
         if (result.success) {
           setIsLoading(false)
-          setChatRooms(result.chatRooms)
+          setChatRooms(result.chatRooms.slice(0, 5))
           dispatch(addAllRoomsFromServer(result.chatRooms))
         }
       })
@@ -44,7 +44,7 @@ export default function ChatRoomPreview() {
 
   useEffect(() => {
     socket.on("chatRoomList", (rooms) => {
-      setChatRooms(rooms)
+      setChatRooms(rooms.slice(0, 5))
       dispatch(addChatRoom(rooms))
     });
   }, [socket]);
@@ -90,13 +90,13 @@ console.log("ROOMS",rooms)
     scrollOffsetAnimatedValue,
     positionAnimatedValue,
   }) => {
-    const inputRange = [0, rooms.length];
+    const inputRange = [0, chatRooms.length];
     const translateX = Animated.add(
       scrollOffsetAnimatedValue,
       positionAnimatedValue
     ).interpolate({
       inputRange,
-      outputRange: [0, rooms.length * DOT_SIZE],
+      outputRange: [0, chatRooms.length * DOT_SIZE],
     });
 
     return (
@@ -105,16 +105,16 @@ console.log("ROOMS",rooms)
           style={[
             styles.paginationIndicator,
             {
-              position: 'absolute',
+              // position: 'absolute',
               transform: [{ translateX: translateX }],
             },
           ]}
         />
-        {rooms.map((item) => {
+        {chatRooms.map((item) => {
           return (
             <View key={item._id} style={styles.paginationDotContainer}>
               <View
-                style={[styles.paginationDot, { backgroundColor: "white" }]}
+                style={[styles.paginationDot, { backgroundColor: theme.colors.primaryContainer }]}
               />
             </View>
           );
@@ -125,7 +125,7 @@ console.log("ROOMS",rooms)
   const AnimatedPagerView = Animated.createAnimatedComponent(PagerView);
   return (
     <View style={[{ flex: 1 }]}>
-      {rooms.length > 0 ? (
+      {chatRooms.length > 0 ? (
         <>
         
           <AnimatedPagerView style={{ flex: 1 }}
@@ -149,7 +149,7 @@ console.log("ROOMS",rooms)
             )}
 
           >
-            {rooms.map((room, index) => {
+            {chatRooms.map((room, index) => {
               return (
                 <View key={room._id}>
                   <ChatRoomPreviewItem item={room} />
@@ -158,11 +158,11 @@ console.log("ROOMS",rooms)
             })}
           </AnimatedPagerView>
 
-          <IconButton
+          {/* <IconButton
             mode="contained"
             icon="plus"
             iconColor={theme.colors.onPrimaryContainer}
-            size={27}
+            size={24}
             style={{
               backgroundColor: theme.colors.primaryContainer,
               position: 'absolute',
@@ -171,7 +171,7 @@ console.log("ROOMS",rooms)
               bottom: 0,
             }}
             onPress={() => setShowCreateChatComponent(true)}
-          />
+          /> */}
           <Pagination
             scrollOffsetAnimatedValue={scrollOffsetAnimatedValue}
             positionAnimatedValue={positionAnimatedValue}
@@ -211,8 +211,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   pagination: {
-    backgroundColor:'blue',
-    position: 'absolute',
+   
+   justifyContent:'center',
     bottom:0,
     flexDirection: 'row',
     height: DOT_SIZE,
