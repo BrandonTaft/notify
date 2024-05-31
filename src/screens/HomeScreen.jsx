@@ -1,4 +1,5 @@
 import { View } from 'react-native';
+import { useSelector, useDispatch } from 'react-redux';
 import Header from '../components/Header';
 import UpcomingReminders from '../components/reminderFeature/UpcomingReminders';
 import Tools from '../components/Tools';
@@ -7,11 +8,13 @@ import { Surface, useTheme, Divider } from 'react-native-paper';
 
 const HomeScreen = () => {
     const theme = useTheme();
+    const rooms = useSelector(state => state.chatRooms);
+    console.log("HOMESCREEN", rooms)
     return (
         <View style={{ flex: 1 }}>
             <Header />
             <Surface style={{ flexDirection: 'column', flex: 2, margin: 10, borderRadius: 10 }} elevation={2}>
-                <ChatRoomPreview />
+                <ChatRoomPreview rooms={rooms}/>
             </Surface>
             <Divider horizontalInset />
             <Surface style={{ flexDirection: 'column', flex: 2, margin: 10, borderRadius: 10 }} elevation={2}>

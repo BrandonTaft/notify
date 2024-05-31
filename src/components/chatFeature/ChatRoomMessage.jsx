@@ -5,10 +5,8 @@ import { styles } from "../../utils/styles";
 import { ReactionButtons } from "../Buttons";
 
 export default function ChatRoomMessage({ message }) {
-    //console.log("MESSAGE", message)
     const user = useSelector(state => state.user)
     const isFromMe = message.user === user.userName;
-    console.log(isFromMe, user)
     const theme = useTheme();
     return (
         <View>

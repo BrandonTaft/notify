@@ -45,10 +45,13 @@ export default function ChatRoomPreview() {
   useEffect(() => {
     socket.on("chatRoomList", (rooms) => {
       setChatRooms(rooms.slice(0, 5))
+      console.log("ROOMS",rooms)
       dispatch(addChatRoom(rooms))
     });
-  }, [socket]);
-console.log("ROOMS",rooms)
+                      
+    dispatch(addChatRoom(rooms))
+  }, [socket, rooms]);
+
   // const Circle = ({
   //   scrollOffsetAnimatedValue,
   // }) => {
@@ -105,7 +108,9 @@ console.log("ROOMS",rooms)
           style={[
             styles.paginationIndicator,
             {
-              // position: 'absolute',
+              //position: 'absolute',
+              position:'relative',
+              left: DOT_SIZE / 2,
               transform: [{ translateX: translateX }],
             },
           ]}
@@ -158,7 +163,7 @@ console.log("ROOMS",rooms)
             })}
           </AnimatedPagerView>
 
-          {/* <IconButton
+          <IconButton
             mode="contained"
             icon="plus"
             iconColor={theme.colors.onPrimaryContainer}
@@ -171,7 +176,7 @@ console.log("ROOMS",rooms)
               bottom: 0,
             }}
             onPress={() => setShowCreateChatComponent(true)}
-          /> */}
+          />
           <Pagination
             scrollOffsetAnimatedValue={scrollOffsetAnimatedValue}
             positionAnimatedValue={positionAnimatedValue}
@@ -211,7 +216,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   pagination: {
-   
    justifyContent:'center',
     bottom:0,
     flexDirection: 'row',
@@ -225,6 +229,7 @@ const styles = StyleSheet.create({
   },
   paginationDotContainer: {
     width: DOT_SIZE,
+    right: DOT_SIZE / 2,
     alignItems: 'center',
     justifyContent: 'center',
   },

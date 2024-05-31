@@ -114,8 +114,9 @@ export const styles = StyleSheet.create({
        alignItems:'center'
     },
     chatRoomPreviewContent: {
+        flex:1,
         flexDirection: "column",
-        justifyContent: "space-between",
+        justifyContent: 'flex-end',
     },
     previewMessageWrapper: {
         width: "100%",
@@ -127,11 +128,11 @@ export const styles = StyleSheet.create({
         paddingVertical: 5,
         borderRadius: 20,
         marginLeft: 10,
-        maxWidth: '50%',
         minWidth: "25%",
         alignSelf: 'flex-start',
     },
     pagination: {
+       backgroundColor:"red",
         // position: 'absolute',
        
         //bottom: 40,
@@ -144,6 +145,7 @@ export const styles = StyleSheet.create({
         borderRadius: 40 * 0.15,
       },
       paginationDotContainer: {
+        backgroundColor:"blue",
         width: 40,
         alignItems: 'center',
         justifyContent: 'center',

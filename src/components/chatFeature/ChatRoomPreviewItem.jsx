@@ -19,7 +19,7 @@ export const ChatRoomPreviewItem = ({ item }) => {
     // useEffect(() => {
     //     setMessages(item.messages[item.messages.length - 1]);
     // }, [item]);
-
+    
     useLayoutEffect(() => {
         if (item.messages.length > 1) {
             setMessages([item.messages[item.messages.length - 1], item.messages[item.messages.length - 2]]);
@@ -29,6 +29,7 @@ export const ChatRoomPreviewItem = ({ item }) => {
     }, []);
 
     useEffect(() => {
+        console.log("IRANNN", item)
         if (item.messages.length > 1) {
             setMessages([item.messages[item.messages.length - 1], item.messages[item.messages.length - 2]]);
         } else if (item.messages.length) {
@@ -36,7 +37,7 @@ export const ChatRoomPreviewItem = ({ item }) => {
         }
     }, [item]);
 
-    console.log("MESSAGE", messages)
+
     const handleNavigation = () => {
         navigation.navigate({
             name: 'ChatRoomScreen',
@@ -67,13 +68,13 @@ export const ChatRoomPreviewItem = ({ item }) => {
                                 message.profileImage
                                     ?
                                     <Avatar.Image
-                                        size={60}
-                                        source={{ uri: `https://4852-75-131-25-248.ngrok-free.app/images/${message.userId}.jpeg` }}
+                                        size={40}
+                                        source={{ uri: `https://aaf9-75-131-25-248.ngrok-free.app/images/${message.userId}.jpeg` }}
                                         style={{ position: 'relative', zIndex: 999 }}
                                     />
                                     :
                                     <Avatar.Text
-                                        size={60}
+                                        size={40}
                                         label={message.user.charAt(0).toUpperCase()}
                                         style={{ backgroundColor: theme.colors.onPrimaryContainer, position: 'relative', zIndex: 999 }}
                                         labelStyle={{ color: theme.colors.onPrimary, fontWeight: 'bold' }}
@@ -141,7 +142,12 @@ export const ChatRoomPreviewItem = ({ item }) => {
                     size={30}
                     color={theme.colors.onPrimaryContainer}
                 />
-                <Text variant="headlineSmall" style={{ color: theme.colors.onPrimaryContainer }}>
+                <Text 
+                variant="headlineSmall" 
+                style={{ 
+                    color: theme.colors.onPrimaryContainer,
+                    marginLeft:5
+                 }}>
                     {item.roomName}
                 </Text>
             </View>
@@ -151,7 +157,7 @@ export const ChatRoomPreviewItem = ({ item }) => {
                     <>
                         {messages.map((message, index) => {
                             return (
-                                <View key={message._id} style={{backgroundColor:"RED"}}>
+                                <View key={message._id} >
                                     <MessagePreview message={message} />
                                 </View>
                             )

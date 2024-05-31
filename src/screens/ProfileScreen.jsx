@@ -20,9 +20,6 @@ export default function ProfileScreen() {
     };
     checkForCameraRollPermission()
   }, [])
-
-
-  console.log(user)
   let banner;
   if (user.bannerImage) {
     banner = { uri: user.bannerImage }

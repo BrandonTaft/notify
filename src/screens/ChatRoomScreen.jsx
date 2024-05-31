@@ -3,17 +3,19 @@ import { View, TextInput, FlatList, Keyboard } from "react-native";
 import ChatRoomMessage from "../components/chatFeature/ChatRoomMessage";
 import { styles } from "../utils/styles";
 import socket from "../utils/socket";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useTheme, IconButton, Button, Text } from "react-native-paper";
 import { AvatarButton, BackButton } from "../components/Buttons";
+import { addMessage } from "../redux/chatRoomSlice";
 
 const ChatRoomScreen = ({ route, navigation }) => {
+    const dispatch = useDispatch();
     const { name, _id } = route.params;
     const [chatMessages, setChatMessages] = useState([]);
     const [message, setMessage] = useState("");
     const notifyUser = useSelector(state => state.user)
     const theme = useTheme();
-    console.log("NOTIFY USER", notifyUser)
+    
     const RightHeaderButtons = () => {
         return (
             <View style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal:10 }}>
@@ -79,7 +81,7 @@ const ChatRoomScreen = ({ route, navigation }) => {
                 : `${new Date().getMinutes()}`;
 
         if (notifyUser.userName) {
-            socket.emit("newMessage", {
+            const newMessage = {
                 message,
                 roomId: _id,
                 user: notifyUser.userName,
@@ -88,7 +90,9 @@ const ChatRoomScreen = ({ route, navigation }) => {
                 org: notifyUser.organization,
                 reactions: { thumbsUp: 0, thumbsDown: 0, heart: 0 },
                 timestamp: { hour, mins },
-            });
+            }
+            socket.emit("newMessage", newMessage);
+            dispatch(addMessage(newMessage))
         }
         setMessage("")
     };
