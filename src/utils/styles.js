@@ -274,12 +274,12 @@ export const styles = StyleSheet.create({
         marginBottom: 15,
         textAlign: "center",
     },
-    mmessageWrapper: {
+    messageWrapper: {
         width: "100%",
         alignItems: "flex-start",
         marginBottom: 15,
     },
-    mmessage: {
+    message: {
         paddingHorizontal: 15,
         paddingVertical: 10,
         borderRadius: 20,

@@ -9,7 +9,6 @@ import { Surface, useTheme, Divider } from 'react-native-paper';
 const HomeScreen = () => {
     const theme = useTheme();
     const rooms = useSelector(state => state.chatRooms);
-    console.log("HOMESCREEN", rooms)
     return (
         <View style={{ flex: 1 }}>
             <Header />

@@ -4,7 +4,7 @@ import { styles } from "../../utils/styles";
 import socket from "../../utils/socket";
 import { useSelector } from "react-redux";
 
-const CreateChatComponent = ({ showCreateChatComponent, setShowCreateChatComponent }) => {
+export const CreateChatComponent = ({ showCreateChatComponent, setShowCreateChatComponent }) => {
     const [roomName, setRoomName] = useState("");
     const [isPrivate, setIsPrivate] = useState(false);
     const user = useSelector(state => state.user);
@@ -61,5 +61,3 @@ const CreateChatComponent = ({ showCreateChatComponent, setShowCreateChatCompone
         </Portal>
     );
 };
-
-export default CreateChatComponent;

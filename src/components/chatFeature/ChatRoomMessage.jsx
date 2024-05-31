@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { Avatar, useTheme, Text } from 'react-native-paper';
 import { styles } from "../../utils/styles";
 import { ReactionButtons } from "../Buttons";
+import { BASE_URL } from "../../utils/api";
 
 export default function ChatRoomMessage({ message }) {
     const user = useSelector(state => state.user)
@@ -13,8 +14,8 @@ export default function ChatRoomMessage({ message }) {
             <View
                 style={
                     isFromMe
-                        ? [styles.mmessageWrapper, { alignItems: "flex-end" }]
-                        : styles.mmessageWrapper
+                        ? [styles.messageWrapper, { alignItems: "flex-end" }]
+                        : styles.messageWrapper
                 }
             >
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -28,7 +29,7 @@ export default function ChatRoomMessage({ message }) {
                                 ?
                                 <Avatar.Image 
                                 size={60} 
-                                source={{ uri: `https://4852-75-131-25-248.ngrok-free.app/images/${message.userId}.jpeg` }} 
+                                source={{ uri: `${BASE_URL}/images/${message.userId}.jpeg` }} 
                                 style={{ position: 'relative', zIndex: 999 }}
                                 />
                                 :
@@ -42,11 +43,11 @@ export default function ChatRoomMessage({ message }) {
                         </>
                     }
                     <View
-                        style={
+                        style={[styles.message,
                             isFromMe
-                                ? [styles.mmessage, { backgroundColor: theme.colors.primary , marginRight: 5 }]
-                                : styles.mmessage
-                        }
+                                ? { backgroundColor: theme.colors.primary, marginRight: 5 }
+                                : { backgroundColor: theme.colors.secondary }
+                        ]}
                     >
                         
                         <Text variant='titleMedium' style={{ color: theme.colors.text }}>
@@ -58,10 +59,9 @@ export default function ChatRoomMessage({ message }) {
                         <View
                             style={[
                                 isFromMe
-                                    ? styles.rightArrow
-                                    : styles.leftArrow,
-                                    { backgroundColor: theme.colors.primary }
-                              ]}
+                                    ? [styles.rightArrow, { backgroundColor: theme.colors.primary }]
+                                    : [styles.leftArrow,{ backgroundColor: theme.colors.secondary }]
+                            ]}
                         >
                         </View>
                         <View

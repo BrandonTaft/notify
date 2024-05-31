@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-export const BASE_URL = "https://aaf9-75-131-25-248.ngrok-free.app";
+export const BASE_URL = "https://bd5f-2600-6c5a-4a7f-463a-850a-7438-52a3-1b88.ngrok-free.app";
 import * as SecureStore from 'expo-secure-store';
 
 export const fetchAllUsers = async () => {

@@ -7,24 +7,17 @@ import ChatRoomListItem from "./ChatRoomListItem";
 import { Text, useTheme, Chip, FAB } from 'react-native-paper';
 import socket from "../../utils/socket";
 import CreateChatComponent from "./CreateChatComponent";
-import PagerView from 'react-native-pager-view';
 
 export default function ChatRoomPreview() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [chatRooms, setChatRooms] = useState([]);
   const [showCreateChatComponent, setShowCreateChatComponent] = useState(false);
   const dispatch = useDispatch()
   const theme = useTheme();
   const rooms = useSelector(state => state.chatRooms);
-  const user = useSelector(state => state.user)
 
   useLayoutEffect(() => {
-    setIsLoading(true)
     fetchGroups()
       .then((result) => {
         if (result.success) {
-          setIsLoading(false)
-          setChatRooms(result.chatRooms)
           dispatch(addAllRoomsFromServer(result.chatRooms))
         }
       })
@@ -35,7 +28,6 @@ export default function ChatRoomPreview() {
 
   useEffect(() => {
     socket.on("chatRoomList", (rooms) => {
-      setChatRooms(rooms)
       dispatch(addChatRoom(rooms))
     });
   }, [socket]);

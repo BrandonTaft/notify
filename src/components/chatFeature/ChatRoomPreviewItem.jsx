@@ -5,6 +5,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 import { useTheme, Text, TouchableRipple, Avatar } from "react-native-paper";
 import { styles } from "../../utils/styles";
+import { BASE_URL } from "../../utils/api";
 import ChatRoomMessage from "./ChatRoomMessage";
 
 export const ChatRoomPreviewItem = ({ item }) => {
@@ -22,16 +23,15 @@ export const ChatRoomPreviewItem = ({ item }) => {
     
     useLayoutEffect(() => {
         if (item.messages.length > 1) {
-            setMessages([item.messages[item.messages.length - 1], item.messages[item.messages.length - 2]]);
+            setMessages([ item.messages[item.messages.length - 2], item.messages[item.messages.length - 1]]);
         } else if (item.messages.length) {
             setMessages([item.messages[item.messages.length - 1]]);
         }
     }, []);
 
     useEffect(() => {
-        console.log("IRANNN", item)
         if (item.messages.length > 1) {
-            setMessages([item.messages[item.messages.length - 1], item.messages[item.messages.length - 2]]);
+            setMessages([ item.messages[item.messages.length - 2], item.messages[item.messages.length - 1]]);
         } else if (item.messages.length) {
             setMessages([item.messages[item.messages.length - 1]]);
         }
@@ -69,7 +69,7 @@ export const ChatRoomPreviewItem = ({ item }) => {
                                     ?
                                     <Avatar.Image
                                         size={40}
-                                        source={{ uri: `https://aaf9-75-131-25-248.ngrok-free.app/images/${message.userId}.jpeg` }}
+                                        source={{ uri: `${BASE_URL}/images/${message.userId}.jpeg` }}
                                         style={{ position: 'relative', zIndex: 999 }}
                                     />
                                     :
