@@ -1,11 +1,13 @@
 import { useState, useLayoutEffect, useEffect, useRef } from "react";
+import { useAnimatedRef, measure } from "react-native-reanimated";
 import { View, Animated, Dimensions, StyleSheet, ScrollView } from "react-native";
 import { Avatar, useTheme, Text, Badge, Icon } from 'react-native-paper';
 import { fetchAllUsers, BASE_URL } from "../utils/api";
 import PagerView from 'react-native-pager-view';
 
 const { width, height } = Dimensions.get('window');
-const CIRCLE_SIZE = width * 0.6;
+const CIRCLE_SIZE = width * 0.3;
+const PADDING = 12
 
 export const UserView = () => {
     const AnimatedPagerView = Animated.createAnimatedComponent(PagerView);
@@ -13,6 +15,9 @@ export const UserView = () => {
     const AnimatedView = Animated.createAnimatedComponent(View);
     const scrollOffsetAnimatedValue = useRef(new Animated.Value(0)).current;
     const animatedViewWidth = useRef(new Animated.Value(0)).current;
+    const elementWidth = useRef(new Animated.Value(0)).current;
+
+    
     const [allUsers, setAllUsers] = useState([]);
     const theme = useTheme();
 
@@ -20,6 +25,7 @@ export const UserView = () => {
         fetchAllUsers().then((data) => {
             console.log("ALLLUSERSSSS", data.users)
             setAllUsers(data.users)
+            
         })
     }, [])
 
@@ -30,11 +36,12 @@ const Circle = ({
   }) => {
     let inputRangeArray = [];
     let outputRangeArray = [1];
-    console.log(allUsers)
-    if(allUsers) {
-    const elementWidth = width / allUsers.length
-    const peak = elementWidth / 2
     
+    if(allUsers) {
+    // const elementWidth = 629 / allUsers.length
+    // const peak = elementWidth / 2
+    const peak = ((width * .3) / 2) + PADDING
+    console.log("WIDTH",peak)
     for (let i = 0; i < allUsers.length * 2; i++) {
         inputRangeArray.push(peak * i)
         if (i > 0 && outputRangeArray[i - 1] ===1){
@@ -79,22 +86,23 @@ const Circle = ({
   };
 
     const UserComponent = ({user}) => {
+        console.log("USERWIDTH",elementWidth)
         return(
-            <View style={{ justifyContent: 'center', alignItems: 'center', marginRight: 78 }}>
+            <View style={{ justifyContent: 'center', alignItems: 'center', padding:PADDING}}>
                     {
                         user.profileImage
                             ?
 
                             <Avatar.Image
-                                size={width / 3}
+                                size={width * .3}
                                 source={{ uri: `${BASE_URL}/images/${user._id}.jpeg` }}
-                                style={{ marginHorizontal: 10 }}
+                                style={{  }}
                             />
                             :
                             <Avatar.Text
-                                size={width / 3}
+                                size={width * .3}
                                 label={user.userName.charAt(0).toUpperCase()}
-                                style={{ backgroundColor: theme.colors.onPrimaryContainer, marginHorizontal: 10 }}
+                                style={{ backgroundColor: theme.colors.onPrimaryContainer }}
                                 labelStyle={{ color: theme.colors.onPrimary, fontWeight: 'bold' }}
                             />
                     }
@@ -120,40 +128,57 @@ const Circle = ({
                 </View>
         )
     }
-
+    console.log("WIDTH",elementWidth)
     return (
         <>
+         
          <Circle scrollOffsetAnimatedValue={scrollOffsetAnimatedValue} />
-        
        
         <AnimatedScrollView
+            //onLayout={(e) => console.log("THEVIEW",width,e)}
+           // onLayout={(e) => console.log("AVWWWWW",e.contentOffset)}
                 onScroll={Animated.event(
                     [
                       {
                         nativeEvent: {
                           contentOffset: { x:scrollOffsetAnimatedValue},
-                          contentSize: {width: animatedViewWidth}
                         },
                       },
                     ],
                     {
                       listener: ({ nativeEvent: { contentOffset, contentSize } }) => {
                        
-                        // console.log(`Position: ${position} Offset: ${contentOffset.x}`, "SCROLL", scrollOffsetAnimatedValue);
+                         console.log( `Offset: ${contentOffset.x}`, "SCROLL", scrollOffsetAnimatedValue);
                       },
                       useNativeDriver: true,
                     }
                   )}
                 horizontal
+                contentContainerStyle={{paddingHorizontal: (width * .33) - PADDING}}
                // onScroll={(event) => console.log(event.nativeEvent)}
             >
             {allUsers.map((user, index) => {
                         return(
-                        <AnimatedView key={index}>
+                        <AnimatedView 
+                        key={index} 
+                        onLayout={(e) => console.log("AVWWWWW",e.nativeEvent.layout.width)}
+                        // onLayout={Animated.event(
+                        //     [
+                        //       {
+                        //         nativeEvent: {
+                        //           layout: { width:elementWidth},
+                        //         },
+                        //       },
+                        //     ],
+                        //     {useNativeDriver: true,}
+                        //   )}
+                        >
                         <UserComponent user={user}/>
                         </AnimatedView>
                     )})}
+
                     </AnimatedScrollView>
+                    
                     </>
     )
 }
@@ -183,7 +208,7 @@ const styles = StyleSheet.create({
       color: '#444',
       textTransform: 'uppercase',
       fontSize: 24,
-      fontWeight: 'width / 30',
+      fontWeight: 'width * .30',
       letterSpacing: 2,
       marginBottom: 5,
     },
@@ -202,10 +227,10 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
     },
     circle: {
-      width: CIRCLE_SIZE,
-      height: CIRCLE_SIZE,
-      borderRadius: CIRCLE_SIZE / 2,
+      width: CIRCLE_SIZE + PADDING,
+      height: CIRCLE_SIZE + PADDING,
+      borderRadius: (CIRCLE_SIZE + PADDING) / 2,
       position: 'absolute',
-      top: '15%',
+     
     },
   });

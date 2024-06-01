@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { UserView } from "./UserView";
 import PagerView from 'react-native-pager-view';
 
+
 //const CIRCLE_SIZE = width * 0.6;
 // const Circle = ({
   //   scrollOffsetAnimatedValue,
