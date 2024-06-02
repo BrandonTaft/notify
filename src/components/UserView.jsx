@@ -6,18 +6,22 @@ import { fetchAllUsers, BASE_URL } from "../utils/api";
 import PagerView from 'react-native-pager-view';
 
 const { width, height } = Dimensions.get('window');
+const TICKER_HEIGHT = 20;
 const CIRCLE_SIZE = width * 0.3;
-const PADDING = 12
+const PADDING = 12;
+const ELEMENT_WIDTH = width * .36
 
 export const UserView = () => {
     const AnimatedPagerView = Animated.createAnimatedComponent(PagerView);
     const AnimatedScrollView = Animated.createAnimatedComponent(ScrollView);
     const AnimatedView = Animated.createAnimatedComponent(View);
     const scrollOffsetAnimatedValue = useRef(new Animated.Value(0)).current;
+    const positionAnimatedValue = useRef(new Animated.Value(0)).current;
     const animatedViewWidth = useRef(new Animated.Value(0)).current;
     const elementWidth = useRef(new Animated.Value(0)).current;
+    const elementHeight = useRef(new Animated.Value(0)).current;
 
-    
+
     const [allUsers, setAllUsers] = useState([]);
     const theme = useTheme();
 
@@ -25,212 +29,227 @@ export const UserView = () => {
         fetchAllUsers().then((data) => {
             console.log("ALLLUSERSSSS", data.users)
             setAllUsers(data.users)
-            
+
         })
     }, [])
 
-    
-const Circle = ({
-    scrollOffsetAnimatedValue,
-    animatedViewWidth
-  }) => {
-    let inputRangeArray = [];
-    let outputRangeArray = [1];
-    
-    if(allUsers) {
-    // const elementWidth = 629 / allUsers.length
-    // const peak = elementWidth / 2
-    const peak = ((width * .3) / 2) + PADDING
-    console.log("WIDTH",peak)
-    for (let i = 0; i < allUsers.length * 2; i++) {
-        inputRangeArray.push(peak * i)
-        if (i > 0 && outputRangeArray[i - 1] ===1){
-        outputRangeArray.push(0)
-        } else if(i > 0) {
-            outputRangeArray.push(1)
-        }
-}
-   }
-    return (
-      <View style={[StyleSheet.absoluteFillObject, styles.circleContainer]}>
-        {allUsers.map(({ color }, index) => {
-          const inputRange = inputRangeArray;
-          const inputRangeOpacity = [0, 0.5, 0.99];
-          const scale = scrollOffsetAnimatedValue.interpolate({
+
+    // const Circle = ({
+    //     scrollOffsetAnimatedValue,
+    //     animatedViewWidth
+    // }) => {
+    //     let inputRangeArray = [];
+    //     let outputRangeArray = [1];
+
+    //     if (allUsers) {
+    //         const peak = ((width * .3) / 2) + PADDING
+    //         console.log("WIDTH", peak)
+    //         for (let i = 0; i < allUsers.length * 2; i++) {
+    //             inputRangeArray.push(peak * i)
+    //             if (i > 0 && outputRangeArray[i - 1] === 1) {
+    //                 outputRangeArray.push(0)
+    //             } else if (i > 0) {
+    //                 outputRangeArray.push(1)
+    //             }
+    //         }
+    //     }
+    //     return (
+    //         <View style={[StyleSheet.absoluteFillObject, styles.circleContainer]}>
+    //             {allUsers.map(({ color }, index) => {
+    //                 const inputRange = inputRangeArray;
+    //                 const inputRangeOpacity = [0, 0.5, 0.99];
+    //                 const scale = scrollOffsetAnimatedValue.interpolate({
+    //                     inputRange,
+    //                     outputRange: outputRangeArray,
+    //                     extrapolate: 'clamp',
+    //                 });
+
+    //                 const opacity = scrollOffsetAnimatedValue.interpolate({
+    //                     inputRange: inputRangeOpacity,
+    //                     outputRange: [0.2, 0, 0.2],
+    //                 });
+
+    //                 return (
+    //                     <Animated.View
+    //                         key={index}
+    //                         style={[
+    //                             styles.circle,
+    //                             {
+    //                                 backgroundColor: theme.colors.onPrimaryContainer,
+    //                                 opacity,
+    //                                 transform: [{ scale }],
+    //                             },
+    //                         ]}
+    //                     />
+    //                 );
+    //             })}
+    //         </View>
+    //     );
+    // };
+
+    const Ticker = ({
+        scrollOffsetAnimatedValue,
+        positionAnimatedValue,
+    }) => {
+        const inputRange = [0, allUsers.length];
+        const translateX = Animated.add(
+            scrollOffsetAnimatedValue,
+            positionAnimatedValue
+        ).interpolate({
             inputRange,
+            outputRange: [allUsers.length, 0],
+        });
+        let inputRangeArray = [];
+        let outputRangeArray = [1];
+
+        if (allUsers) {
+            const peak = ELEMENT_WIDTH * .5
+            console.log("WIDTH", peak)
+            for (let i = 0; i < allUsers.length * 2; i++) {
+                inputRangeArray.push(peak * i)
+                if (i > 0 && outputRangeArray[i - 1] === 1) {
+                    outputRangeArray.push(0)
+                } else if (i > 0) {
+                    outputRangeArray.push(1)
+                }
+            }
+        }
+        const opacity = scrollOffsetAnimatedValue.interpolate({
+            inputRange: inputRangeArray,
             outputRange: outputRangeArray,
-            extrapolate: 'clamp',
-          });
-  
-          const opacity = scrollOffsetAnimatedValue.interpolate({
-            inputRange: inputRangeOpacity,
-            outputRange: [0.2, 0, 0.2],
-          });
-  
-          return (
-            <Animated.View
-              key={index}
-              style={[
-                styles.circle,
+        });
+
+        
+        return (
+            <View style={styles.tickerContainer}>
+                <Animated.View style={{ transform: [{ translateX: translateX }], opacity, flexDirection:'row', right:allUsers.length}}>
+                    {allUsers.map(({ userName }, index) => {
+                        
+                        return (
+                            <Text key={index} style={[styles.tickerText]}>
+                                {userName}
+                            </Text>
+                        );
+                    })}
+                </Animated.View>
+             </View>
+        );
+    };
+
+    const UserAvatar = ({ user }) => {
+        return (
+            <View style={{ justifyContent: 'center', alignItems: 'center', width:ELEMENT_WIDTH}}>
                 {
-                  backgroundColor: theme.colors.onPrimaryContainer,
-                  opacity,
-                  transform: [{ scale }],
-                },
-              ]}
-            />
-          );
-        })}
-      </View>
-    );
-  };
-
-    const UserComponent = ({user}) => {
-        console.log("USERWIDTH",elementWidth)
-        return(
-            <View style={{ justifyContent: 'center', alignItems: 'center', padding:PADDING}}>
-                    {
-                        user.profileImage
-                            ?
-
-                            <Avatar.Image
-                                size={width * .3}
-                                source={{ uri: `${BASE_URL}/images/${user._id}.jpeg` }}
-                                style={{  }}
-                            />
-                            :
-                            <Avatar.Text
-                                size={width * .3}
-                                label={user.userName.charAt(0).toUpperCase()}
-                                style={{ backgroundColor: theme.colors.onPrimaryContainer }}
-                                labelStyle={{ color: theme.colors.onPrimary, fontWeight: 'bold' }}
-                            />
-                    }
-                    {user.isLoggedIn
+                    user.profileImage
                         ?
-                        <Badge style={{ position: 'absolute', top: 5, backgroundColor: 'green' }}>
-                            <Icon
-                                source="check"
-                                color={"white"}
 
-                            />
-                        </Badge>
+                        <Avatar.Image
+                            size={ELEMENT_WIDTH * .75}
+                            source={{ uri: `${BASE_URL}/images/${user._id}.jpeg` }}
+                            style={{}}
+                        />
                         :
-                        <Badge style={{ position: 'absolute', top: 5, backgroundColor: 'red' }}>
-                            <Icon
-                                source="close"
-                                color={"white"}
+                        <Avatar.Text
+                            size={ELEMENT_WIDTH * .75}
+                            label={user.userName.charAt(0).toUpperCase()}
+                            style={{ backgroundColor: theme.colors.onPrimaryContainer }}
+                            labelStyle={{ color: theme.colors.onPrimary, fontWeight: 'bold' }}
+                        />
+                }
+                {user.isLoggedIn
+                    ?
+                    <Badge style={{ position: 'absolute', top: 5, backgroundColor: 'green' }}>
+                        <Icon
+                            source="check"
+                            color={"white"}
 
-                            />
-                        </Badge>
-                    }
-                    <Text>{user.userName}</Text>
-                </View>
+                        />
+                    </Badge>
+                    :
+                    <Badge style={{ position: 'absolute', top: 5, backgroundColor: 'red' }}>
+                        <Icon
+                            source="close"
+                            color={"white"}
+
+                        />
+                    </Badge>
+                }
+            </View>
         )
     }
-    console.log("WIDTH",elementWidth)
     return (
         <>
-         
-         <Circle scrollOffsetAnimatedValue={scrollOffsetAnimatedValue} />
-       
-        <AnimatedScrollView
-            //onLayout={(e) => console.log("THEVIEW",width,e)}
-           // onLayout={(e) => console.log("AVWWWWW",e.contentOffset)}
+        
+            {/* <Circle scrollOffsetAnimatedValue={scrollOffsetAnimatedValue} /> */}
+
+            <AnimatedScrollView
                 onScroll={Animated.event(
                     [
-                      {
-                        nativeEvent: {
-                          contentOffset: { x:scrollOffsetAnimatedValue},
+                        {
+                            nativeEvent: {
+                                contentOffset: { x: scrollOffsetAnimatedValue },
+                            },
                         },
-                      },
                     ],
                     {
-                      listener: ({ nativeEvent: { contentOffset, contentSize } }) => {
-                       
-                         console.log( `Offset: ${contentOffset.x}`, "SCROLL", scrollOffsetAnimatedValue);
-                      },
-                      useNativeDriver: true,
+                        useNativeDriver: true,
                     }
-                  )}
+                )}
                 horizontal
-                contentContainerStyle={{paddingHorizontal: (width * .33) - PADDING}}
-               // onScroll={(event) => console.log(event.nativeEvent)}
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{ paddingHorizontal: ELEMENT_WIDTH * .8}}
             >
-            {allUsers.map((user, index) => {
-                        return(
-                        <AnimatedView 
-                        key={index} 
-                        onLayout={(e) => console.log("AVWWWWW",e.nativeEvent.layout.width)}
-                        // onLayout={Animated.event(
-                        //     [
-                        //       {
-                        //         nativeEvent: {
-                        //           layout: { width:elementWidth},
-                        //         },
-                        //       },
-                        //     ],
-                        //     {useNativeDriver: true,}
-                        //   )}
+                {allUsers.map((user, index) => {
+                    return (
+                        <AnimatedView
+                            key={index}
                         >
-                        <UserComponent user={user}/>
+                            <UserAvatar user={user} />
                         </AnimatedView>
-                    )})}
+                    )
+                })}
 
-                    </AnimatedScrollView>
-                    
-                    </>
+            </AnimatedScrollView>
+            <View style={{paddingHorizontal: ELEMENT_WIDTH * .8}} >
+            <Ticker
+                scrollOffsetAnimatedValue={scrollOffsetAnimatedValue}
+                positionAnimatedValue={positionAnimatedValue}
+            />
+            </View>
+        </>
     )
 }
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-    },
-    itemStyle: {
-      width,
-      height,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    imageStyle: {
-      width: width * 0.75,
-      height: width * 0.75,
-      resizeMode: 'contain',
-      flex: 1,
-    },
-    textContainer: {
-      alignItems: 'flex-start',
-      alignSelf: 'flex-end',
-      flex: 0.5,
-    },
-    heading: {
-      color: '#444',
-      textTransform: 'uppercase',
-      fontSize: 24,
-      fontWeight: 'width * .30',
-      letterSpacing: 2,
-      marginBottom: 5,
-    },
-    description: {
-      color: '#ccc',
-      fontWeight: '600',
-      textAlign: 'left',
-      width: width * 0.75,
-      marginRight: 10,
-      fontSize: 16,
-      lineHeight: 16 * 1.5,
-    },
-    
+   
     circleContainer: {
-      alignItems: 'center',
-      justifyContent: 'center',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     circle: {
-      width: CIRCLE_SIZE + PADDING,
-      height: CIRCLE_SIZE + PADDING,
-      borderRadius: (CIRCLE_SIZE + PADDING) / 2,
-      position: 'absolute',
-     
+        width: CIRCLE_SIZE + PADDING,
+        height: CIRCLE_SIZE + PADDING,
+        borderRadius: (CIRCLE_SIZE + PADDING) / 2,
+        position: 'absolute',
+
     },
-  });
+    tickerContainer: {
+       
+       
+        
+       overflow:'hidden',
+        height: TICKER_HEIGHT,
+        width:ELEMENT_WIDTH,
+        
+    },
+    tickerText: {
+        flexDirection:'row',
+        textAlign:'center',
+        fontSize: TICKER_HEIGHT,
+        lineHeight: TICKER_HEIGHT,
+        textTransform: 'uppercase',
+        fontWeight: '800',
+        
+        width: ELEMENT_WIDTH,
+    },
+});
