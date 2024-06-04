@@ -1,6 +1,6 @@
-import { useState, useLayoutEffect, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAnimatedRef, measure } from "react-native-reanimated";
-import { View, Animated, Dimensions, StyleSheet, ScrollView } from "react-native";
+import { View, Animated, Dimensions, StyleSheet, FlatList, ScrollView } from "react-native";
 import { Avatar, useTheme, Text, Badge, Icon } from 'react-native-paper';
 import { fetchAllUsers, BASE_URL } from "../utils/api";
 import PagerView from 'react-native-pager-view';
@@ -34,108 +34,7 @@ export const UserView = () => {
     }, [])
 
 
-    // const Circle = ({
-    //     scrollOffsetAnimatedValue,
-    //     animatedViewWidth
-    // }) => {
-    //     let inputRangeArray = [];
-    //     let outputRangeArray = [1];
-
-    //     if (allUsers) {
-    //         const peak = ((width * .3) / 2) + PADDING
-    //         console.log("WIDTH", peak)
-    //         for (let i = 0; i < allUsers.length * 2; i++) {
-    //             inputRangeArray.push(peak * i)
-    //             if (i > 0 && outputRangeArray[i - 1] === 1) {
-    //                 outputRangeArray.push(0)
-    //             } else if (i > 0) {
-    //                 outputRangeArray.push(1)
-    //             }
-    //         }
-    //     }
-    //     return (
-    //         <View style={[StyleSheet.absoluteFillObject, styles.circleContainer]}>
-    //             {allUsers.map(({ color }, index) => {
-    //                 const inputRange = inputRangeArray;
-    //                 const inputRangeOpacity = [0, 0.5, 0.99];
-    //                 const scale = scrollOffsetAnimatedValue.interpolate({
-    //                     inputRange,
-    //                     outputRange: outputRangeArray,
-    //                     extrapolate: 'clamp',
-    //                 });
-
-    //                 const opacity = scrollOffsetAnimatedValue.interpolate({
-    //                     inputRange: inputRangeOpacity,
-    //                     outputRange: [0.2, 0, 0.2],
-    //                 });
-
-    //                 return (
-    //                     <Animated.View
-    //                         key={index}
-    //                         style={[
-    //                             styles.circle,
-    //                             {
-    //                                 backgroundColor: theme.colors.onPrimaryContainer,
-    //                                 opacity,
-    //                                 transform: [{ scale }],
-    //                             },
-    //                         ]}
-    //                     />
-    //                 );
-    //             })}
-    //         </View>
-    //     );
-    // };
-
-    const Ticker = ({
-        scrollOffsetAnimatedValue,
-        positionAnimatedValue,
-    }) => {
-        const inputRange = [0, allUsers.length];
-        const translateX = Animated.add(
-            scrollOffsetAnimatedValue,
-            positionAnimatedValue
-        ).interpolate({
-            inputRange,
-            outputRange: [allUsers.length, 0],
-        });
-        let inputRangeArray = [];
-        let outputRangeArray = [1];
-
-        if (allUsers) {
-            const peak = ELEMENT_WIDTH * .5
-            console.log("WIDTH", peak)
-            for (let i = 0; i < allUsers.length * 2; i++) {
-                inputRangeArray.push(peak * i)
-                if (i > 0 && outputRangeArray[i - 1] === 1) {
-                    outputRangeArray.push(0)
-                } else if (i > 0) {
-                    outputRangeArray.push(1)
-                }
-            }
-        }
-        const opacity = scrollOffsetAnimatedValue.interpolate({
-            inputRange: inputRangeArray,
-            outputRange: outputRangeArray,
-        });
-
-        
-        return (
-            <View style={styles.tickerContainer}>
-                <Animated.View style={{ transform: [{ translateX: translateX }], opacity, flexDirection:'row', right:allUsers.length}}>
-                    {allUsers.map(({ userName }, index) => {
-                        
-                        return (
-                            <Text key={index} style={[styles.tickerText]}>
-                                {userName}
-                            </Text>
-                        );
-                    })}
-                </Animated.View>
-             </View>
-        );
-    };
-
+    
     const UserAvatar = ({ user }) => {
         return (
             <View style={{ justifyContent: 'center', alignItems: 'center', width:ELEMENT_WIDTH}}>
@@ -174,48 +73,21 @@ export const UserView = () => {
                         />
                     </Badge>
                 }
+                <View style={{position:'absolute', bottom:0, borderRadius:10, alignItems:'center', paddingHorizontal:15, backgroundColor: 'rgba(12,12,12, 0.6)'}}>
+                <Text style={{color:"#fff", fontWeight:900}}>{user.userName}</Text>
+                </View>
             </View>
         )
     }
     return (
         <>
-        
-            {/* <Circle scrollOffsetAnimatedValue={scrollOffsetAnimatedValue} /> */}
-
-            <AnimatedScrollView
-                onScroll={Animated.event(
-                    [
-                        {
-                            nativeEvent: {
-                                contentOffset: { x: scrollOffsetAnimatedValue },
-                            },
-                        },
-                    ],
-                    {
-                        useNativeDriver: true,
-                    }
-                )}
+         <FlatList
                 horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={{ paddingHorizontal: ELEMENT_WIDTH * .8}}
-            >
-                {allUsers.map((user, index) => {
-                    return (
-                        <AnimatedView
-                            key={index}
-                        >
-                            <UserAvatar user={user} />
-                        </AnimatedView>
-                    )
-                })}
-
-            </AnimatedScrollView>
-            <View style={{paddingHorizontal: ELEMENT_WIDTH * .8}} >
-            <Ticker
-                scrollOffsetAnimatedValue={scrollOffsetAnimatedValue}
-                positionAnimatedValue={positionAnimatedValue}
+                data={allUsers}
+                renderItem={({ item }) => <UserAvatar user={item} />}
+                keyExtractor={(item) => item._id}
             />
-            </View>
+          
         </>
     )
 }
