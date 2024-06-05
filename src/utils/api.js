@@ -173,6 +173,7 @@ export const storeBannerImage = async (uri, userId) => {
         })
 };
 
+
 export const fetchReminders = async (userId) => {
     let token = await SecureStore.getItemAsync("secureToken");
     let user = await AsyncStorage.getItem("notify_user")
@@ -340,4 +341,20 @@ export const fetchGroups = async () => {
     })
     .then(response => response.json())
     .catch((error) => console.log("An unexpected error has occurred :", error))
-}
+};
+
+export const fetchDirectMessages = async (userId) => {
+    let token = await SecureStore.getItemAsync("secureToken");
+    let user = await AsyncStorage.getItem("notify_user")
+    return await fetch(BASE_URL + '/api/private-chatrooms', {
+    method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({userId: JSON.parse(user)._id})
+    })
+    .then(response => response.json())
+    .catch((error) => console.log("An unexpected error has occurred :", error))
+};

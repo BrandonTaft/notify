@@ -1,47 +1,52 @@
-import { useState, useEffect, useRef } from "react";
-import { useAnimatedRef, measure } from "react-native-reanimated";
-import { View, Animated, Dimensions, StyleSheet, FlatList, ScrollView } from "react-native";
-import { Avatar, useTheme, Text, Badge, Icon } from 'react-native-paper';
+import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+import { Dimensions, StyleSheet, FlatList } from "react-native";
+import { Avatar, useTheme, Text, Badge, Icon, TouchableRipple } from 'react-native-paper';
 import { fetchAllUsers, BASE_URL } from "../utils/api";
-import PagerView from 'react-native-pager-view';
+import usePushNotification from "../hooks/usePushNotification";
 
 const { width, height } = Dimensions.get('window');
-const TICKER_HEIGHT = 20;
-const CIRCLE_SIZE = width * 0.3;
-const PADDING = 12;
 const ELEMENT_WIDTH = width * .36
 
 export const UserView = () => {
-    const AnimatedPagerView = Animated.createAnimatedComponent(PagerView);
-    const AnimatedScrollView = Animated.createAnimatedComponent(ScrollView);
-    const AnimatedView = Animated.createAnimatedComponent(View);
-    const scrollOffsetAnimatedValue = useRef(new Animated.Value(0)).current;
-    const positionAnimatedValue = useRef(new Animated.Value(0)).current;
-    const animatedViewWidth = useRef(new Animated.Value(0)).current;
-    const elementWidth = useRef(new Animated.Value(0)).current;
-    const elementHeight = useRef(new Animated.Value(0)).current;
-
-
+    const { sendPushNotification } = usePushNotification();
     const [allUsers, setAllUsers] = useState([]);
+    const sender = useSelector(state => state.user)
     const theme = useTheme();
 
     useEffect(() => {
         fetchAllUsers().then((data) => {
-            console.log("ALLLUSERSSSS", data.users)
             setAllUsers(data.users)
-
         })
     }, [])
 
-
-    
+    const handleCreateRoom = (user) => {
+        socket.emit(
+            "createRoom",
+            {
+                roomName: user._id,
+                organization: sender.userName,
+                isPrivate: true
+            }
+        );
+       // sendPushNotification(user.expoPushToken, `You have a new message from ${sender.userName}`)
+        
+    };
+ 
     const UserAvatar = ({ user }) => {
         return (
-            <View style={{ justifyContent: 'center', alignItems: 'center', width:ELEMENT_WIDTH}}>
+            <TouchableRipple
+            background={{
+                radius:ELEMENT_WIDTH / 2,
+                color: theme.colors.onBackground
+            }}
+            onPress={() => handleCreateRoom(user)} 
+            style={{ justifyContent: 'center', alignItems: 'center', width:ELEMENT_WIDTH}}
+            >
+                <>
                 {
                     user.profileImage
                         ?
-
                         <Avatar.Image
                             size={ELEMENT_WIDTH * .75}
                             source={{ uri: `${BASE_URL}/images/${user._id}.jpeg` }}
@@ -69,59 +74,26 @@ export const UserView = () => {
                         <Icon
                             source="close"
                             color={"white"}
-
                         />
                     </Badge>
                 }
-                <View style={{position:'absolute', bottom:0, borderRadius:10, alignItems:'center', paddingHorizontal:15, backgroundColor: 'rgba(12,12,12, 0.6)'}}>
+                <Text style={{position:'absolute', bottom:0, borderRadius:10, alignItems:'center', paddingHorizontal:15, backgroundColor: 'rgba(12,12,12, 0.6)'}}>
                 <Text style={{color:"#fff", fontWeight:900}}>{user.userName}</Text>
-                </View>
-            </View>
+                </Text>
+                </>
+            </TouchableRipple>
         )
     }
-    return (
-        <>
+    return (     
          <FlatList
                 horizontal
                 data={allUsers}
                 renderItem={({ item }) => <UserAvatar user={item} />}
                 keyExtractor={(item) => item._id}
             />
-          
-        </>
     )
 }
 
 const styles = StyleSheet.create({
    
-    circleContainer: {
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    circle: {
-        width: CIRCLE_SIZE + PADDING,
-        height: CIRCLE_SIZE + PADDING,
-        borderRadius: (CIRCLE_SIZE + PADDING) / 2,
-        position: 'absolute',
-
-    },
-    tickerContainer: {
-       
-       
-        
-       overflow:'hidden',
-        height: TICKER_HEIGHT,
-        width:ELEMENT_WIDTH,
-        
-    },
-    tickerText: {
-        flexDirection:'row',
-        textAlign:'center',
-        fontSize: TICKER_HEIGHT,
-        lineHeight: TICKER_HEIGHT,
-        textTransform: 'uppercase',
-        fontWeight: '800',
-        
-        width: ELEMENT_WIDTH,
-    },
 });
