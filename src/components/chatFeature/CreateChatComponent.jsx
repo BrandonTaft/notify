@@ -3,23 +3,37 @@ import React, { useState } from "react";
 import { styles } from "../../utils/styles";
 import socket from "../../utils/socket";
 import { useSelector } from "react-redux";
+import * as Crypto from 'expo-crypto';
+import { useNavigation } from "@react-navigation/native";
 
 export const CreateChatComponent = ({ showCreateChatComponent, setShowCreateChatComponent }) => {
     const [roomName, setRoomName] = useState("");
     const [isPrivate, setIsPrivate] = useState(false);
     const user = useSelector(state => state.user);
+    const navigation = useNavigation();
     const theme = useTheme();
-
+    
     const handleCreateRoom = () => {
+        const roomId = Crypto.randomUUID();
         socket.emit(
             "createRoom",
             {
-                roomName: roomName,
+                roomId,
+                roomName,
+                isPrivate,
+                ownerId: user.userId,
+                ownerName: user.userName,
                 organization: user.organization,
-                isPrivate: isPrivate
             }
         );
         setShowCreateChatComponent(false)
+        navigation.navigate({
+            name: 'ChatRoomScreen',
+            params: {
+                roomId: roomId,
+                name: roomName,
+            }
+        });
     };
 
     return (

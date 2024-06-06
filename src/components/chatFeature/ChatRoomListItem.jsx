@@ -22,7 +22,7 @@ const ChatRoomListItem = ({ item }) => {
         navigation.navigate( {
             name: 'ChatRoomScreen',
             params: {
-                _id: item._id,
+                roomId: item.roomId,
                 name: item.roomName,
             }
         });

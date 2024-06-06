@@ -8,9 +8,9 @@ import { useTheme, IconButton, Button, Text } from "react-native-paper";
 import { AvatarButton, BackButton } from "../components/Buttons";
 import { addMessage } from "../redux/chatRoomSlice";
 
-const ChatRoomScreen = ({ route, navigation }) => {
+const DirectMessageScreen = ({ route, navigation }) => {
     const dispatch = useDispatch();
-    const { name, roomId } = route.params;
+    const { name, _id } = route.params;
     const [chatMessages, setChatMessages] = useState([]);
     const [message, setMessage] = useState("");
     const notifyUser = useSelector(state => state.user)
@@ -59,9 +59,9 @@ const ChatRoomScreen = ({ route, navigation }) => {
             headerRight: (props) => <RightHeaderButtons {...props} />,
             headerLeft: (props) => <LeftHeaderButtons {...props} />
         });
-        socket.emit("findRoom", roomId);
+        socket.emit("findRoom", _id);
         socket.on("foundRoom", (roomChats) => setChatMessages(roomChats));
-    }, [roomId]);
+    }, [_id]);
 
     useEffect(() => {
         socket.on("newMessage", (roomChats) => {
@@ -83,7 +83,7 @@ const ChatRoomScreen = ({ route, navigation }) => {
         if (notifyUser.userName) {
             const newMessage = {
                 message,
-                roomId: roomId,
+                roomId: _id,
                 user: notifyUser.userName,
                 userId: notifyUser.userId,
                 profileImage: notifyUser.profileImage,
@@ -139,4 +139,4 @@ const ChatRoomScreen = ({ route, navigation }) => {
     );
 };
 
-export default ChatRoomScreen;
+export default DirectMessageScreen;

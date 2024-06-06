@@ -4,6 +4,8 @@ import { Dimensions, StyleSheet, FlatList } from "react-native";
 import { Avatar, useTheme, Text, Badge, Icon, TouchableRipple } from 'react-native-paper';
 import { fetchAllUsers, BASE_URL } from "../utils/api";
 import usePushNotification from "../hooks/usePushNotification";
+import { useNavigation } from "@react-navigation/native";
+import socket from "../utils/socket";
 
 const { width, height } = Dimensions.get('window');
 const ELEMENT_WIDTH = width * .36
@@ -11,28 +13,38 @@ const ELEMENT_WIDTH = width * .36
 export const UserView = () => {
     const { sendPushNotification } = usePushNotification();
     const [allUsers, setAllUsers] = useState([]);
-    const sender = useSelector(state => state.user)
+    const [showChatScreen, setShowChatScreen] = useState(false)
+    const sender = useSelector(state => state.user);
+    const navigation = useNavigation();
     const theme = useTheme();
 
     useEffect(() => {
         fetchAllUsers().then((data) => {
             setAllUsers(data.users)
         })
-    }, [])
+    }, []);
 
-    const handleCreateRoom = (user) => {
+    const handleCreatePrivateRoom = (user) => {
         socket.emit(
             "createRoom",
             {
-                roomName: user._id,
-                organization: sender.userName,
-                isPrivate: true
+                roomId: user._id,
+                roomName: user.userName,
+                ownerId: sender.userId,
+                ownerName: sender.userName,
+                isPrivate: true,
+                organization: sender.organization
             }
         );
-       // sendPushNotification(user.expoPushToken, `You have a new message from ${sender.userName}`)
-        
+        navigation.navigate({
+            name: 'ChatRoomScreen',
+            params: {
+                roomId: user._id,
+                name: user.userName,
+            }
+        });
     };
- 
+
     const UserAvatar = ({ user }) => {
         return (
             <TouchableRipple
@@ -40,7 +52,7 @@ export const UserView = () => {
                 radius:ELEMENT_WIDTH / 2,
                 color: theme.colors.onBackground
             }}
-            onPress={() => handleCreateRoom(user)} 
+            onPress={() => handleCreatePrivateRoom(user)} 
             style={{ justifyContent: 'center', alignItems: 'center', width:ELEMENT_WIDTH}}
             >
                 <>

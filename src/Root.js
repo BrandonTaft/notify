@@ -14,6 +14,7 @@ import ProfileScreen from './screens/ProfileScreen';
 import { darkColors, lightColors } from './utils/theme';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import { Entypo } from '@expo/vector-icons';
+import DirectMessageScreen from './screens/DirectMessageScreen';
 const Tab = createMaterialBottomTabNavigator();
 const Stack = createStackNavigator();
 registerTranslation('en', en)
@@ -115,6 +116,10 @@ export default function Root() {
                             <Stack.Screen
                                 name="ChatRoomScreen"
                                 component={ChatRoomScreen}
+                            />
+                            <Stack.Screen
+                                name="DirectMessageScreenn"
+                                component={DirectMessageScreen}
                             />
                         </>
                     )}

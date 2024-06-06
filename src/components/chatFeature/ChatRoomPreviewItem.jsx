@@ -42,7 +42,7 @@ export const ChatRoomPreviewItem = ({ item }) => {
         navigation.navigate({
             name: 'ChatRoomScreen',
             params: {
-                _id: item._id,
+                roomId: item.roomId,
                 name: item.roomName,
             }
         });
@@ -142,6 +142,8 @@ export const ChatRoomPreviewItem = ({ item }) => {
                     size={30}
                     color={theme.colors.onPrimaryContainer}
                 />
+                {!item.isPrivate || item.ownerId === user.userId
+                ?
                 <Text 
                 variant="headlineSmall" 
                 style={{ 
@@ -150,6 +152,17 @@ export const ChatRoomPreviewItem = ({ item }) => {
                  }}>
                     {item.roomName}
                 </Text>
+                :
+                 <Text 
+                variant="headlineSmall" 
+                style={{ 
+                    color: theme.colors.onPrimaryContainer,
+                    marginLeft:5
+                 }}>
+                    {item.ownerName}
+                </Text>
+
+}
             </View>
 
             <View style={styles.chatRoomPreviewContent}>

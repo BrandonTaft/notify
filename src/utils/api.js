@@ -343,7 +343,7 @@ export const fetchGroups = async () => {
     .catch((error) => console.log("An unexpected error has occurred :", error))
 };
 
-export const fetchDirectMessages = async (userId) => {
+export const fetchDirectMessages = async () => {
     let token = await SecureStore.getItemAsync("secureToken");
     let user = await AsyncStorage.getItem("notify_user")
     return await fetch(BASE_URL + '/api/private-chatrooms', {

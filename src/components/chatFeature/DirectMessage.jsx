@@ -25,8 +25,9 @@ export default function DirectMessage() {
   useLayoutEffect(() => {
     fetchDirectMessages()
       .then((result) => {
+        console.log("DM",result)
         if (result.success) {
-          setChatRooms(result.chatRooms.slice(0, 5))
+          setChatRooms(result.chatRooms)
           dispatch(addAllRoomsFromServer(result.chatRooms))
         }
       })
@@ -39,7 +40,7 @@ export default function DirectMessage() {
     positionAnimatedValue.setValue(0)
     scrollOffsetAnimatedValue.setValue(0)
     socket.on("privateRoomList", (rooms) => {
-      setChatRooms(rooms.slice(0, 5))
+      setChatRooms(rooms)
       dispatch(addChatRoom(rooms))
     });
     dispatch(addChatRoom(rooms))
