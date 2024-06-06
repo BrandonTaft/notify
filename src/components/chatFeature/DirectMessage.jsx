@@ -39,7 +39,7 @@ export default function DirectMessage() {
   useEffect(() => {
     positionAnimatedValue.setValue(0)
     scrollOffsetAnimatedValue.setValue(0)
-    socket.on("privateRoomList", (rooms) => {
+    socket.on("ChatRoomList", (rooms) => {
       setChatRooms(rooms)
       dispatch(addChatRoom(rooms))
     });

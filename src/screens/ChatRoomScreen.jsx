@@ -14,6 +14,7 @@ const ChatRoomScreen = ({ route, navigation }) => {
     const [chatMessages, setChatMessages] = useState([]);
     const [message, setMessage] = useState("");
     const notifyUser = useSelector(state => state.user)
+    const chats = useSelector(state => state.chatRooms)
     const theme = useTheme();
     
     const RightHeaderButtons = () => {
@@ -65,6 +66,7 @@ const ChatRoomScreen = ({ route, navigation }) => {
 
     useEffect(() => {
         socket.on("newMessage", (roomChats) => {
+            console.log("IRAN")
             setChatMessages(roomChats)
         })
     }, [socket]);
