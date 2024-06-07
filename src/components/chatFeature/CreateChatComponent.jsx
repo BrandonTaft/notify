@@ -21,7 +21,7 @@ export const CreateChatComponent = ({ showCreateChatComponent, setShowCreateChat
                 roomId,
                 roomName,
                 isPrivate,
-                ownerId: user.userId,
+                ownerId: user._id,
                 ownerName: user.userName,
                 organization: user.organization,
             }

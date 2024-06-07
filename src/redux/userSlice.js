@@ -30,7 +30,8 @@ export const userSlice = createSlice({
   name: "user",
   initialState: {
     isLoggedIn: false,
-    notes: []
+    notes: [],
+    privateRooms:[]
   },
   reducers: {
     createUser: {
@@ -46,18 +47,20 @@ export const userSlice = createSlice({
           bannerImage, 
           isLoggedIn, 
           expoPushToken, 
-          notes 
+          notes,
+          privateRooms
         } = notifyUser
         return {
           payload: {
-            userId: _id,
+            _id: _id,
             userName,
             organization,
             profileImage,
             bannerImage,
             isLoggedIn: isLoggedIn,
             expoPushToken: expoPushToken,
-            notes: notes
+            notes: notes,
+            privateRooms: privateRooms
           }
         }
       }

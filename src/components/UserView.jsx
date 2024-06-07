@@ -25,24 +25,37 @@ export const UserView = () => {
     }, []);
 
     const handleCreatePrivateRoom = (user) => {
+        
+        const existingRoom = sender.privateRooms.find((room) => (room.senderId === sender._id || room.senderId === user._id) && (room.recieverId === sender._id || room.recieverId === user._id))
+        
+        if (existingRoom) {
+           navigation.navigate({
+            name: 'ChatRoomScreen',
+            params: {
+                roomId: roomId,
+                name: user.userName,
+            }
+        });
+        } else {
         socket.emit(
-            "createRoom",
+            "createPrivateRoom",
             {
-                roomId: user._id,
-                roomName: user.userName,
-                ownerId: sender.userId,
-                ownerName: sender.userName,
-                isPrivate: true,
-                organization: sender.organization
+                roomId: `${user._id}-${sender._id}`,
+                reciever: user.userName,
+                recieverId: user._id,
+                senderId: sender._id,
+                sender: sender.userName,
             }
         );
         navigation.navigate({
             name: 'ChatRoomScreen',
             params: {
-                roomId: user._id,
+                roomId: roomId,
                 name: user.userName,
             }
-        });
+        })
+        }
+        
     };
 
     const UserAvatar = ({ user }) => {

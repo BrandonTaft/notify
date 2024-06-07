@@ -142,7 +142,7 @@ export const ChatRoomPreviewItem = ({ item }) => {
                     size={30}
                     color={theme.colors.onPrimaryContainer}
                 />
-                {!item.isPrivate || item.ownerId === user.userId
+                {!item.isPrivate 
                 ?
                 <Text 
                 variant="headlineSmall" 
@@ -153,15 +153,25 @@ export const ChatRoomPreviewItem = ({ item }) => {
                     {item.roomName}
                 </Text>
                 :
+                user._id === item.senderId 
+                ?
                  <Text 
                 variant="headlineSmall" 
                 style={{ 
                     color: theme.colors.onPrimaryContainer,
                     marginLeft:5
                  }}>
-                    {item.ownerName}
+                    {item.reciever}
                 </Text>
-
+                :
+                <Text 
+                variant="headlineSmall" 
+                style={{ 
+                    color: theme.colors.onPrimaryContainer,
+                    marginLeft:5
+                 }}>
+                    {item.sender}
+                </Text>
 }
             </View>
 

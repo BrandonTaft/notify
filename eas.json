@@ -1,7 +1,4 @@
 {
-  "cli": {
-    "version": ">= 7.3.0"
-  },
   "build": {
     "development": {
       "developmentClient": true,
@@ -10,13 +7,6 @@
     "preview": {
       "distribution": "internal"
     },
-    "production": {
-      "android": {
-        "image": "latest"
-      }
-    }
-  },
-  "submit": {
     "production": {}
   }
 }

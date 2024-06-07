@@ -10,7 +10,7 @@ import * as ImagePicker from 'expo-image-picker';
 export default function ProfileScreen() {
   const user = useSelector(state => state.user);
   const theme = useTheme();
-
+console.log("USERRRRRRRPROFILEEEE", user)
   useEffect(() => {
     const checkForCameraRollPermission = async () => {
       const { status } = await ImagePicker.getCameraPermissionsAsync();

@@ -19,31 +19,32 @@ export default function DirectMessage() {
   const [showCreateChatComponent, setShowCreateChatComponent] = useState(false);
   const [chatRooms, setChatRooms] = useState([]);
   const rooms = useSelector(state => state.chatRooms);
+  const user = useSelector(state => state.user)
   const dispatch = useDispatch()
   const theme = useTheme();
 
-  useLayoutEffect(() => {
-    fetchDirectMessages()
-      .then((result) => {
-        console.log("DM",result)
-        if (result.success) {
-          setChatRooms(result.chatRooms)
-          dispatch(addAllRoomsFromServer(result.chatRooms))
-        }
-      })
-      .catch((err) => {
-        console.error(err)
-      });
-  }, []);
+  // useLayoutEffect(() => {
+  //   fetchDirectMessages()
+  //     .then((result) => {
+  //       console.log("DM",result)
+  //       if (result.success) {
+  //         setChatRooms(result.chatRooms)
+  //         dispatch(addAllRoomsFromServer(result.chatRooms))
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       console.error(err)
+  //     });
+  // }, []);
 
   useEffect(() => {
     positionAnimatedValue.setValue(0)
     scrollOffsetAnimatedValue.setValue(0)
-    socket.on("ChatRoomList", (rooms) => {
-      setChatRooms(rooms)
-      dispatch(addChatRoom(rooms))
-    });
-    dispatch(addChatRoom(rooms))
+    // socket.on("PrivateRoomList", (rooms) => {
+       setChatRooms(user.privateRooms)
+    //   dispatch(addChatRoom(rooms))
+    // });
+    // dispatch(addChatRoom(rooms))
   }, [socket, rooms]);
 
   const Pagination = ({
