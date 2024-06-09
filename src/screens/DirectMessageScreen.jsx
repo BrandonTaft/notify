@@ -10,7 +10,7 @@ import { addMessage } from "../redux/chatRoomSlice";
 
 const DirectMessageScreen = ({ route, navigation }) => {
     const dispatch = useDispatch();
-    const { name, _id } = route.params;
+    const { name, roomId } = route.params;
     const [chatMessages, setChatMessages] = useState([]);
     const [message, setMessage] = useState("");
     const notifyUser = useSelector(state => state.user)
@@ -59,9 +59,9 @@ const DirectMessageScreen = ({ route, navigation }) => {
             headerRight: (props) => <RightHeaderButtons {...props} />,
             headerLeft: (props) => <LeftHeaderButtons {...props} />
         });
-        socket.emit("findRoom", _id);
+        socket.emit("findRoom", roomId);
         socket.on("foundRoom", (roomChats) => setChatMessages(roomChats));
-    }, [_id]);
+    }, [roomId]);
 
     useEffect(() => {
         socket.on("newMessage", (roomChats) => {
@@ -83,7 +83,7 @@ const DirectMessageScreen = ({ route, navigation }) => {
         if (notifyUser.userName) {
             const newMessage = {
                 message,
-                roomId: _id,
+                roomId: roomId,
                 user: notifyUser.userName,
                 userId: notifyUser.userId,
                 profileImage: notifyUser.profileImage,

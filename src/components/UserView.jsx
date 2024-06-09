@@ -27,17 +27,19 @@ export const UserView = () => {
     const handleCreatePrivateRoom = (user) => {
         
         const existingRoom = sender.privateRooms.find((room) => (room.senderId === sender._id || room.senderId === user._id) && (room.recieverId === sender._id || room.recieverId === user._id))
-        
+    
         if (existingRoom) {
            navigation.navigate({
             name: 'ChatRoomScreen',
             params: {
-                roomId: roomId,
+                roomId: existingRoom.roomId,
                 name: user.userName,
             }
         });
+
         } else {
-        socket.emit(
+        
+            socket.emit(
             "createPrivateRoom",
             {
                 roomId: `${user._id}-${sender._id}`,
@@ -47,10 +49,11 @@ export const UserView = () => {
                 sender: sender.userName,
             }
         );
+        
         navigation.navigate({
-            name: 'ChatRoomScreen',
+            name: 'DirectMessageScreen',
             params: {
-                roomId: roomId,
+                roomId: `${user._id}-${sender._id}`,
                 name: user.userName,
             }
         })

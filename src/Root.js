@@ -118,7 +118,7 @@ export default function Root() {
                                 component={ChatRoomScreen}
                             />
                             <Stack.Screen
-                                name="DirectMessageScreenn"
+                                name="DirectMessageScreen"
                                 component={DirectMessageScreen}
                             />
                         </>

@@ -13,7 +13,7 @@ const HomeScreen = () => {
     return (
         <View style={{ flex: 1 }}>
             <Header />
-            <Surface style={{ flexDirection: 'column', flex: 3, margin: 10, borderRadius: 10 }} elevation={2}>
+            <Surface style={{ flexDirection: 'column', flex: 2, margin: 10, borderRadius: 10 }} elevation={2}>
                 <ChatRoomPreview rooms={rooms}/>
             </Surface>
             <Divider horizontalInset />

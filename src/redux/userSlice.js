@@ -5,18 +5,18 @@ import { BASE_URL } from "../utils/api";
 
 
 export const postNoteToDb = createAsyncThunk('posts/postNoteToDb', async (note) => {
-console.log("POSTNOTETOCB", note)
+  console.log("POSTNOTETOCB", note)
   let token = await SecureStore.getItemAsync("secureToken");
 
   let user = await AsyncStorage.getItem("notify_user")
   const apiResponse = await fetch(BASE_URL + '/api/users/add-note', {
-      method: 'POST',
-      headers: {
-          'Authorization': `Bearer ${token}`,
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ userId: JSON.parse(user)._id, note:{body:note} })
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ userId: JSON.parse(user)._id, note: { body: note } })
   });
   const response = await apiResponse.json();
   console.log("USERSlice NOTES", response)
@@ -31,7 +31,7 @@ export const userSlice = createSlice({
   initialState: {
     isLoggedIn: false,
     notes: [],
-    privateRooms:[]
+    privateRooms: []
   },
   reducers: {
     createUser: {
@@ -39,14 +39,14 @@ export const userSlice = createSlice({
         return action.payload
       },
       prepare(notifyUser) {
-        const { 
-          _id, 
-          userName, 
-          organization, 
-          profileImage, 
-          bannerImage, 
-          isLoggedIn, 
-          expoPushToken, 
+        const {
+          _id,
+          userName,
+          organization,
+          profileImage,
+          bannerImage,
+          isLoggedIn,
+          expoPushToken,
           notes,
           privateRooms
         } = notifyUser
@@ -73,7 +73,7 @@ export const userSlice = createSlice({
       }
     },
     editUserProfileImage: (state, action) => {
-      const {imageType, image} = action.payload;
+      const { imageType, image } = action.payload;
       return {
         ...state,
         [imageType]: image
@@ -91,56 +91,59 @@ export const userSlice = createSlice({
       },
       prepare(content) {
         return {
-            payload: {
-                id: nanoid(),
-                content,
-                timeStamp: new Date().toISOString(),
-                isChecked: false,
-                isCompleted: false,
-                isDeleted: false,
-            }
+          payload: {
+            id: nanoid(),
+            content,
+            timeStamp: new Date().toISOString(),
+            isChecked: false,
+            isCompleted: false,
+            isDeleted: false,
+          }
         }
-    }
+      }
     },
     updateNote: (state, action) => {
       const { noteId, content } = action.payload
       console.log(noteId, content)
       const existingNote = state.notes.find(note => note._id === noteId)
       if (existingNote) {
-          existingNote.body = content
+        existingNote.body = content
       }
-  },
-  deleteNote: (state, action) => {
-    const existingNote = state.notes.find(note => note._id === action.payload)
-    if (existingNote) {
+    },
+    deleteNote: (state, action) => {
+      const existingNote = state.notes.find(note => note._id === action.payload)
+      if (existingNote) {
         existingNote.isDeleted = true
-    }
-},
+      }
+    },
+    addPrivateRooms: (state, action) => {
+      state.privateRooms = action.payload
+    },
     logOut: (state, action) => {
       return { isLoggedIn: false }
     },
   },
   extraReducers: (builder) => {
     builder
-          .addCase(postNoteToDb.pending, (state) => {
-            state.loading = true;
-          })
-        .addCase(postNoteToDb.fulfilled, (state, action) => {
-            state.loading = false;
-            
-            if (action.payload.success) {
-                state.notes = action.payload.notes
-            } else {
-                return state
-            }
-        })
+      .addCase(postNoteToDb.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(postNoteToDb.fulfilled, (state, action) => {
+        state.loading = false;
+
+        if (action.payload.success) {
+          state.notes = action.payload.notes
+        } else {
+          return state
+        }
+      })
       .addCase(postNoteToDb.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       });
-},
+  },
 });
 
-export const { createUser, createNote, deleteNote, updateNote, logOut, editUserProfileImage, editUserBanner, editUserCredentials } = userSlice.actions;
+export const { createUser, createNote, deleteNote, updateNote, logOut, editUserProfileImage, editUserBanner, editUserCredentials, addPrivateRooms } = userSlice.actions;
 
 export default userSlice.reducer; 

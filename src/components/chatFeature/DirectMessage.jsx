@@ -2,7 +2,7 @@ import { useState, useLayoutEffect, useEffect, useRef } from "react";
 import { View, Animated, Dimensions, StyleSheet } from "react-native";
 import { Text, useTheme, Chip, IconButton } from 'react-native-paper';
 import { useSelector, useDispatch } from 'react-redux';
-import { addChatRoom, addAllRoomsFromServer } from "../../redux/chatRoomSlice";
+import { addPrivateRooms, addAllRoomsFromServer } from "../../redux/chatRoomSlice";
 import { ChatRoomPreviewItem } from "./ChatRoomPreviewItem";
 import { CreateChatComponent } from "./CreateChatComponent";
 import { fetchDirectMessages } from "../../utils/api";
@@ -23,28 +23,18 @@ export default function DirectMessage() {
   const dispatch = useDispatch()
   const theme = useTheme();
 
-  // useLayoutEffect(() => {
-  //   fetchDirectMessages()
-  //     .then((result) => {
-  //       console.log("DM",result)
-  //       if (result.success) {
-  //         setChatRooms(result.chatRooms)
-  //         dispatch(addAllRoomsFromServer(result.chatRooms))
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       console.error(err)
-  //     });
-  // }, []);
+  useLayoutEffect(() => {
+    setChatRooms(user.privateRooms)
+  }, []);
 
   useEffect(() => {
     positionAnimatedValue.setValue(0)
     scrollOffsetAnimatedValue.setValue(0)
-    // socket.on("PrivateRoomList", (rooms) => {
-       setChatRooms(user.privateRooms)
-    //   dispatch(addChatRoom(rooms))
-    // });
-    // dispatch(addChatRoom(rooms))
+    socket.emit("privateRoomList", user._id);
+    socket.on("foundPrivateRooms", (rooms) => {
+      setChatRooms(rooms)
+      dispatch(addPrivateRooms(rooms))
+    });
   }, [socket, rooms]);
 
   const Pagination = ({
