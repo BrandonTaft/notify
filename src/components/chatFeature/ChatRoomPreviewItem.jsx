@@ -13,13 +13,6 @@ export const ChatRoomPreviewItem = ({ item }) => {
     const navigation = useNavigation();
     const [messages, setMessages] = useState([]);
     const theme = useTheme();
-    // useLayoutEffect(() => {
-    //     setMessages(item.messages[item.messages.length - 1]);
-    // }, []);
-
-    // useEffect(() => {
-    //     setMessages(item.messages[item.messages.length - 1]);
-    // }, [item]);
     
     useLayoutEffect(() => {
         if (item.messages.length > 1) {

@@ -8,6 +8,7 @@ import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import RegisterModal from "../components/logInFeature/RegisterModal";
 import Alert from "../components/Alert";
+import {socket} from "../utils/socket";
 
 const LoginScreen = () => {
     const [isLoading, setIsLoading] = useState(false);
@@ -21,6 +22,13 @@ const LoginScreen = () => {
     const theme = useTheme();
 
     useEffect(() => {
+        
+        socket.on("connect_error", (err) => {
+            if (err.message === "invalid user id") {
+              console.log("Unable to connect to server")
+            }
+          });
+
         (async () => {
             try {
                 setIsLoading(true)
@@ -31,8 +39,12 @@ const LoginScreen = () => {
                     refreshUser(user._id).then(async (result) => {
                         if (result.success) {
                             dispatch(createUser({ ...result.existingUser, isLoggedIn: true }))
+                            
                             const jsonValue = JSON.stringify(result.existingUser)
                             await AsyncStorage.setItem("notify_user", jsonValue);
+
+                            socket.auth = {user: result.existingUser};
+                            socket.connect();
                         } else {
                             setMessage(result.message)
                             setIsLoading(false)
@@ -57,6 +69,8 @@ const LoginScreen = () => {
                 if (result.success) {
                     await SecureStore.setItemAsync("secureToken", result.token);
                     dispatch(createUser({ ...result.existingUser, isLoggedIn: true }))
+                    socket.auth = { _id: result.existingUser._id };
+                            socket.connect();
                     const jsonValue = JSON.stringify(result.existingUser)
                     await AsyncStorage.setItem("notify_user", jsonValue);
                 } else {

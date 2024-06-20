@@ -10,7 +10,8 @@ import { addMessage } from "../redux/chatRoomSlice";
 
 const DirectMessageScreen = ({ route, navigation }) => {
     const dispatch = useDispatch();
-    const { recipient } = route.params;
+    // const { name, roomId, recipient } = route.params;
+    const { name, roomId, recipient } = route.params;
     const [chatMessages, setChatMessages] = useState([]);
     const [message, setMessage] = useState("");
     const notifyUser = useSelector(state => state.user)
@@ -53,33 +54,24 @@ const DirectMessageScreen = ({ route, navigation }) => {
 
     useLayoutEffect(() => {
         navigation.setOptions({
-            headerTitle: recipient.userName,
+            headerTitle: name,
             headerTitleStyle: { color:theme.colors.primary, fontWeight:600, fontSize:24 },
             headerStyle: { backgroundColor: theme.colors.primaryContainer },
             headerRight: (props) => <RightHeaderButtons {...props} />,
             headerLeft: (props) => <LeftHeaderButtons {...props} />
         });
-        
+        // privateSocket.emit("findRoom", roomId);
+        // privateSocket.on("foundRoom", (roomChats) => setChatMessages(roomChats));
+   // }, [roomId]);
 }, []);
 
-useEffect(()=>{
-    privateSocket.on("users", (users) => {
-        users.forEach((user) => {
-          user.self = user.userID === privateSocket.id;
-          
-        });
-        // put the current user first, and then sort by username
-       users = users.sort((a, b) => {
-          if (a.self) return -1;
-          if (b.self) return 1;
-          if (a.username < b.username) return -1;
-          return a.username > b.username ? 1 : 0;
-        });
-        console.log("USERSSS", users)
-      });
-},[privateSocket])
 
-   
+    useEffect(() => {
+        privateSocket.on("newMessage", (roomChats) => {
+            setChatMessages(roomChats)
+        })
+    }, [privateSocket]);
+
     const handleNewMessage = () => {
         const hour =
             new Date().getHours() < 10
@@ -94,7 +86,6 @@ useEffect(()=>{
         if (notifyUser.userName) {
             const newMessage = {
                 message,
-                fromSelf: true,
                 // roomId: roomId,
                 user: notifyUser.userName,
                 userId: notifyUser.userId,
@@ -104,7 +95,7 @@ useEffect(()=>{
                 timestamp: { hour, mins },
             }
             // privateSocket.emit("newMessage", newMessage);
-            privateSocket.emit("newPrivateMessage", {
+            privateSocket.emit("privateMessage", {
                 newMessage,
                 to: recipient
             });

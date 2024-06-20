@@ -1,11 +1,11 @@
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState, memo } from "react";
 import { Pressable, Text, View, Appearance, useColorScheme } from "react-native";
 import { useDispatch, useSelector } from 'react-redux';
 import { logOut } from '../redux/userSlice';
 import { Avatar, IconButton, useTheme } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as SecureStore from 'expo-secure-store';
-import socket from "../utils/socket";
+import {socket} from "../utils/socket";
 import { styles } from "../utils/styles";
 
 export function ThemeButton({ styles, size }) {
@@ -84,7 +84,7 @@ export function AvatarButton({ handlePress, size }) {
     )
 };
 
-export function ReactionButtons({ message }) {
+export const ReactionButtons = memo(({ message }) =>{
     const reactionEmoji = {
         thumbsUp: '👍',
         thumbsDown: '👎',
@@ -92,14 +92,14 @@ export function ReactionButtons({ message }) {
     };
     const [chatReaction, setChatReaction] = useState({});
     const { colors } = useTheme();
-
+    console.log(message.messageId)
     useLayoutEffect(() => {
         setChatReaction(message.reactions)
     }, []);
 
     useEffect(() => {
         socket.on("newReaction", (reaction) => {
-            console.log(message.messageId, reaction.messageId)
+           
             if(message.messageId === reaction.messageId){
             setChatReaction(reaction.reactions)
             }
@@ -125,4 +125,4 @@ export function ReactionButtons({ message }) {
     });
 
     return <View style={styles.reactions}>{reactionButtons}</View>
-};
+});

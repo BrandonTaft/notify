@@ -1,7 +1,7 @@
 import { Modal, Portal, RadioButton, Button, useTheme, Text, TextInput, } from "react-native-paper";
 import React, { useState } from "react";
 import { styles } from "../../utils/styles";
-import socket from "../../utils/socket";
+import {socket, publicSocket, privateSocket} from "../../utils/socket";
 import { useSelector } from "react-redux";
 import * as Crypto from 'expo-crypto';
 import { useNavigation } from "@react-navigation/native";

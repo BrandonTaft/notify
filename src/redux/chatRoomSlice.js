@@ -15,9 +15,7 @@ export const chatRoomSlice = createSlice({
             }
         },
         addMessage: (state, action) => {
-            console.log("SLICEMESSAGE", action.payload)
             const room = state.find(room => room.roomId === action.payload.roomId)
-            console.log("chatsliceeee", room)
             if(room) {
                 room.messages.push(action.payload)
             }
@@ -26,7 +24,6 @@ export const chatRoomSlice = createSlice({
           },
         addChatReaction: (state, action) => {
             const { roomId, messageId, reaction } = action.payload
-            console.log("REACTION", action.payload)
             const room = state.find(room => room.roomId === roomId)
             const chatMessage = room.messages.find(message => message.messageId === messageId)
             if (chatMessage) {

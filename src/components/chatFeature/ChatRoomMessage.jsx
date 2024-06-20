@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { View } from "react-native";
 import { useSelector } from "react-redux";
 import { Avatar, useTheme, Text } from 'react-native-paper';
@@ -5,10 +6,11 @@ import { styles } from "../../utils/styles";
 import { ReactionButtons } from "../Buttons";
 import { BASE_URL } from "../../utils/api";
 
-export default function ChatRoomMessage({ message }) {
+const ChatRoomMessage = memo(( { message } ) => {
     const user = useSelector(state => state.user)
     const isFromMe = message.user === user.userName;
     const theme = useTheme();
+    console.log("CHATROOMMESSAGE",message.messageId)
     return (
         <View>
             <View
@@ -80,4 +82,6 @@ export default function ChatRoomMessage({ message }) {
             </View>
         </View>
     );
-}
+});
+
+export default ChatRoomMessage

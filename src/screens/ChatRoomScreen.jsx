@@ -2,7 +2,7 @@ import React, { useLayoutEffect, useState, useEffect } from "react";
 import { View, TextInput, FlatList, Keyboard } from "react-native";
 import ChatRoomMessage from "../components/chatFeature/ChatRoomMessage";
 import { styles } from "../utils/styles";
-import socket from "../utils/socket";
+import {socket, publicSocket, privateSocket} from "../utils/socket";
 import { useSelector, useDispatch } from "react-redux";
 import { useTheme, IconButton, Button, Text } from "react-native-paper";
 import { AvatarButton, BackButton } from "../components/Buttons";
@@ -66,7 +66,6 @@ const ChatRoomScreen = ({ route, navigation }) => {
 
     useEffect(() => {
         socket.on("newMessage", (roomChats) => {
-            console.log("IRAN")
             setChatMessages(roomChats)
         })
     }, [socket]);
@@ -87,12 +86,13 @@ const ChatRoomScreen = ({ route, navigation }) => {
                 message,
                 roomId: roomId,
                 user: notifyUser.userName,
-                userId: notifyUser.userId,
+                userId: notifyUser._id,
                 profileImage: notifyUser.profileImage,
                 org: notifyUser.organization,
                 reactions: { thumbsUp: 0, thumbsDown: 0, heart: 0 },
                 timestamp: { hour, mins },
             }
+            console.log("NEW MWSSAGE", newMessage)
             socket.emit("newMessage", newMessage);
             dispatch(addMessage(newMessage))
         }

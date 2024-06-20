@@ -7,7 +7,7 @@ import { ChatRoomPreviewItem } from "./ChatRoomPreviewItem";
 import { CreateChatComponent } from "./CreateChatComponent";
 import { fetchGroups } from "../../utils/api";
 import PagerView from 'react-native-pager-view';
-import socket from "../../utils/socket";
+import {socket, publicSocket, privateSocket} from "../../utils/socket";
 
 const { width, height } = Dimensions.get('window');
 const DOT_SIZE = 35;
@@ -23,6 +23,7 @@ export default function ChatRoomPreview() {
   const theme = useTheme();
 
   useLayoutEffect(() => {
+    socket.off("connect_error");
     fetchGroups()
       .then((result) => {
         if (result.success) {
@@ -99,7 +100,7 @@ export default function ChatRoomPreview() {
               ],
               {
                 listener: ({ nativeEvent: { offset, position } }) => {
-                  console.log(`Position: ${position} Offset: ${offset}`, scrollOffsetAnimatedValue);
+                  //console.log(`Position: ${position} Offset: ${offset}`, scrollOffsetAnimatedValue);
                 },
                 useNativeDriver: true,
               }

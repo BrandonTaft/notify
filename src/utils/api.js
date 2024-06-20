@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-export const BASE_URL = "https://c46b-2600-6c5a-4a7f-463a-9482-dab1-2965-36bb.ngrok-free.app";
+export const BASE_URL = "https://2718-75-131-25-248.ngrok-free.app";
 import * as SecureStore from 'expo-secure-store';
+import { socket, privateSocket } from './socket';
 
 export const fetchAllUsers = async () => {
     let token = await SecureStore.getItemAsync("secureToken");
@@ -69,7 +70,10 @@ export const logOutUser = async(user) => {
         },
         body: JSON.stringify({ user : user })
     })
-    .then(response => response.json())
+    .then(() => {
+        socket.off;
+        privateSocket.off();
+    })
     .catch((error) => console.log("Server did not respond"))
 };
 

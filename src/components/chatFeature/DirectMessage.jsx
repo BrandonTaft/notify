@@ -2,12 +2,12 @@ import { useState, useLayoutEffect, useEffect, useRef } from "react";
 import { View, Animated, Dimensions, StyleSheet } from "react-native";
 import { Text, useTheme, Chip, IconButton } from 'react-native-paper';
 import { useSelector, useDispatch } from 'react-redux';
-import { addPrivateRooms, addAllRoomsFromServer } from "../../redux/chatRoomSlice";
+import { addPrivateRooms } from "../../redux/userSlice";
 import { ChatRoomPreviewItem } from "./ChatRoomPreviewItem";
 import { CreateChatComponent } from "./CreateChatComponent";
 import { fetchDirectMessages } from "../../utils/api";
 import PagerView from 'react-native-pager-view';
-import socket from "../../utils/socket";
+import {socket, publicSocket, privateSocket} from "../../utils/socket";
 
 const { width, height } = Dimensions.get('window');
 const DOT_SIZE = 35;
