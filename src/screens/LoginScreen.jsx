@@ -43,7 +43,7 @@ const LoginScreen = () => {
                             const jsonValue = JSON.stringify(result.existingUser)
                             await AsyncStorage.setItem("notify_user", jsonValue);
 
-                            socket.auth = {user: result.existingUser};
+                            socket.auth = {token: token, user: result.existingUser};
                             socket.connect();
                         } else {
                             setMessage(result.message)
@@ -69,7 +69,7 @@ const LoginScreen = () => {
                 if (result.success) {
                     await SecureStore.setItemAsync("secureToken", result.token);
                     dispatch(createUser({ ...result.existingUser, isLoggedIn: true }))
-                    socket.auth = { _id: result.existingUser._id };
+                    socket.auth = {token: result.token, user: result.existingUser};
                             socket.connect();
                     const jsonValue = JSON.stringify(result.existingUser)
                     await AsyncStorage.setItem("notify_user", jsonValue);

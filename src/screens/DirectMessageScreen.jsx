@@ -2,20 +2,25 @@ import React, { useLayoutEffect, useState, useEffect } from "react";
 import { View, TextInput, FlatList, Keyboard } from "react-native";
 import ChatRoomMessage from "../components/chatFeature/ChatRoomMessage";
 import { styles } from "../utils/styles";
-import {privateSocket} from "../utils/socket";
+import {socket} from "../utils/socket";
 import { useSelector, useDispatch } from "react-redux";
 import { useTheme, IconButton, Button, Text } from "react-native-paper";
 import { AvatarButton, BackButton } from "../components/Buttons";
-import { addMessage } from "../redux/chatRoomSlice";
+import { addPrivateMessage } from "../redux/userSlice";
+import * as Crypto from 'expo-crypto';
 
 const DirectMessageScreen = ({ route, navigation }) => {
     const dispatch = useDispatch();
     const { recipient } = route.params;
     const [chatMessages, setChatMessages] = useState([]);
-    const [message, setMessage] = useState("");
+    const [privateRoom, setPrivateRoom] =useState({
+        recipient: recipient,
+        messages:[]
+    })
+    const [text, setText] = useState("");
     const notifyUser = useSelector(state => state.user)
     const theme = useTheme();
-    
+    console.log(notifyUser)
     const RightHeaderButtons = () => {
         return (
             <View style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal:10 }}>
@@ -59,13 +64,19 @@ const DirectMessageScreen = ({ route, navigation }) => {
             headerRight: (props) => <RightHeaderButtons {...props} />,
             headerLeft: (props) => <LeftHeaderButtons {...props} />
         });
-        
+        if(notifyUser.privateRooms){
+        let existingChat = notifyUser.privateRooms.find(room => room.recipient === recipient._id)
+        if(existingChat) {
+            setChatMessages(existingChat.messages)
+        }
+        }
+        //socket.emit('joinPrivateRoom', recipient._id);
 }, []);
 
 useEffect(()=>{
-    privateSocket.on("users", (users) => {
+    socket.on("users", (users) => {
         users.forEach((user) => {
-          user.self = user.userID === privateSocket.id;
+          user.self = user.userID === socket.id;
           
         });
         // put the current user first, and then sort by username
@@ -77,41 +88,61 @@ useEffect(()=>{
         });
         console.log("USERSSS", users)
       });
-},[privateSocket])
+console.log("IRANNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN")
+      socket.on("newPrivateMessage", ({ newPrivateMessage, from }) => {
+        // for (let i = 0; i < this.users.length; i++) {
+        //   const user = this.users[i];
+        //   if (user.userID === from) {
+        //     user.messages.push({
+        //       newPrivateMessage,
+        //       fromSelf: false,
+        //     });
+        //     if (user !== this.selectedUser) {
+        //       user.hasNewMessages = true;
+        //     }
+        //     break;
+        //   }
+        // }
+        console.log("newPrivateMessage", newPrivateMessage)
+        
+        setChatMessages([...chatMessages, newPrivateMessage])
+        dispatch(addPrivateMessage({from,newPrivateMessage}))
+      });
+},[socket])
 
-   
-    const handleNewMessage = () => {
-        const hour =
-            new Date().getHours() < 10
-                ? `0${new Date().getHours()}`
-                : `${new Date().getHours()}`;
+const handleNewMessage = () => {
+    const messageId = Crypto.randomUUID();
+    const hour =
+        new Date().getHours() < 10
+            ? `0${new Date().getHours()}`
+            : `${new Date().getHours()}`;
 
-        const mins =
-            new Date().getMinutes() < 10
-                ? `0${new Date().getMinutes()}`
-                : `${new Date().getMinutes()}`;
+    const mins =
+        new Date().getMinutes() < 10
+            ? `0${new Date().getMinutes()}`
+            : `${new Date().getMinutes()}`;
 
-        if (notifyUser.userName) {
-            const newMessage = {
-                message,
-                fromSelf: true,
-                // roomId: roomId,
-                user: notifyUser.userName,
-                userId: notifyUser.userId,
-                profileImage: notifyUser.profileImage,
-                org: notifyUser.organization,
-                reactions: { thumbsUp: 0, thumbsDown: 0, heart: 0 },
-                timestamp: { hour, mins },
-            }
-            // privateSocket.emit("newMessage", newMessage);
-            privateSocket.emit("newPrivateMessage", {
-                newMessage,
-                to: recipient
-            });
-            dispatch(addMessage(newMessage))
+    if (notifyUser.userName) {
+        const newMessage = {
+            messageId,
+            text,
+            fromSelf: true,
+            receiverId: recipient._id,
+            sender: notifyUser.userName,
+            senderId: notifyUser._id,
+            profileImage: notifyUser.profileImage,
+            time: `${hour}:${mins}`,
+            reactions: { thumbsUp: 0, thumbsDown: 0, heart: 0 },
         }
-        setMessage("")
-    };
+        socket.emit("newPrivateMessage", {
+            newMessage,
+            to: recipient._id
+        });
+        setChatMessages([...chatMessages, newMessage])
+        //dispatch(addMessage(newMessage))
+    }
+    setText("")
+};
 
     return (
         <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
@@ -139,8 +170,8 @@ useEffect(()=>{
                     editable
                     multiline
                     style={styles.messaginginput}
-                    onChangeText={(value) => setMessage(value)}
-                    value={message}
+                    onChangeText={(value) => setText(value)}
+                    value={text}
                 />
                 <Button
                     style={{backgroundColor: theme.colors.primary, paddingHorizontal:5, justifyContent:'center'}}

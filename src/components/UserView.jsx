@@ -5,7 +5,7 @@ import { Avatar, useTheme, Text, Badge, Icon, TouchableRipple } from 'react-nati
 import { fetchAllUsers, BASE_URL } from "../utils/api";
 import usePushNotification from "../hooks/usePushNotification";
 import { useNavigation } from "@react-navigation/native";
-import { privateSocket } from "../utils/socket";
+import { socket } from "../utils/socket";
 import * as SecureStore from 'expo-secure-store';
 
 const { width, height } = Dimensions.get('window');
@@ -22,52 +22,21 @@ export const UserView = () => {
     useLayoutEffect(() => {
         fetchAllUsers().then((data) => {
             setAllUsers(data.users)
-        })
+        });
+        socket.off("connect_error");
     }, []);
 
     useEffect(() => {
-
-        privateSocket.on("user connected", (user) => {
-            console.log(`${user} just connected`)
+        socket.on("user connected", (user) => {
+            console.log(`${user.userName} just connected`)
+            //when a user connects get new list from db
+            fetchAllUsers().then((data) => {
+                setAllUsers(data.users)
+            })
           });
-    },[privateSocket])
+    },[socket])
 
     const handleCreatePrivateRoom = async (user) => {
-        let token = await SecureStore.getItemAsync("secureToken");
-        privateSocket.auth = { token: token, user: sender };
-        privateSocket.connect();
-        // const existingRoom = sender.privateRooms.find((room) => (room.senderId === sender._id || room.senderId === user._id) && (room.recieverId === sender._id || room.recieverId === user._id))
-
-        // if (existingRoom) {
-        //    navigation.navigate({
-        //     name: 'ChatRoomScreen',
-        //     params: {
-        //         roomId: existingRoom.roomId,
-        //         name: user.userName,
-        //     }
-        // });
-
-        // } else {
-
-        //    privateSocket.emit(
-        //     "createPrivateRoom",
-        //     {
-        //         roomId: `${user._id}-${sender._id}`,
-        //         reciever: user.userName,
-        //         recieverId: user._id,
-        //         senderId: sender._id,
-        //         sender: sender.userName,
-        //     }
-        // );
-
-        // navigation.navigate({
-        //     name: 'DirectMessageScreen',
-        //     params: {
-        //         roomId: `${user._id}-${sender._id}`,
-        //         name: user.userName,
-        //     }
-        // })
-        //}
         navigation.navigate({
             name: 'DirectMessageScreen',
             params: {

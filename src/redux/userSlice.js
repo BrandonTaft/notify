@@ -116,8 +116,15 @@ export const userSlice = createSlice({
         existingNote.isDeleted = true
       }
     },
-    addPrivateRooms: (state, action) => {
-      state.privateRooms = action.payload
+    addPrivateMessage: (state, action) => {
+      console.log("usersliceeeee private roooms",state.privateRooms)
+      const existingRoom = state.privateRooms.find(room => room.recipient === action.payload.from)
+      if(existingRoom) {
+        existingRoom.messages.push(action.payload.newPrivateMessage)
+      } else {
+        state.privateRooms.push({recipient:action.payload.from, messages:[action.payload.newPrivateMessage]})
+      }
+      console.log("usersliceeeee private roooms",state.privateRooms)
     },
     logOut: (state, action) => {
       return { isLoggedIn: false }
@@ -144,6 +151,6 @@ export const userSlice = createSlice({
   },
 });
 
-export const { createUser, createNote, deleteNote, updateNote, logOut, editUserProfileImage, editUserBanner, editUserCredentials, addPrivateRooms } = userSlice.actions;
+export const { createUser, createNote, deleteNote, updateNote, logOut, editUserProfileImage, editUserBanner, editUserCredentials, addPrivateMessage } = userSlice.actions;
 
 export default userSlice.reducer; 

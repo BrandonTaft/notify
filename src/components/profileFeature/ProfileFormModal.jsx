@@ -8,7 +8,6 @@ import { Text, Button, IconButton, TextInput, Surface, useTheme } from 'react-na
 import { storeProfileImage, updateUserProfile, deleteUser, logOutUser } from "../../utils/api";
 import { editUserProfileImage, editUserBanner, editUserCredentials, logOut } from '../../redux/userSlice';
 
-import { privateSocket } from "../../utils/socket";
 
 export const ProfileFormModal = () => {
     const [notifyUser, setNotifyUser] = useState({});
@@ -176,7 +175,6 @@ export const ProfileFormModal = () => {
                 icon="view-gallery"
                 mode="elevated"
                 onPress={() => {
-                    privateSocket.disconnect()
                     logOutUser(user);
                     dispatch(logOut(user));
                 }}

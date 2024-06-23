@@ -84,7 +84,7 @@ export function AvatarButton({ handlePress, size }) {
     )
 };
 
-export const ReactionButtons = memo(({ message }) =>{
+export const ReactionButtons = ({ message }) =>{
     const reactionEmoji = {
         thumbsUp: '👍',
         thumbsDown: '👎',
@@ -125,4 +125,4 @@ export const ReactionButtons = memo(({ message }) =>{
     });
 
     return <View style={styles.reactions}>{reactionButtons}</View>
-});
+};
