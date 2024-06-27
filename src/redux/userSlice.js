@@ -117,14 +117,28 @@ export const userSlice = createSlice({
       }
     },
     addPrivateMessage: (state, action) => {
-      console.log("usersliceeeee private roooms",state.privateRooms)
-      const existingRoom = state.privateRooms.find(room => room.recipient === action.payload.from)
-      if(existingRoom) {
-        existingRoom.messages.push(action.payload.newPrivateMessage)
-      } else {
-        state.privateRooms.push({recipient:action.payload.from, messages:[action.payload.newPrivateMessage]})
+      console.log("ACTION", action.payload)
+      let existingRoom;
+      if (!action.payload.fromSelf) {
+        existingRoom = state.privateRooms.find(room => room.recipient === action.payload.senderId)
+        if (existingRoom) {
+          existingRoom.messages.push(action.payload)
+        } else {
+          state.privateRooms.push({
+            recipient: action.payload.senderId, messages: [action.payload]
+          })
+        }
+      } else if (action.payload.fromSelf) {
+        existingRoom = state.privateRooms.find(room => room.recipient === action.payload.receiverId)
+        if (existingRoom) {
+          existingRoom.messages.push(action.payload)
+        } else {
+          state.privateRooms.push({
+            recipient: action.payload.receiverId, messages: [action.payload]
+          })
+        }
       }
-      console.log("usersliceeeee private roooms",state.privateRooms)
+      console.log("usersliceeeee private roooms",state.userName, state.privateRooms)
     },
     logOut: (state, action) => {
       return { isLoggedIn: false }

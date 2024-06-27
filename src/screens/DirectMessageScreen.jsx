@@ -20,7 +20,7 @@ const DirectMessageScreen = ({ route, navigation }) => {
     const [text, setText] = useState("");
     const notifyUser = useSelector(state => state.user)
     const theme = useTheme();
-    console.log(notifyUser)
+
     const RightHeaderButtons = () => {
         return (
             <View style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal:10 }}>
@@ -89,7 +89,7 @@ useEffect(()=>{
         console.log("USERSSS", users)
       });
 console.log("IRANNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN")
-      socket.on("newPrivateMessage", ({ newPrivateMessage, from }) => {
+      socket.on("newPrivateMessage", ({ newPrivateMessage }) => {
         // for (let i = 0; i < this.users.length; i++) {
         //   const user = this.users[i];
         //   if (user.userID === from) {
@@ -98,19 +98,21 @@ console.log("IRANNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN")
         //       fromSelf: false,
         //     });
         //     if (user !== this.selectedUser) {
-        //       user.hasNewMessages = true;
+        //       user.hasNewPrivateMessages = true;
         //     }
         //     break;
         //   }
         // }
         console.log("newPrivateMessage", newPrivateMessage)
-        
+        if(newPrivateMessage.senderId === recipient._id){
         setChatMessages([...chatMessages, newPrivateMessage])
-        dispatch(addPrivateMessage({from,newPrivateMessage}))
+        console.log("CHATMESSSSS", chatMessages)
+        }
+        dispatch(addPrivateMessage(newPrivateMessage))
       });
 },[socket])
 
-const handleNewMessage = () => {
+const handleNewPrivateMessage = () => {
     const messageId = Crypto.randomUUID();
     const hour =
         new Date().getHours() < 10
@@ -123,7 +125,7 @@ const handleNewMessage = () => {
             : `${new Date().getMinutes()}`;
 
     if (notifyUser.userName) {
-        const newMessage = {
+        const newPrivateMessage = {
             messageId,
             text,
             fromSelf: true,
@@ -135,11 +137,10 @@ const handleNewMessage = () => {
             reactions: { thumbsUp: 0, thumbsDown: 0, heart: 0 },
         }
         socket.emit("newPrivateMessage", {
-            newMessage,
-            to: recipient._id
+            newPrivateMessage
         });
-        setChatMessages([...chatMessages, newMessage])
-        //dispatch(addMessage(newMessage))
+        setChatMessages([...chatMessages, newPrivateMessage])
+        dispatch(addPrivateMessage(newPrivateMessage))
     }
     setText("")
 };
@@ -177,7 +178,7 @@ const handleNewMessage = () => {
                     style={{backgroundColor: theme.colors.primary, paddingHorizontal:5, justifyContent:'center'}}
                     labelStyle={{fontWeight:900}}
                     textColor={theme.colors.primaryContainer}
-                    onPress={handleNewMessage}
+                    onPress={handleNewPrivateMessage}
                 >
                     SEND
                 </Button>

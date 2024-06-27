@@ -10,7 +10,7 @@ const ChatRoomMessage = memo(( { message } ) => {
     const user = useSelector(state => state.user)
     const isFromMe = message.user === user.userName;
     const theme = useTheme();
-    console.log("CHATROOMMESSAGE",message.messageId)
+
     return (
         <View>
             <View
