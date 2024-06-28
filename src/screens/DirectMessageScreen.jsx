@@ -1,6 +1,6 @@
 import React, { useLayoutEffect, useState, useEffect } from "react";
 import { View, TextInput, FlatList, Keyboard } from "react-native";
-import ChatRoomMessage from "../components/chatFeature/ChatRoomMessage";
+import DirectMessage from "../components/chatFeature/DirectMessage";
 import { styles } from "../utils/styles";
 import {socket} from "../utils/socket";
 import { useSelector, useDispatch } from "react-redux";
@@ -70,6 +70,7 @@ const DirectMessageScreen = ({ route, navigation }) => {
             setChatMessages(existingChat.messages)
         }
         }
+        console.log("IRANNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN")
         //socket.emit('joinPrivateRoom', recipient._id);
 }, []);
 
@@ -88,27 +89,10 @@ useEffect(()=>{
         });
         console.log("USERSSS", users)
       });
-console.log("IRANNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN")
+
       socket.on("newPrivateMessage", ({ newPrivateMessage }) => {
-        // for (let i = 0; i < this.users.length; i++) {
-        //   const user = this.users[i];
-        //   if (user.userID === from) {
-        //     user.messages.push({
-        //       newPrivateMessage,
-        //       fromSelf: false,
-        //     });
-        //     if (user !== this.selectedUser) {
-        //       user.hasNewPrivateMessages = true;
-        //     }
-        //     break;
-        //   }
-        // }
-        console.log("newPrivateMessage", newPrivateMessage)
-        if(newPrivateMessage.senderId === recipient._id){
-        setChatMessages([...chatMessages, newPrivateMessage])
-        console.log("CHATMESSSSS", chatMessages)
-        }
-        dispatch(addPrivateMessage(newPrivateMessage))
+      
+         setChatMessages(chatMessages => [...chatMessages, newPrivateMessage])
       });
 },[socket])
 
@@ -153,11 +137,11 @@ const handleNewPrivateMessage = () => {
                     { paddingHorizontal: 10 },
                 ]}
             >
-                {chatMessages[0] ? (
+                {chatMessages ? (
                     <FlatList
                         data={[...chatMessages].reverse()}
                         renderItem={({ item }) => (
-                            <ChatRoomMessage message={item} />
+                            <DirectMessage message={item} />
                         )}
                         inverted
                         keyExtractor={(item) => item.messageId}

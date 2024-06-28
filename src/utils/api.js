@@ -113,6 +113,25 @@ export const updateUserProfile = async(userId, updatedProfileData) => {
     .catch((error) => console.log("Server "))
 }
 
+export const updateUserPrivateRoom = async(userId, otherPartyId, message) => {
+    let token = await SecureStore.getItemAsync("secureToken");
+    return await fetch(BASE_URL + '/api/updateprivateroom', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+           userId,
+           otherPartyId,
+            message
+        })
+    })
+    .then(response => response.json())
+    .catch((error) => console.log("Server "))
+}
+
 export const storeProfileImage = async (imageType, uri, userId) => {
     let uriParts = uri.split('.');
     let fileType = uriParts[uriParts.length - 1];

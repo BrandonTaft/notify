@@ -23,7 +23,7 @@ export const ProfileFormModal = () => {
     }, [])
 
     const handleProfileEdit = async () => {
-        await updateUserProfile(user.userId, notifyUser).then(async (result) => {
+        await updateUserProfile(user._id, notifyUser).then(async (result) => {
             if (result.success) {
                 dispatch(editUserCredentials(notifyUser))
                 const jsonValue = JSON.stringify(result.upDatedProfile)

@@ -85,7 +85,7 @@ const ChatRoomScreen = ({ route, navigation }) => {
             const newMessage = {
                 message,
                 roomId: roomId,
-                user: notifyUser.userName,
+                sender: notifyUser.userName,
                 userId: notifyUser._id,
                 profileImage: notifyUser.profileImage,
                 org: notifyUser.organization,

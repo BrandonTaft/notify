@@ -1,10 +1,13 @@
 import 'react-native-gesture-handler';
+import { useEffect } from 'react';
 import { NavigationContainer } from "@react-navigation/native";
 import { createMaterialBottomTabNavigator } from "react-native-paper/react-navigation";
 import { createStackNavigator } from '@react-navigation/stack';
 import { PaperProvider, MD3DarkTheme, MD3LightTheme, useTheme } from 'react-native-paper';
 import { en, registerTranslation } from 'react-native-paper-dates'
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { socket } from "./utils/socket";
+import { addPrivateMessage } from "./redux/userSlice";
 import { StatusBar, View, useColorScheme } from 'react-native';
 import LoginScreen from './screens/LoginScreen';
 import HomeScreen from './screens/HomeScreen';
@@ -20,6 +23,7 @@ const Stack = createStackNavigator();
 registerTranslation('en', en)
 
 export default function Root() {
+    const dispatch = useDispatch();
     const isLoggedIn = useSelector(state => state.user.isLoggedIn);
     const colorScheme = useColorScheme();
     const theme = useTheme();
@@ -38,6 +42,16 @@ export default function Root() {
     };
     const appTheme = colorScheme === 'dark' ? DarkTheme : LightTheme;
     
+    useEffect(() => {
+        socket.on("newPrivateMessage", ({ newPrivateMessage }) => {
+      
+            console.log("newPrivateMessage", newPrivateMessage)
+            
+           
+            dispatch(addPrivateMessage(newPrivateMessage))
+          });
+    },[socket])
+
     function TabNavigator() {
         const theme = useTheme();
         return (

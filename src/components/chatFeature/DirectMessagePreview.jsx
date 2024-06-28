@@ -2,49 +2,35 @@ import { useState, useLayoutEffect, useEffect, useRef } from "react";
 import { View, Animated, Dimensions, StyleSheet } from "react-native";
 import { Text, useTheme, Chip, IconButton } from 'react-native-paper';
 import { useSelector, useDispatch } from 'react-redux';
-import { addChatRoom, addAllRoomsFromServer } from "../../redux/chatRoomSlice";
+import { addPrivateRooms } from "../../redux/userSlice";
 import { PreviewItem } from "./PreviewItem";
 import { CreateChatComponent } from "./CreateChatComponent";
-import { fetchGroups } from "../../utils/api";
+import { fetchDirectMessages } from "../../utils/api";
 import PagerView from 'react-native-pager-view';
 import {socket, publicSocket, privateSocket} from "../../utils/socket";
 
 const { width, height } = Dimensions.get('window');
 const DOT_SIZE = 35;
 
-export default function ChatRoomPreview() {
+export default function DirectMessagePreview() {
   const AnimatedPagerView = Animated.createAnimatedComponent(PagerView);
   const scrollOffsetAnimatedValue = useRef(new Animated.Value(0)).current;
   const positionAnimatedValue = useRef(new Animated.Value(0)).current;
   const [showCreateChatComponent, setShowCreateChatComponent] = useState(false);
   const [chatRooms, setChatRooms] = useState([]);
-  const rooms = useSelector(state => state.chatRooms);
+  const user = useSelector(state => state.user)
   const dispatch = useDispatch()
   const theme = useTheme();
 
   useLayoutEffect(() => {
-    socket.off("connect_error");
-    fetchGroups()
-      .then((result) => {
-        if (result.success) {
-          setChatRooms(result.chatRooms.slice(0, 5))
-          dispatch(addAllRoomsFromServer(result.chatRooms))
-        }
-      })
-      .catch((err) => {
-        console.error(err)
-      });
+    setChatRooms(user.privateRooms)
   }, []);
 
   useEffect(() => {
     positionAnimatedValue.setValue(0)
     scrollOffsetAnimatedValue.setValue(0)
-    socket.on("chatRoomList", (rooms) => {
-      setChatRooms(rooms.slice(0, 5))
-      dispatch(addChatRoom(rooms))
-    });
-    dispatch(addChatRoom(rooms))
-  }, [socket, rooms]);
+    setChatRooms(user.privateRooms)
+  }, [socket, user]);
 
   const Pagination = ({
     scrollOffsetAnimatedValue,
@@ -72,7 +58,7 @@ export default function ChatRoomPreview() {
         />
         {chatRooms.map((item) => {
           return (
-            <View key={item._id} style={styles.paginationDotContainer}>
+            <View key={item.recipient} style={styles.paginationDotContainer}>
               <View
                 style={[styles.paginationDot, { backgroundColor: theme.colors.primaryContainer }]}
               />
@@ -82,7 +68,7 @@ export default function ChatRoomPreview() {
       </View>
     );
   };
-
+console.log("CHATROOMS",chatRooms)
   return (
     <View style={[{ flex: 1 }]}>
       {chatRooms.length > 0 ? (
@@ -100,7 +86,7 @@ export default function ChatRoomPreview() {
               ],
               {
                 listener: ({ nativeEvent: { offset, position } }) => {
-                  //console.log(`Position: ${position} Offset: ${offset}`, scrollOffsetAnimatedValue);
+                  console.log(`Position: ${position} Offset: ${offset}`, scrollOffsetAnimatedValue);
                 },
                 useNativeDriver: true,
               }
@@ -108,7 +94,7 @@ export default function ChatRoomPreview() {
           >
             {chatRooms.map((room, index) => {
               return (
-                <View key={room._id}>
+                <View key={room.recipient}>
                   <PreviewItem item={room} />
                 </View>
               )

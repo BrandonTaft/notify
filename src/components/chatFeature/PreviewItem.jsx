@@ -8,15 +8,15 @@ import { styles } from "../../utils/styles";
 import { BASE_URL } from "../../utils/api";
 import ChatRoomMessage from "./ChatRoomMessage";
 
-export const ChatRoomPreviewItem = ({ item }) => {
+export const PreviewItem = ({ item }) => {
     const user = useSelector(state => state.user)
     const navigation = useNavigation();
     const [messages, setMessages] = useState([]);
     const theme = useTheme();
-    
+
     useLayoutEffect(() => {
         if (item.messages.length > 1) {
-            setMessages([ item.messages[item.messages.length - 2], item.messages[item.messages.length - 1]]);
+            setMessages([item.messages[item.messages.length - 2], item.messages[item.messages.length - 1]]);
         } else if (item.messages.length) {
             setMessages([item.messages[item.messages.length - 1]]);
         }
@@ -24,7 +24,7 @@ export const ChatRoomPreviewItem = ({ item }) => {
 
     useEffect(() => {
         if (item.messages.length > 1) {
-            setMessages([ item.messages[item.messages.length - 2], item.messages[item.messages.length - 1]]);
+            setMessages([item.messages[item.messages.length - 2], item.messages[item.messages.length - 1]]);
         } else if (item.messages.length) {
             setMessages([item.messages[item.messages.length - 1]]);
         }
@@ -42,7 +42,7 @@ export const ChatRoomPreviewItem = ({ item }) => {
     };
 
     function MessagePreview({ message }) {
-        const isFromMe = message.user === user.userName;
+        const isFromMe = message.sender === user.userName;
         return (
             <View
                 style={
@@ -68,7 +68,7 @@ export const ChatRoomPreviewItem = ({ item }) => {
                                     :
                                     <Avatar.Text
                                         size={40}
-                                        label={message.user.charAt(0).toUpperCase()}
+                                        label={message.sender.charAt(0).toUpperCase()}
                                         style={{ backgroundColor: theme.colors.onPrimaryContainer, position: 'relative', zIndex: 999 }}
                                         labelStyle={{ color: theme.colors.onPrimary, fontWeight: 'bold' }}
                                     />
@@ -77,9 +77,9 @@ export const ChatRoomPreviewItem = ({ item }) => {
                     }
                     <View
                         style={[styles.previewMessage,
-                            isFromMe
-                                ? { backgroundColor: theme.colors.primary, marginRight: 5 }
-                                : { backgroundColor: theme.colors.secondary }
+                        isFromMe
+                            ? { backgroundColor: theme.colors.primary, marginRight: 5 }
+                            : { backgroundColor: theme.colors.secondary }
                         ]}
                     >
                         {message.text &&
@@ -94,7 +94,7 @@ export const ChatRoomPreviewItem = ({ item }) => {
                             style={[
                                 isFromMe
                                     ? [styles.rightArrow, { backgroundColor: theme.colors.primary }]
-                                    : [styles.leftArrow,{ backgroundColor: theme.colors.secondary }]
+                                    : [styles.leftArrow, { backgroundColor: theme.colors.secondary }]
                             ]}
                         >
                         </View>
@@ -135,37 +135,37 @@ export const ChatRoomPreviewItem = ({ item }) => {
                     size={30}
                     color={theme.colors.onPrimaryContainer}
                 />
-                {!item.isPrivate 
-                ?
-                <Text 
-                variant="headlineSmall" 
-                style={{ 
-                    color: theme.colors.onPrimaryContainer,
-                    marginLeft:5
-                 }}>
-                    {item.roomName}
-                </Text>
-                :
-                user._id === item.senderId 
-                ?
-                 <Text 
-                variant="headlineSmall" 
-                style={{ 
-                    color: theme.colors.onPrimaryContainer,
-                    marginLeft:5
-                 }}>
-                    {item.reciever}
-                </Text>
-                :
-                <Text 
-                variant="headlineSmall" 
-                style={{ 
-                    color: theme.colors.onPrimaryContainer,
-                    marginLeft:5
-                 }}>
-                    {item.sender}
-                </Text>
-}
+                {!item.isPrivate
+                    ?
+                    <Text
+                        variant="headlineSmall"
+                        style={{
+                            color: theme.colors.onPrimaryContainer,
+                            marginLeft: 5
+                        }}>
+                        {item.roomName}
+                    </Text>
+                    :
+                    user._id === item.senderId
+                        ?
+                        <Text
+                            variant="headlineSmall"
+                            style={{
+                                color: theme.colors.onPrimaryContainer,
+                                marginLeft: 5
+                            }}>
+                            {item.reciever}
+                        </Text>
+                        :
+                        <Text
+                            variant="headlineSmall"
+                            style={{
+                                color: theme.colors.onPrimaryContainer,
+                                marginLeft: 5
+                            }}>
+                            {item.sender}
+                        </Text>
+                }
             </View>
 
             <View style={styles.chatRoomPreviewContent}>
@@ -173,7 +173,7 @@ export const ChatRoomPreviewItem = ({ item }) => {
                     <>
                         {messages.map((message, index) => {
                             return (
-                                <View key={message._id} >
+                                <View key={message.messageId} >
                                     <MessagePreview message={message} />
                                 </View>
                             )

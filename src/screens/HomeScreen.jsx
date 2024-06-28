@@ -5,7 +5,7 @@ import UpcomingReminders from '../components/reminderFeature/UpcomingReminders';
 import Tools from '../components/Tools';
 import ChatRoomPreview from '../components/chatFeature/ChatRoomPreview';
 import { Surface, useTheme, Divider } from 'react-native-paper';
-import DirectMessage from '../components/chatFeature/DirectMessage';
+import DirectMessagePreview from '../components/chatFeature/DirectMessagePreview';
 
 const HomeScreen = () => {
     const theme = useTheme();
@@ -19,7 +19,7 @@ const HomeScreen = () => {
             <Divider horizontalInset />
             <Surface style={{ flexDirection: 'column', flex: 2, margin: 10, borderRadius: 10 }} elevation={2}>
                 {/* <UpcomingReminders /> */}
-                <DirectMessage />
+                <DirectMessagePreview />
             </Surface>
             <Divider horizontalInset />
             <Surface style={{ flexDirection: 'column', flex: 1,  margin: 10, borderRadius: 10 }} elevation={2}>

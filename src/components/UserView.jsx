@@ -6,6 +6,7 @@ import { fetchAllUsers, BASE_URL } from "../utils/api";
 import usePushNotification from "../hooks/usePushNotification";
 import { useNavigation } from "@react-navigation/native";
 import { socket } from "../utils/socket";
+
 import * as SecureStore from 'expo-secure-store';
 
 const { width, height } = Dimensions.get('window');
@@ -18,6 +19,7 @@ export const UserView = () => {
     const sender = useSelector(state => state.user);
     const navigation = useNavigation();
     const theme = useTheme();
+    
 
     useLayoutEffect(() => {
         fetchAllUsers().then((data) => {
@@ -34,6 +36,8 @@ export const UserView = () => {
                 setAllUsers(data.users)
             })
           });
+
+        
     },[socket])
 
     const handleCreatePrivateRoom = async (user) => {
