@@ -11,12 +11,8 @@ import * as Crypto from 'expo-crypto';
 
 const DirectMessageScreen = ({ route, navigation }) => {
     const dispatch = useDispatch();
-    const { recipient } = route.params;
+    const { recipientId, recipientName } = route.params;
     const [chatMessages, setChatMessages] = useState([]);
-    const [privateRoom, setPrivateRoom] =useState({
-        recipient: recipient,
-        messages:[]
-    })
     const [text, setText] = useState("");
     const notifyUser = useSelector(state => state.user)
     const theme = useTheme();
@@ -49,7 +45,8 @@ const DirectMessageScreen = ({ route, navigation }) => {
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <BackButton
                     onPressButton={() => {
-                        navigation.navigate('TabNavigator', { screen: 'ChatRoomListScreen' })
+                        Keyboard.dismiss()
+                        navigation.navigate('TabNavigator', { screen: 'HomeScreen' })
                     }}
                 />
             </View>
@@ -58,20 +55,18 @@ const DirectMessageScreen = ({ route, navigation }) => {
 
     useLayoutEffect(() => {
         navigation.setOptions({
-            headerTitle: recipient.userName,
-            headerTitleStyle: { color:theme.colors.primary, fontWeight:600, fontSize:24 },
+            headerTitle: recipientName.toUpperCase(),
+            headerTitleStyle: { color:theme.colors.primary, fontWeight:900 },
             headerStyle: { backgroundColor: theme.colors.primaryContainer },
             headerRight: (props) => <RightHeaderButtons {...props} />,
             headerLeft: (props) => <LeftHeaderButtons {...props} />
         });
         if(notifyUser.privateRooms){
-        let existingChat = notifyUser.privateRooms.find(room => room.recipient === recipient._id)
+        let existingChat = notifyUser.privateRooms.find(room => room.recipientId === recipientId)
         if(existingChat) {
             setChatMessages(existingChat.messages)
         }
         }
-        console.log("IRANNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN")
-        //socket.emit('joinPrivateRoom', recipient._id);
 }, []);
 
 useEffect(()=>{
@@ -113,7 +108,8 @@ const handleNewPrivateMessage = () => {
             messageId,
             text,
             fromSelf: true,
-            receiverId: recipient._id,
+            receiverId: recipientId,
+            receiver: recipientName,
             sender: notifyUser.userName,
             senderId: notifyUser._id,
             profileImage: notifyUser.profileImage,

@@ -8,7 +8,7 @@ import { styles } from "../../utils/styles";
 import { BASE_URL } from "../../utils/api";
 import ChatRoomMessage from "./ChatRoomMessage";
 
-export const PreviewItem = ({ item }) => {
+export const DirectMessagePreviewItem = ({ item }) => {
     const user = useSelector(state => state.user)
     const navigation = useNavigation();
     const [messages, setMessages] = useState([]);
@@ -33,29 +33,25 @@ export const PreviewItem = ({ item }) => {
 
     const handleNavigation = () => {
         navigation.navigate({
-            name: 'ChatRoomScreen',
+            name: 'DirectMessageScreen',
             params: {
-                roomId: item.roomId,
-                name: item.roomName,
+                recipientId: item.recipientId,
+                recipientName: item.recipientName
             }
         });
     };
 
     function MessagePreview({ message }) {
-        const isFromMe = message.sender === user.userName;
         return (
             <View
                 style={
-                    isFromMe
+                    message.fromSelf
                         ? [styles.previewMessageWrapper, { alignItems: "flex-end" }]
                         : styles.previewMessageWrapper
                 }
             >
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    {isFromMe
-                        ?
-                        null
-                        :
+                    {!message.fromSelf &&
                         <>
                             {
                                 message.profileImage
@@ -77,7 +73,7 @@ export const PreviewItem = ({ item }) => {
                     }
                     <View
                         style={[styles.previewMessage,
-                        isFromMe
+                        message.fromSelf
                             ? { backgroundColor: theme.colors.primary, marginRight: 5 }
                             : { backgroundColor: theme.colors.secondary }
                         ]}
@@ -87,12 +83,12 @@ export const PreviewItem = ({ item }) => {
                                 {message.text}
                             </Text>
                         }
-
-                        <Text variant="bodySmall" style={{ color: theme.colors.textMuted }}>{message.time}</Text>
-
+                        <Text variant="bodySmall" style={{ color: theme.colors.textMuted }}>
+                            {message.time}
+                        </Text>
                         <View
                             style={[
-                                isFromMe
+                                message.fromSelf
                                     ? [styles.rightArrow, { backgroundColor: theme.colors.primary }]
                                     : [styles.leftArrow, { backgroundColor: theme.colors.secondary }]
                             ]}
@@ -100,7 +96,7 @@ export const PreviewItem = ({ item }) => {
                         </View>
                         <View
                             style={[
-                                isFromMe
+                                message.fromSelf
                                     ? styles.rightArrowOverlap
                                     : styles.leftArrowOverlap,
                                 { backgroundColor: theme.colors.primaryContainer }
@@ -109,7 +105,6 @@ export const PreviewItem = ({ item }) => {
                         </View>
                     </View>
                 </View>
-                {/* <Text style={{ marginLeft: 40 }}>{message.time}</Text> */}
             </View>
 
         );
@@ -132,40 +127,18 @@ export const PreviewItem = ({ item }) => {
             <View style={styles.chatRoomPreviewTitle}>
                 <Ionicons
                     name='chatbubble-ellipses-sharp'
-                    size={30}
+                    size={24}
                     color={theme.colors.onPrimaryContainer}
-                />
-                {!item.isPrivate
-                    ?
+                />      
                     <Text
-                        variant="headlineSmall"
                         style={{
                             color: theme.colors.onPrimaryContainer,
+                            fontSize: 18,
+                            fontWeight:900,
                             marginLeft: 5
                         }}>
-                        {item.roomName}
+                        {item.recipientName.toUpperCase()}
                     </Text>
-                    :
-                    user._id === item.senderId
-                        ?
-                        <Text
-                            variant="headlineSmall"
-                            style={{
-                                color: theme.colors.onPrimaryContainer,
-                                marginLeft: 5
-                            }}>
-                            {item.reciever}
-                        </Text>
-                        :
-                        <Text
-                            variant="headlineSmall"
-                            style={{
-                                color: theme.colors.onPrimaryContainer,
-                                marginLeft: 5
-                            }}>
-                            {item.sender}
-                        </Text>
-                }
             </View>
 
             <View style={styles.chatRoomPreviewContent}>

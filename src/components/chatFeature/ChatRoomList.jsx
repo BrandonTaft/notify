@@ -6,7 +6,7 @@ import { addChatRoom, addAllRoomsFromServer } from "../../redux/chatRoomSlice";
 import ChatRoomListItem from "./ChatRoomListItem";
 import { Text, useTheme, Chip, FAB } from 'react-native-paper';
 import {socket, publicSocket, privateSocket} from "../../utils/socket";
-import { CreateChatComponent } from "./CreateChatComponent";
+import { CreateChatComponent } from "./CreateChatRoom";
 
 export default function ChatRoomList() {
   const [showCreateChatComponent, setShowCreateChatComponent] = useState(false);

@@ -1,7 +1,7 @@
 import { useState, useLayoutEffect } from "react";
 import { View } from "react-native";
 import { styles } from "../utils/styles";
-import { CreateChatComponent } from "../components/chatFeature/CreateChatComponent";
+import { CreateChatComponent } from "../components/chatFeature/CreateChatRoom";
 import { Text, useTheme, FAB } from 'react-native-paper';
 import ChatRoomList from "../components/chatFeature/ChatRoomList";
 

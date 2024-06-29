@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import * as Crypto from 'expo-crypto';
 import { useNavigation } from "@react-navigation/native";
 
-export const CreateChatComponent = ({ showCreateChatComponent, setShowCreateChatComponent }) => {
+export const CreateChatRoom = ({ showCreateChatComponent, setShowCreateChatComponent }) => {
     const [roomName, setRoomName] = useState("");
     const [isPrivate, setIsPrivate] = useState(false);
     const user = useSelector(state => state.user);

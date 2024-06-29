@@ -44,7 +44,8 @@ export const UserView = () => {
         navigation.navigate({
             name: 'DirectMessageScreen',
             params: {
-                recipient: user
+                recipientId: user._id,
+                recipientName: user.userName
             }
         })
     };

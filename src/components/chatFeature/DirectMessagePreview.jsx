@@ -2,12 +2,9 @@ import { useState, useLayoutEffect, useEffect, useRef } from "react";
 import { View, Animated, Dimensions, StyleSheet } from "react-native";
 import { Text, useTheme, Chip, IconButton } from 'react-native-paper';
 import { useSelector, useDispatch } from 'react-redux';
-import { addPrivateRooms } from "../../redux/userSlice";
-import { PreviewItem } from "./PreviewItem";
-import { CreateChatComponent } from "./CreateChatComponent";
-import { fetchDirectMessages } from "../../utils/api";
+import { DirectMessagePreviewItem } from "./DirectMessagePreviewItem";
 import PagerView from 'react-native-pager-view';
-import {socket, publicSocket, privateSocket} from "../../utils/socket";
+import { socket } from "../../utils/socket";
 
 const { width, height } = Dimensions.get('window');
 const DOT_SIZE = 35;
@@ -16,7 +13,6 @@ export default function DirectMessagePreview() {
   const AnimatedPagerView = Animated.createAnimatedComponent(PagerView);
   const scrollOffsetAnimatedValue = useRef(new Animated.Value(0)).current;
   const positionAnimatedValue = useRef(new Animated.Value(0)).current;
-  const [showCreateChatComponent, setShowCreateChatComponent] = useState(false);
   const [chatRooms, setChatRooms] = useState([]);
   const user = useSelector(state => state.user)
   const dispatch = useDispatch()
@@ -58,7 +54,7 @@ export default function DirectMessagePreview() {
         />
         {chatRooms.map((item) => {
           return (
-            <View key={item.recipient} style={styles.paginationDotContainer}>
+            <View key={item.recipientId} style={styles.paginationDotContainer}>
               <View
                 style={[styles.paginationDot, { backgroundColor: theme.colors.primaryContainer }]}
               />
@@ -68,7 +64,6 @@ export default function DirectMessagePreview() {
       </View>
     );
   };
-console.log("CHATROOMS",chatRooms)
   return (
     <View style={[{ flex: 1 }]}>
       {chatRooms.length > 0 ? (
@@ -94,26 +89,13 @@ console.log("CHATROOMS",chatRooms)
           >
             {chatRooms.map((room, index) => {
               return (
-                <View key={room.recipient}>
-                  <PreviewItem item={room} />
+                <View key={room.recipientId}>
+                  <DirectMessagePreviewItem item={room} />
                 </View>
               )
             })}
           </AnimatedPagerView>
-          <IconButton
-            mode="contained"
-            icon="plus"
-            iconColor={theme.colors.onPrimaryContainer}
-            size={24}
-            style={{
-              backgroundColor: theme.colors.primaryContainer,
-              position: 'absolute',
-              margin: 0,
-              right: 0,
-              bottom: 0,
-            }}
-            onPress={() => setShowCreateChatComponent(true)}
-          />
+
           <Pagination
             scrollOffsetAnimatedValue={scrollOffsetAnimatedValue}
             positionAnimatedValue={positionAnimatedValue}
@@ -121,23 +103,9 @@ console.log("CHATROOMS",chatRooms)
         </>
       ) : (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-          <Text variant="headlineSmall" style={{ color: theme.colors.text }}>No rooms created!</Text>
-          <Chip
-            icon="chat"
-            elevated={true}
-            rippleColor="rgba(0, 0, 0, .25)"
-            onPress={() => setShowCreateChatComponent(true)}
-            style={{ margin: 20 }}
-            textStyle={{ fontSize: 17, fontWeight: 'bold' }}
-          >
-            Create Room
-          </Chip>
+          <Text variant="headlineSmall" style={{ color: theme.colors.text }}>No Direct Messages!</Text>
         </View>
       )}
-      <CreateChatComponent
-        showCreateChatComponent={showCreateChatComponent}
-        setShowCreateChatComponent={setShowCreateChatComponent}
-      />
     </View >
   );
 };

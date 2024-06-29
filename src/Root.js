@@ -57,11 +57,10 @@ export default function Root() {
         return (
             <Tab.Navigator
                 initialRouteName="HomeScreen"
-                tabBarStyle={{ backgroundColor: theme.colors.primaryContainer, borderRadius:220 }}
                 swipeEnabled
                 labeled={false}
                 activeColor='blue'
-                activeIndicatorStyle={{ backgroundColor: theme.colors.outline, padding:30, borderRadius:100 }}
+                activeIndicatorStyle={{ backgroundColor: theme.colors.outline, borderRadius:100 }}
             >
                 <Tab.Screen
                     name='HomeScreen'

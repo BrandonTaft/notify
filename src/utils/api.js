@@ -12,37 +12,37 @@ export const fetchAllUsers = async () => {
             'Content-Type': 'application/json',
         }
     })
-    .then((res) => res.json())
-      .catch((error) => console.log("Server did not respond", error))
-  };
+        .then((res) => res.json())
+        .catch((error) => console.log("Server did not respond", error))
+};
 
-export const registerUser = async(user) => {
+export const registerUser = async (user) => {
     return await fetch(BASE_URL + '/api/users/register', {
         method: 'POST',
         headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ user : user })
+        body: JSON.stringify({ user: user })
     })
-    .then(response => response.json())
-    .catch((error) => console.log("An unexpected error has occurred :", error))
+        .then(response => response.json())
+        .catch((error) => console.log("An unexpected error has occurred :", error))
 }
 
-export const logInUser = async(user) => {
+export const logInUser = async (user) => {
     return await fetch(BASE_URL + '/api/users/login', {
         method: 'POST',
         headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ user : user })
+        body: JSON.stringify({ user: user })
     })
-    .then(response => response.json()) 
-    .catch((error) => console.log("An unexpected error has occurred :", error))
+        .then(response => response.json())
+        .catch((error) => console.log("An unexpected error has occurred :", error))
 };
 
-export const refreshUser = async(userId) => {
+export const refreshUser = async (userId) => {
     let token = await SecureStore.getItemAsync("secureToken");
     return await fetch(BASE_URL + '/api/users/refresh', {
         method: 'POST',
@@ -51,14 +51,14 @@ export const refreshUser = async(userId) => {
             Accept: 'application/json',
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ userId : userId })
+        body: JSON.stringify({ userId: userId })
     })
-    .then(response => response.json()) 
-    .catch((error) => console.log("An unexpected error has occurred :", error))
+        .then(response => response.json())
+        .catch((error) => console.log("An unexpected error has occurred :", error))
 };
 
 
-export const logOutUser = async(user) => {
+export const logOutUser = async (user) => {
     await AsyncStorage.removeItem("notify_user");
     await SecureStore.deleteItemAsync("secureToken")
     return await fetch(BASE_URL + '/api/users/logout', {
@@ -67,15 +67,15 @@ export const logOutUser = async(user) => {
             Accept: 'application/json',
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ user : user })
+        body: JSON.stringify({ user: user })
     })
-    .catch((error) => console.log("Server did not respond"))
+        .catch((error) => console.log("Server did not respond"))
 };
 
 
-export const deleteUser = async(user) => {
+export const deleteUser = async (user) => {
     let token = await SecureStore.getItemAsync("secureToken");
-    await AsyncStorage.removeItem("notify_user"); 
+    await AsyncStorage.removeItem("notify_user");
     return await fetch(BASE_URL + '/api/users/delete', {
         method: 'DELETE',
         headers: {
@@ -83,19 +83,19 @@ export const deleteUser = async(user) => {
             Accept: 'application/json',
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ user : user })
+        body: JSON.stringify({ user: user })
     })
-    .then(response => response.json())
-    .then(async (result) => {
-        await SecureStore.deleteItemAsync("secureToken")
-        if (!result.success) {
-            setMessage("There was an error deleting the profile");
-        }
-    })
-    .catch((error) => console.log("Server did not respond"))
+        .then(response => response.json())
+        .then(async (result) => {
+            await SecureStore.deleteItemAsync("secureToken")
+            if (!result.success) {
+                setMessage("There was an error deleting the profile");
+            }
+        })
+        .catch((error) => console.log("Server did not respond"))
 };
 
-export const updateUserProfile = async(userId, updatedProfileData) => {
+export const updateUserProfile = async (userId, updatedProfileData) => {
     let token = await SecureStore.getItemAsync("secureToken");
     return await fetch(BASE_URL + '/api/users/update', {
         method: 'PUT',
@@ -104,16 +104,16 @@ export const updateUserProfile = async(userId, updatedProfileData) => {
             Accept: 'application/json',
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ 
-            userId : userId, 
+        body: JSON.stringify({
+            userId: userId,
             updatedProfileData: updatedProfileData
         })
     })
-    .then(response => response.json())
-    .catch((error) => console.log("Server "))
+        .then(response => response.json())
+        .catch((error) => console.log("Server "))
 }
 
-export const updateUserPrivateRoom = async(userId, otherPartyId, message) => {
+export const updateUserPrivateRoom = async (userId, otherPartyId, otherPartyName, message) => {
     let token = await SecureStore.getItemAsync("secureToken");
     return await fetch(BASE_URL + '/api/updateprivateroom', {
         method: 'POST',
@@ -122,14 +122,15 @@ export const updateUserPrivateRoom = async(userId, otherPartyId, message) => {
             Accept: 'application/json',
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ 
-           userId,
-           otherPartyId,
+        body: JSON.stringify({
+            userId,
+            otherPartyId,
+            otherPartyName,
             message
         })
     })
-    .then(response => response.json())
-    .catch((error) => console.log("Server "))
+        .then(response => response.json())
+        .catch((error) => console.log("Server "))
 }
 
 export const storeProfileImage = async (imageType, uri, userId) => {
@@ -142,8 +143,8 @@ export const storeProfileImage = async (imageType, uri, userId) => {
         type: `image/${fileType}`,
     });
     formData.append('userId', userId)
-    formData.append('image',uri)
-    formData.append('imageType',imageType)
+    formData.append('image', uri)
+    formData.append('imageType', imageType)
     return await fetch(BASE_URL + '/api/users/profile-image',
         {
             method: 'POST',
@@ -172,7 +173,7 @@ export const storeBannerImage = async (uri, userId) => {
         type: `image/${fileType}`
     });
     formData.append('userId', userId)
-    formData.append('bannerImage',uri)
+    formData.append('bannerImage', uri)
     return await fetch(BASE_URL + '/api/users/banner-image',
         {
             method: 'POST',
@@ -196,24 +197,24 @@ export const fetchReminders = async (userId) => {
     let token = await SecureStore.getItemAsync("secureToken");
     let user = await AsyncStorage.getItem("notify_user")
     return await fetch(BASE_URL + '/api/reminders', {
-    method: 'POST',
+        method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`,
             Accept: 'application/json',
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({userId: JSON.parse(user)._id})
+        body: JSON.stringify({ userId: JSON.parse(user)._id })
     })
-    .then(response => response.json())
-    .catch((error) => console.log("An unexpected error has occurred :", error))
+        .then(response => response.json())
+        .catch((error) => console.log("An unexpected error has occurred :", error))
 };
 
-export const addReminder = async(reminder) => {
+export const addReminder = async (reminder) => {
     console.log("REMINDER", reminder)
     let token = await SecureStore.getItemAsync("secureToken");
     let user = await AsyncStorage.getItem("notify_user")
-    let userId = JSON.parse(user)._id; 
-    
+    let userId = JSON.parse(user)._id;
+
     return await fetch(BASE_URL + '/api/reminders/add-reminder', {
         method: 'POST',
         headers: {
@@ -221,17 +222,17 @@ export const addReminder = async(reminder) => {
             Accept: 'application/json',
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({userId: userId, reminder:reminder})
+        body: JSON.stringify({ userId: userId, reminder: reminder })
     })
-    .then(response => response.json())
-    .catch((error) => console.log("An unexpected error has occurred :", error))
+        .then(response => response.json())
+        .catch((error) => console.log("An unexpected error has occurred :", error))
 };
 
-export const updateReminderApi = async(reminder) => {
+export const updateReminderApi = async (reminder) => {
     let token = await SecureStore.getItemAsync("secureToken");
     let user = await AsyncStorage.getItem("notify_user")
-    let userId = JSON.parse(user)._id; 
-    
+    let userId = JSON.parse(user)._id;
+
     return await fetch(BASE_URL + '/api/reminders/update', {
         method: 'POST',
         headers: {
@@ -239,18 +240,18 @@ export const updateReminderApi = async(reminder) => {
             Accept: 'application/json',
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({userId: userId, updatedReminder:reminder})
+        body: JSON.stringify({ userId: userId, updatedReminder: reminder })
     })
-    .then(response => response.json())
-    .catch((error) => console.log("An unexpected error has occurred :", error))
+        .then(response => response.json())
+        .catch((error) => console.log("An unexpected error has occurred :", error))
 }
 
 
-export const deleteReminderApi = async(reminderId) => {
+export const deleteReminderApi = async (reminderId) => {
     let token = await SecureStore.getItemAsync("secureToken");
     let user = await AsyncStorage.getItem("notify_user")
-    let userId = JSON.parse(user)._id; 
-    
+    let userId = JSON.parse(user)._id;
+
     return await fetch(BASE_URL + '/api/reminders/delete', {
         method: 'POST',
         headers: {
@@ -258,17 +259,17 @@ export const deleteReminderApi = async(reminderId) => {
             Accept: 'application/json',
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({userId: userId, reminderId:reminderId})
+        body: JSON.stringify({ userId: userId, reminderId: reminderId })
     })
-    .then(response => response.json())
-    .catch((error) => console.log("An unexpected error has occurred :", error))
+        .then(response => response.json())
+        .catch((error) => console.log("An unexpected error has occurred :", error))
 }
 
-export const clearReminder = async(reminderId) => {
+export const clearReminder = async (reminderId) => {
     let token = await SecureStore.getItemAsync("secureToken");
     let user = await AsyncStorage.getItem("notify_user")
-    let userId = JSON.parse(user)._id; 
-    
+    let userId = JSON.parse(user)._id;
+
     return await fetch(BASE_URL + '/api/reminders/clear', {
         method: 'POST',
         headers: {
@@ -276,17 +277,17 @@ export const clearReminder = async(reminderId) => {
             Accept: 'application/json',
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({userId: userId, reminderId:reminderId})
+        body: JSON.stringify({ userId: userId, reminderId: reminderId })
     })
-    .then(response => response.json())
-    .catch((error) => console.log("An unexpected error has occurred :", error))
+        .then(response => response.json())
+        .catch((error) => console.log("An unexpected error has occurred :", error))
 };
 
-export const completeReminderApi = async(reminderId) => {
+export const completeReminderApi = async (reminderId) => {
     let token = await SecureStore.getItemAsync("secureToken");
     let user = await AsyncStorage.getItem("notify_user")
-    let userId = JSON.parse(user)._id; 
-    
+    let userId = JSON.parse(user)._id;
+
     return await fetch(BASE_URL + '/api/reminders/complete', {
         method: 'POST',
         headers: {
@@ -294,17 +295,17 @@ export const completeReminderApi = async(reminderId) => {
             Accept: 'application/json',
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({userId: userId, reminderId:reminderId})
+        body: JSON.stringify({ userId: userId, reminderId: reminderId })
     })
-    .then(response => response.json())
-    .catch((error) => console.log("An unexpected error has occurred :", error))
+        .then(response => response.json())
+        .catch((error) => console.log("An unexpected error has occurred :", error))
 }
 
-export const updateNoteApi = async(note) => {
+export const updateNoteApi = async (note) => {
     let token = await SecureStore.getItemAsync("secureToken");
     let user = await AsyncStorage.getItem("notify_user")
-    let userId = JSON.parse(user)._id; 
-    
+    let userId = JSON.parse(user)._id;
+
     return await fetch(BASE_URL + '/api/users/edit-note', {
         method: 'POST',
         headers: {
@@ -312,17 +313,17 @@ export const updateNoteApi = async(note) => {
             Accept: 'application/json',
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({userId: userId, updatedNote:note})
+        body: JSON.stringify({ userId: userId, updatedNote: note })
     })
-    .then(response => response.json())
-    .catch((error) => console.log("An unexpected error has occurred :", error))
+        .then(response => response.json())
+        .catch((error) => console.log("An unexpected error has occurred :", error))
 };
 
-export const deleteNoteApi = async(noteId) => {
+export const deleteNoteApi = async (noteId) => {
     let token = await SecureStore.getItemAsync("secureToken");
     let user = await AsyncStorage.getItem("notify_user")
-    let userId = JSON.parse(user)._id; 
-    
+    let userId = JSON.parse(user)._id;
+
     return await fetch(BASE_URL + '/api/users/delete-note', {
         method: 'POST',
         headers: {
@@ -330,35 +331,35 @@ export const deleteNoteApi = async(noteId) => {
             Accept: 'application/json',
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({userId: userId, noteId: noteId})
+        body: JSON.stringify({ userId: userId, noteId: noteId })
     })
-    .then(response => response.json())
-    .catch((error) => console.log("An unexpected error has occurred :", error))
+        .then(response => response.json())
+        .catch((error) => console.log("An unexpected error has occurred :", error))
 }
 
 export const fetchGroups = async () => {
     return await fetch(BASE_URL + '/api/chatrooms')
-      .then((res) => res.json())
-      .catch((error) => console.log("Chat Server did not respond", error))
-  };
+        .then((res) => res.json())
+        .catch((error) => console.log("Chat Server did not respond", error))
+};
 
-  export const fetchOrgs = async () => {
+export const fetchOrgs = async () => {
     return await fetch(BASE_URL + '/api/org')
-      .then((res) => res.json())
-      .catch((error) => console.log("Unable to retrieve organizations", error))
-  };
+        .then((res) => res.json())
+        .catch((error) => console.log("Unable to retrieve organizations", error))
+};
 
-  export const createNewOrg = async(org) => {
+export const createNewOrg = async (org) => {
     return await fetch(BASE_URL + '/api/org/create', {
         method: 'POST',
         headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ organization : org })
+        body: JSON.stringify({ organization: org })
     })
-    .then(response => response.json())
-    .catch((error) => console.log("An unexpected error has occurred :", error))
+        .then(response => response.json())
+        .catch((error) => console.log("An unexpected error has occurred :", error))
 };
 // export const fetchDirectMessages = async () => {
 //     let token = await SecureStore.getItemAsync("secureToken");

@@ -3,8 +3,8 @@ import { View, Animated, Dimensions, StyleSheet } from "react-native";
 import { Text, useTheme, Chip, IconButton } from 'react-native-paper';
 import { useSelector, useDispatch } from 'react-redux';
 import { addChatRoom, addAllRoomsFromServer } from "../../redux/chatRoomSlice";
-import { PreviewItem } from "./PreviewItem";
-import { CreateChatComponent } from "./CreateChatComponent";
+import { ChatRoomPreviewItem } from "./ChatRoomPreviewItem";
+import { CreateChatRoom } from "./CreateChatRoom";
 import { fetchGroups } from "../../utils/api";
 import PagerView from 'react-native-pager-view';
 import {socket, publicSocket, privateSocket} from "../../utils/socket";
@@ -109,7 +109,7 @@ export default function ChatRoomPreview() {
             {chatRooms.map((room, index) => {
               return (
                 <View key={room._id}>
-                  <PreviewItem item={room} />
+                  <ChatRoomPreviewItem item={room} />
                 </View>
               )
             })}
@@ -148,7 +148,7 @@ export default function ChatRoomPreview() {
           </Chip>
         </View>
       )}
-      <CreateChatComponent
+      <CreateChatRoom
         showCreateChatComponent={showCreateChatComponent}
         setShowCreateChatComponent={setShowCreateChatComponent}
       />

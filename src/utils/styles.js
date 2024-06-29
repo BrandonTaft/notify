@@ -109,6 +109,7 @@ export const styles = StyleSheet.create({
         overflow: 'hidden'
     },
     chatRoomPreviewTitle: {
+        width:'100%',
         flexDirection: "row",
         justifyContent: "center",
        alignItems:'center'
@@ -119,23 +120,18 @@ export const styles = StyleSheet.create({
         justifyContent: 'flex-end',
     },
     previewMessageWrapper: {
-        width: "100%",
         alignItems: "flex-start",
         marginBottom: 10,
     },
     previewMessage: {
         paddingHorizontal: 10,
-        paddingVertical: 5,
+        paddingVertical: 3,
         borderRadius: 20,
         marginLeft: 10,
         minWidth: "25%",
         alignSelf: 'flex-start',
     },
     pagination: {
-       backgroundColor:"red",
-        // position: 'absolute',
-       
-        //bottom: 40,
         flexDirection: 'row',
         height: 40,
       },

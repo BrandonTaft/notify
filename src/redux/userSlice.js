@@ -119,25 +119,25 @@ export const userSlice = createSlice({
     addPrivateMessage: (state, action) => {
       let existingRoom;
       if (!action.payload.fromSelf) {
-        existingRoom = state.privateRooms.find(room => room.recipient === action.payload.senderId)
+        existingRoom = state.privateRooms.find(room => room.recipientId === action.payload.senderId)
         if (existingRoom) {
           existingRoom.messages.push(action.payload)
         } else {
           state.privateRooms.push({
-            recipient: action.payload.senderId, messages: [action.payload]
+            recipientId: action.payload.senderId, recipientName: action.payload.sender, messages: [action.payload]
           })
         }
-        updateUserPrivateRoom(state._id, action.payload.senderId, action.payload)
+        updateUserPrivateRoom(state._id, action.payload.senderId, action.payload.sender, action.payload)
       } else if (action.payload.fromSelf) {
-        existingRoom = state.privateRooms.find(room => room.recipient === action.payload.receiverId)
+        existingRoom = state.privateRooms.find(room => room.recipientId === action.payload.receiverId)
         if (existingRoom) {
           existingRoom.messages.push(action.payload)
         } else {
           state.privateRooms.push({
-            recipient: action.payload.receiverId, messages: [action.payload]
+            recipientId: action.payload.receiverId, recipientName: action.payload.receiver, messages: [action.payload]
           })
         }
-        updateUserPrivateRoom( state._id, action.payload.receiverId, action.payload)
+        updateUserPrivateRoom( state._id, action.payload.receiverId, action.payload.receiver, action.payload)
       }
       
       console.log("usersliceeeee private roooms",state.userName, state.privateRooms)
