@@ -40,7 +40,7 @@ export const darkColors = {
     },
     "surfaceDisabled": "rgba(231, 225, 229, 0.12)",
     "onSurfaceDisabled": "rgba(231, 225, 229, 0.38)",
-    "backdrop": "rgba(51, 47, 55, 0.4)"
+    "backdrop": "rgba(51, 47, 55, 0.74)"
 }
 
 export const lightColors = {
@@ -85,5 +85,5 @@ export const lightColors = {
     },
     "surfaceDisabled": "rgba(29, 27, 30, 0.12)",
     "onSurfaceDisabled": "rgba(29, 27, 30, 0.38)",
-    "backdrop": "rgba(51, 47, 55, 0.4)"
+    "backdrop": "rgba(51, 47, 55, 0.74)"
 }

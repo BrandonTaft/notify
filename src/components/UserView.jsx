@@ -7,19 +7,16 @@ import usePushNotification from "../hooks/usePushNotification";
 import { useNavigation } from "@react-navigation/native";
 import { socket } from "../utils/socket";
 
-import * as SecureStore from 'expo-secure-store';
-
-const { width, height } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 const ELEMENT_WIDTH = width * .36
 
 export const UserView = () => {
     const { sendPushNotification } = usePushNotification();
     const [allUsers, setAllUsers] = useState([]);
-    const [showChatScreen, setShowChatScreen] = useState(false)
-    const sender = useSelector(state => state.user);
+    const self = useSelector(state => state.user);
     const navigation = useNavigation();
     const theme = useTheme();
-    
+
 
     useLayoutEffect(() => {
         fetchAllUsers().then((data) => {
@@ -35,19 +32,19 @@ export const UserView = () => {
             fetchAllUsers().then((data) => {
                 setAllUsers(data.users)
             })
-          });
-
-        
-    },[socket])
+        });
+    }, [socket])
 
     const handleCreatePrivateRoom = async (user) => {
-        navigation.navigate({
-            name: 'DirectMessageScreen',
-            params: {
-                recipientId: user._id,
-                recipientName: user.userName
-            }
-        })
+        if (user._id !== self._id) {
+            navigation.navigate({
+                name: 'DirectMessageScreen',
+                params: {
+                    recipientId: user._id,
+                    recipientName: user.userName
+                }
+            })
+        }
     };
 
     const UserAvatar = ({ user }) => {

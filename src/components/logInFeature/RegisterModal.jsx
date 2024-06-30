@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Surface, useTheme, Button, Text, TextInput, Modal, Portal } from 'react-native-paper';
-import DropDownPicker from 'react-native-dropdown-picker';
+import { View, ScrollView, Dimensions } from 'react-native';
+import { Surface, useTheme, Button, IconButton, Text, TextInput, Modal, Portal } from 'react-native-paper';
 import { registerUser, fetchOrgs } from '../../utils/api';
 import Alert from '../Alert';
 import CreateOrgModal from './CreateOrgModal';
@@ -17,6 +17,7 @@ export default function RegisterModal() {
   const [orgList, setOrgList] = useState([]);
   const [message, setMessage] = useState('');
   const [value, setValue] = useState(null);
+  const [orgIsSet, setOrgIsSet] = useState(false);
   const [newUser, setNewUser] = useState({
     userName: '',
     password: '',
@@ -24,6 +25,7 @@ export default function RegisterModal() {
     expoPushToken: ''
   });
   const { expoPushToken, sendPushNotification } = usePushNotification();
+  const { width, height } = Dimensions.get('window');
   const theme = useTheme();
 
   useEffect(() => {
@@ -53,7 +55,7 @@ export default function RegisterModal() {
     } else if (newUser.password !== passwordCopy) {
       setMessage("Passwords do not match")
     } else {
-      registerUser({...newUser, expoPushToken: expoPushToken}).then(result => {
+      registerUser({ ...newUser, expoPushToken: expoPushToken }).then(result => {
         if (result.success) {
           closeModal()
         } else {
@@ -63,7 +65,7 @@ export default function RegisterModal() {
     }
   };
 
-  
+
   const expandDropDown = (isOpen) => {
     if (isOpen) { Keyboard.dismiss() }
     setExpanded(isOpen)
@@ -111,7 +113,7 @@ export default function RegisterModal() {
                 setNewUser({ ...newUser, userName: value.trim() })
               }}
             />
-           
+
             <TextInput
               mode="outlined"
               autoCorrect={false}
@@ -154,45 +156,73 @@ export default function RegisterModal() {
                 />
               }
             />
-            <DropDownPicker
-              schema={{
-                label: 'name',
-                value: 'name'
+        
+            <Button
+              mode='outlined'
+              elevation={5}
+              onPress={() => setExpanded(true)}
+              style={{ 
+                width:'100%',
+                margin:10
               }}
-              itemKey="_id"
-              placeholder='Select an organization'
-              style={[{
-                marginTop: 10,
-                marginBottom: 5,
-                backgroundColor: theme.colors.background,
+              theme={theme.buttonRoundness}
+            >
+              {orgIsSet ? newUser.organization : 'Choose an organization' }
+            </Button>
+              <Portal>
+                <Modal visible={expanded} onDismiss={() => setExpanded(false)}
+                  contentContainerStyle={{
+                    borderStyle: 'solid',
+                    borderColor: theme.colors.primary,
+                    borderWidth: 1,
+                    borderRadius: 22,
+                    padding: 8,
+                    height: height * .5,
+                    zIndex: 9999,
+                    width: '90%',
+                    alignSelf: 'center',
+                    backgroundColor: theme.colors.surface,
+                  }}>
+                  <Text
+                    variant="titleLarge"
+                    style={{
+                      color: '#fff',
+                      textAlign: 'center'
+                    }}
+                  >
+                    Select an organization
+                  </Text>
+                  <IconButton
+                        mode='contained'
+                        icon="close"
+                        size={20}
+                        onPress={() => setExpanded(false)}
+                    />
+                  <ScrollView keyboardShouldPersistTaps="handled">
+                    <View style={{ flex: 1 }}>
+                      {orgList.map((item) => {
+                        return (
+                          <Button
+                            mode='elevated'
+                            elevation={5}
+                            onPress={(item) => {
+                                setNewUser({ ...newUser, organization: item.name })
+                                setOrgIsSet(true)
+                                setExpanded(false)
+                              }}
+                              style={{borderRadius:0, marginBottom:3}}
+                            textColor={theme.colors.primary}
+                            labelStyle={{ fontWeight: 'bold', fontSize: 17 }}
+                          >
+                            {item.name}
+                          </Button>
+                        )
+                      })}
+                    </View>
+                  </ScrollView>
 
-                borderRadius: 16
-              },
-              expanded ? { borderColor: theme.colors.primary, borderWidth: 2 } : { borderColor: theme.colors.outline },
-              ]}
-              textStyle={{
-                fontSize: 17,
-                color: theme.colors.secondary
-              }}
-              itemProps={{ style: { padding: 5, backgroundColor: theme.colors.background } }}
-              dropDownContainerStyle={{
-                backgroundColor: theme.colors.background,
-                borderColor: theme.colors.primary,
-                borderWidth: 2,
-                paddingVertical: 5,
-                paddingHorizontal: 8,
-              }}
-              searchable={true}
-              open={expanded}
-              value={value}
-              items={orgList}
-              itemSeparator={true}
-              setOpen={(isOpen) => expandDropDown(isOpen)}
-              setValue={setValue}
-              onSelectItem={(item) => {
-                setNewUser({ ...newUser, organization: item.name })
-              }}
-            />
+                </Modal>
+              </Portal>
             <Text>
               OR
             </Text>
@@ -200,12 +230,11 @@ export default function RegisterModal() {
             <Button
               mode='elevated'
               elevation={5}
-               onPress={() => registerNewUser(newUser)}
-              //onPress={() => sendPushNotification(expoPushToken, "HELLO WORLD")}
+              onPress={() => registerNewUser(newUser)}
               style={[{ backgroundColor: theme.colors.primary, margin: 15, width: '50%' }]}
               theme={theme.buttonRoundness}
               textColor={theme.colors.onPrimary}
-              labelStyle={{fontWeight:'bold', fontSize:17}}
+              labelStyle={{ fontWeight: 'bold', fontSize: 17 }}
             >
               Register
             </Button>

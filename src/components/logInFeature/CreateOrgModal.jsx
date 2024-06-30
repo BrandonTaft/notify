@@ -146,6 +146,14 @@ export default function CreateOrgModal({setRefresh, refresh}) {
             >
               DONE
             </Button>
+            <Button
+              onPress={() => setShowModal(false)}
+              style={[{ backgroundColor: theme.colors.primary, margin: 15, width: '50%' }]}
+              theme={theme.buttonRoundness}
+              textColor={theme.colors.onPrimary}
+            >
+              CANCEL
+            </Button>
             <Alert message={message} setMessage={setMessage} />
           </Surface>
         </Modal>
