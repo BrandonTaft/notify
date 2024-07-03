@@ -143,7 +143,11 @@ export const userSlice = createSlice({
       console.log("usersliceeeee private roooms",state.userName, state.privateRooms)
     },
     logOut: (state, action) => {
-      return { isLoggedIn: false }
+      return {
+        isLoggedIn: false,
+        notes: [],
+        privateRooms: []
+      }
     },
   },
   extraReducers: (builder) => {

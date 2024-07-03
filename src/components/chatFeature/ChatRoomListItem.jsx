@@ -17,7 +17,6 @@ const ChatRoomListItem = ({ item }) => {
         setMessages(item.messages[item.messages.length - 1]);
     }, [item]);
 
-
     const handleNavigation = () => {
         navigation.navigate( {
             name: 'ChatRoomScreen',

@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Alert from "../Alert";
 import { Text, Button, IconButton, TextInput, Surface, useTheme } from 'react-native-paper';
-
+import { socket } from "../../utils/socket";
 import { storeProfileImage, updateUserProfile, deleteUser, logOutUser } from "../../utils/api";
 import { editUserProfileImage, editUserBanner, editUserCredentials, logOut } from '../../redux/userSlice';
 
@@ -177,6 +177,7 @@ export const ProfileFormModal = () => {
                 onPress={() => {
                     logOutUser(user);
                     dispatch(logOut(user));
+                    socket.emit('logout', user._id)
                 }}
             >
                 Log Out

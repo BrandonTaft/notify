@@ -51,7 +51,6 @@ export const CreateChatRoom = ({ showCreateChatComponent, setShowCreateChatCompo
                     placeholder='Group name'
                     onChangeText={(value) => setRoomName(value)}
                 />
-
                
                     <Button mode='contained' onPress={handleCreateRoom}>
                         <Text style={styles.modaltext}>CREATE</Text>

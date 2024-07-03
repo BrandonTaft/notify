@@ -2,7 +2,7 @@ import React, { useLayoutEffect, useState, useEffect } from "react";
 import { View, TextInput, FlatList, Keyboard } from "react-native";
 import ChatRoomMessage from "../components/chatFeature/ChatRoomMessage";
 import { styles } from "../utils/styles";
-import {socket, publicSocket, privateSocket} from "../utils/socket";
+import {socket} from "../utils/socket";
 import { useSelector, useDispatch } from "react-redux";
 import { useTheme, IconButton, Button, Text } from "react-native-paper";
 import { AvatarButton, BackButton } from "../components/Buttons";
@@ -85,7 +85,7 @@ const ChatRoomScreen = ({ route, navigation }) => {
             const newMessage = {
                 message,
                 roomId: roomId,
-                sender: notifyUser.userName,
+                user: notifyUser.userName,
                 userId: notifyUser._id,
                 profileImage: notifyUser.profileImage,
                 org: notifyUser.organization,

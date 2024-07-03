@@ -42,7 +42,7 @@ export const ChatRoomPreviewItem = ({ item }) => {
     };
 
     function MessagePreview({ message }) {
-        const isFromMe = message.sender === user.userName;
+        const isFromMe = message.user === user.userName;
         return (
             <View
                 style={
@@ -68,7 +68,7 @@ export const ChatRoomPreviewItem = ({ item }) => {
                                     :
                                     <Avatar.Text
                                         size={40}
-                                        label={message.sender.charAt(0).toUpperCase()}
+                                        label={message.user ? message.user.charAt(0).toUpperCase() : "U"}
                                         style={{ backgroundColor: theme.colors.onPrimaryContainer, position: 'relative', zIndex: 999 }}
                                         labelStyle={{ color: theme.colors.onPrimary, fontWeight: 'bold' }}
                                     />
@@ -147,7 +147,7 @@ export const ChatRoomPreviewItem = ({ item }) => {
                         {item.roomName}
                     </Text>
                     :
-                    user._id === item.senderId
+                    user._id === item.userId
                         ?
                         <Text
                             variant="headlineSmall"
@@ -164,7 +164,7 @@ export const ChatRoomPreviewItem = ({ item }) => {
                                 color: theme.colors.onPrimaryContainer,
                                 marginLeft: 5
                             }}>
-                            {item.sender}
+                            {item.user}
                         </Text>
                 }
             </View>

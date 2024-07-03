@@ -40,12 +40,13 @@ export default function ChatRoomPreview() {
     positionAnimatedValue.setValue(0)
     scrollOffsetAnimatedValue.setValue(0)
     socket.on("chatRoomList", (rooms) => {
-      setChatRooms(rooms.slice(0, 5))
+      // setChatRooms(rooms.slice(0, 5))
+      setChatRooms(rooms)
       dispatch(addChatRoom(rooms))
     });
     dispatch(addChatRoom(rooms))
   }, [socket, rooms]);
-
+  
   const Pagination = ({
     scrollOffsetAnimatedValue,
     positionAnimatedValue,

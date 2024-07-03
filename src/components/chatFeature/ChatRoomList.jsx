@@ -5,8 +5,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { addChatRoom, addAllRoomsFromServer } from "../../redux/chatRoomSlice";
 import ChatRoomListItem from "./ChatRoomListItem";
 import { Text, useTheme, Chip, FAB } from 'react-native-paper';
-import {socket, publicSocket, privateSocket} from "../../utils/socket";
-import { CreateChatComponent } from "./CreateChatRoom";
+import {socket} from "../../utils/socket";
+import { CreateChatRoom } from "./CreateChatRoom";
 
 export default function ChatRoomList() {
   const [showCreateChatComponent, setShowCreateChatComponent] = useState(false);
@@ -68,7 +68,7 @@ export default function ChatRoomList() {
           </Chip>
         </View>
       )}
-      <CreateChatComponent
+      <CreateChatRoom
         showCreateChatComponent={showCreateChatComponent}
         setShowCreateChatComponent={setShowCreateChatComponent}
       />

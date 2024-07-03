@@ -203,11 +203,13 @@ export default function RegisterModal() {
                       {orgList.map((item) => {
                         return (
                           <Button
+                          key={item._id}
                             mode='elevated'
                             elevation={5}
-                            onPress={(item) => {
+                            onPress={() => {
                                 setNewUser({ ...newUser, organization: item.name })
                                 setOrgIsSet(true)
+                                console.log("NEWWWUSERRRR",newUser)
                                 setExpanded(false)
                               }}
                               style={{borderRadius:0, marginBottom:3}}
