@@ -8,7 +8,7 @@ import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import RegisterModal from "../components/logInFeature/RegisterModal";
 import Alert from "../components/Alert";
-import {socket} from "../utils/socket";
+import { socket } from "../utils/socket";
 
 const LoginScreen = () => {
     const [isLoading, setIsLoading] = useState(false);
@@ -21,13 +21,22 @@ const LoginScreen = () => {
     const dispatch = useDispatch();
     const theme = useTheme();
 
+    const signInToSocket = async (token, user) => {
+        dispatch(createUser({ ...user, isLoggedIn: true }))
+        const jsonValue = JSON.stringify(user)
+        await AsyncStorage.setItem("notify_user", jsonValue);
+        socket.auth = { token: token, user: user };
+        socket.connect();
+        socket.emit("user connected")
+    }
+
     useEffect(() => {
-        
+
         socket.on("connect_error", (err) => {
             if (err.message === "invalid user id") {
-              console.log("Unable to connect to server")
+                console.log("Unable to connect to server")
             }
-          });
+        });
 
         (async () => {
             try {
@@ -38,13 +47,7 @@ const LoginScreen = () => {
                     let user = JSON.parse(existingUser)
                     refreshUser(user._id).then(async (result) => {
                         if (result.success) {
-                            dispatch(createUser({ ...result.existingUser, isLoggedIn: true }))
-                            
-                            const jsonValue = JSON.stringify(result.existingUser)
-                            await AsyncStorage.setItem("notify_user", jsonValue);
-
-                            socket.auth = {token: token, user: result.existingUser};
-                            socket.connect();
+                            signInToSocket(token, result.existingUser)
                         } else {
                             setMessage(result.message)
                             setIsLoading(false)
@@ -68,11 +71,7 @@ const LoginScreen = () => {
             logInUser(notifyUser).then(async (result) => {
                 if (result.success) {
                     await SecureStore.setItemAsync("secureToken", result.token);
-                    dispatch(createUser({ ...result.existingUser, isLoggedIn: true }))
-                    socket.auth = {token: result.token, user: result.existingUser};
-                            socket.connect();
-                    const jsonValue = JSON.stringify(result.existingUser)
-                    await AsyncStorage.setItem("notify_user", jsonValue);
+                    signInToSocket(result.token, result.existingUser)
                 } else {
                     setMessage(result.message)
                 }

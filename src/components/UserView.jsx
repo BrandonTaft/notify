@@ -28,7 +28,12 @@ export const UserView = () => {
     useEffect(() => {
         socket.on("user connected", (user) => {
             console.log(`${user.userName} just connected`)
-            //when a user connects get new list from db
+            fetchAllUsers().then((data) => {
+                setAllUsers(data.users)
+            })
+        });
+        socket.on("user disconnected", (user) => {
+            console.log(`${user} just disconnected`)
             fetchAllUsers().then((data) => {
                 setAllUsers(data.users)
             })

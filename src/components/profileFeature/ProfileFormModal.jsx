@@ -177,7 +177,6 @@ export const ProfileFormModal = () => {
                 onPress={() => {
                     logOutUser(user);
                     dispatch(logOut(user));
-                    socket.emit('logout', user._id)
                 }}
             >
                 Log Out
