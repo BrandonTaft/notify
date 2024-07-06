@@ -44,10 +44,6 @@ export default function Root() {
     
     useEffect(() => {
         socket.on("newPrivateMessage", ({ newPrivateMessage }) => {
-      
-            console.log("newPrivateMessage", newPrivateMessage)
-            
-           
             dispatch(addPrivateMessage(newPrivateMessage))
           });
     },[socket])

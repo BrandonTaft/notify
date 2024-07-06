@@ -3,7 +3,6 @@ import { View } from "react-native";
 import { useSelector } from "react-redux";
 import { Avatar, useTheme, Text } from 'react-native-paper';
 import { styles } from "../../utils/styles";
-import { ReactionButtons } from "../Buttons";
 import { BASE_URL } from "../../utils/api";
 
 const DirectMessage = memo(( { message } ) => {
