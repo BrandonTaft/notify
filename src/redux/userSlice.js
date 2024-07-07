@@ -122,7 +122,7 @@ export const userSlice = createSlice({
         existingRoom = state.privateRooms.find(room => room.recipientId === action.payload.senderId)
         if (existingRoom) {
           existingRoom.messages.push(action.payload)
-          state.privateRooms.unshift(state.privateRooms.splice(state.privateRooms.findIndex(existingRoom), 1)[0])
+          state.privateRooms.unshift(state.privateRooms.splice(state.privateRooms.indexOf(existingRoom), 1)[0])
         } else {
           state.privateRooms.unshift({
             recipientId: action.payload.senderId, recipientName: action.payload.sender, messages: [action.payload]
@@ -133,7 +133,7 @@ export const userSlice = createSlice({
         existingRoom = state.privateRooms.find(room => room.recipientId === action.payload.receiverId)
         if (existingRoom) {
           existingRoom.messages.push(action.payload)
-          state.privateRooms.unshift(state.privateRooms.splice(state.privateRooms.findIndex(existingRoom), 1)[0])
+          state.privateRooms.unshift(state.privateRooms.splice(state.privateRooms.indexOf(existingRoom), 1)[0])
         } else {
           state.privateRooms.unshift({
             recipientId: action.payload.receiverId, recipientName: action.payload.receiver, messages: [action.payload]

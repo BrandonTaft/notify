@@ -81,7 +81,7 @@ export default function DirectMessagePreview() {
               ],
               {
                 listener: ({ nativeEvent: { offset, position } }) => {
-                  console.log(`Position: ${position} Offset: ${offset}`, scrollOffsetAnimatedValue);
+                  //console.log(`Position: ${position} Offset: ${offset}`, scrollOffsetAnimatedValue);
                 },
                 useNativeDriver: true,
               }
