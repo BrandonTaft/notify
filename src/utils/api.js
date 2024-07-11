@@ -123,6 +123,7 @@ export const updateUserProfile = async (userId, updatedProfileData) => {
 }
 
 export const updateUserPrivateRoom = async (userId, otherPartyId, otherPartyName, message) => {
+    console.log(userId, otherPartyId, otherPartyName, message)
     let token = await SecureStore.getItemAsync("secureToken");
     return await fetch(BASE_URL + '/api/updateprivateroom', {
         method: 'POST',

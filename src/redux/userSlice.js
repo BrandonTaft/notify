@@ -128,8 +128,9 @@ export const userSlice = createSlice({
             recipientId: action.payload.senderId, recipientName: action.payload.sender, messages: [action.payload]
           })
         }
-        updateUserPrivateRoom(state._id, action.payload.senderId, action.payload.sender, action.payload)
-      } else if (action.payload.fromSelf) {
+      } else if
+        //updateUserPrivateRoom(state._id, action.payload.senderId, action.payload.sender, action.payload)
+ (action.payload.fromSelf) {
         existingRoom = state.privateRooms.find(room => room.recipientId === action.payload.receiverId)
         if (existingRoom) {
           existingRoom.messages.push(action.payload)
@@ -140,7 +141,7 @@ export const userSlice = createSlice({
           })
         }
         updateUserPrivateRoom( state._id, action.payload.receiverId, action.payload.receiver, action.payload)
-      }
+    }
       
       console.log("usersliceeeee private roooms",state.userName, state.privateRooms)
     },

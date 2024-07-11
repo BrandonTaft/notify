@@ -46,7 +46,8 @@ export const UserView = () => {
                 name: 'DirectMessageScreen',
                 params: {
                     recipientId: user._id,
-                    recipientName: user.userName
+                    recipientName: user.userName,
+                    recipientIsLogged: user.isLoggedIn
                 }
             })
         }
