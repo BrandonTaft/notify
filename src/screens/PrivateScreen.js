@@ -9,7 +9,7 @@ import { AvatarButton, BackButton } from "../components/Buttons";
 import { addPrivateMessage } from "../redux/userSlice";
 import * as Crypto from 'expo-crypto';
 
-const DirectMessageScreen = ({ route, navigation }) => {
+const PrivateScreen = ({ route, navigation }) => {
     const dispatch = useDispatch();
     const { recipientId, recipientName, recipientIsLogged } = route.params;
     const [chatMessages, setChatMessages] = useState([]);
@@ -85,12 +85,10 @@ const DirectMessageScreen = ({ route, navigation }) => {
             console.log("USERSSS", users)
         });
 
-        socket.on("user connected", (user) => {
-           console.log("USERCONNECTED", user)
-          });
-          socket.on("newPrivateMessage", ({ newPrivateMessage }) => {
-
+        socket.on("newPrivateMessage", ({ newPrivateMessage }) => {
+            if(newPrivateMessage.senderId === recipientId){
             setChatMessages(chatMessages => [...chatMessages, newPrivateMessage])
+            }
         });
     }, [socket])
 
@@ -119,15 +117,9 @@ const DirectMessageScreen = ({ route, navigation }) => {
                 text
             }
             //sends message to socket server
-            // socket.emit("newPrivateMessage", {
-            //     newPrivateMessage
-            // });
-
             socket.emit("newPrivateMessage", {
-                newPrivateMessage,
-                to: recipientId,
-              });
-
+                newPrivateMessage
+            });
             setChatMessages([...chatMessages, newPrivateMessage])
             dispatch(addPrivateMessage(newPrivateMessage))
         }
@@ -176,4 +168,4 @@ const DirectMessageScreen = ({ route, navigation }) => {
     );
 };
 
-export default DirectMessageScreen;
+export default PrivateScreen;

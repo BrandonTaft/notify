@@ -22,28 +22,42 @@ const LoginScreen = () => {
     const theme = useTheme();
 
     const signInToSocket = async (token, user) => {
+        console.log("SIGNING IN TO SOCKET")
         dispatch(createUser({ ...user, isLoggedIn: true }))
-        const jsonValue = JSON.stringify(user)
-        await AsyncStorage.setItem("notify_user", jsonValue);
-        socket.auth = { token: token, user: user };
+
+        const sessionID = await AsyncStorage.getItem("sessionID");
+         console.log("SESSION", sessionID)
+        if (sessionID) {
+            socket.auth = { token:token, sessionID:sessionID };
+             socket.connect();
+         } else {
+        socket.auth = { token: token, userID: user._id, username: user.userName };
         socket.connect();
-        socket.emit("user connected")
+        // socket.emit("user logged in")
+         }
+        // socket.auth = { username: notifyUser.userName };
+        // socket.connect();
     }
 
     useEffect(() => {
 
         socket.on("connect_error", (err) => {
             if (err.message === "invalid user id") {
-                console.log("Unable to connect to server")
+                setMessage("Unable to connect Server - Invalid credentials")
+                console.log("Unable to connect to socket")
             }
         });
 
         (async () => {
+            //await AsyncStorage.removeItem("sessionID")
+            // await AsyncStorage.removeItem("notify_user");
+            // await SecureStore.deleteItemAsync("secureToken")
             try {
                 setIsLoading(true)
-                let token = await SecureStore.getItemAsync("secureToken");
+                const token = await SecureStore.getItemAsync("secureToken");
                 const existingUser = await AsyncStorage.getItem("notify_user");
                 if (token !== null && existingUser) {
+                   
                     let user = JSON.parse(existingUser)
                     refreshUser(user._id).then(async (result) => {
                         if (result.success) {
@@ -60,6 +74,10 @@ const LoginScreen = () => {
                 console.log("Unable to access token", error);
             }
         })();
+
+        return () => {
+            socket.off("connect_error");
+         }
     }, []);
 
     const handleSignIn = () => {
@@ -70,6 +88,8 @@ const LoginScreen = () => {
         } else {
             logInUser(notifyUser).then(async (result) => {
                 if (result.success) {
+                    const jsonValue = JSON.stringify(notifyUser)
+                    await AsyncStorage.setItem("notify_user", jsonValue);
                     await SecureStore.setItemAsync("secureToken", result.token);
                     signInToSocket(result.token, result.existingUser)
                 } else {

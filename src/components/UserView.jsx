@@ -6,6 +6,7 @@ import { fetchAllUsers, BASE_URL } from "../utils/api";
 import usePushNotification from "../hooks/usePushNotification";
 import { useNavigation } from "@react-navigation/native";
 import { socket } from "../utils/socket";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { width } = Dimensions.get('window');
 const ELEMENT_WIDTH = width * .36
@@ -25,25 +26,57 @@ export const UserView = () => {
         socket.off("connect_error");
     }, []);
 
+    //refreshes list anytime a user logs in/out or is disco'd/connected from/to server
+
+
     useEffect(() => {
-        socket.on("user connected", (user) => {
-            console.log(`${user.userName} just connected`)
+
+        socket.on("users", (users) => {
+            console.log("refreshed user list")
             fetchAllUsers().then((data) => {
                 setAllUsers(data.users)
             })
         });
-        socket.on("user disconnected", (user) => {
-            console.log(`${user} just disconnected`)
-            fetchAllUsers().then((data) => {
-                setAllUsers(data.users)
-            })
+
+        socket.on("session", async ({ sessionID, userID }) => {
+            // attach the session ID to the next reconnection attempts
+            socket.auth = { sessionID };
+            // store it in the localStorage
+            await AsyncStorage.setItem("sessionID", sessionID);
+            // save the ID of the user
+            socket.userID = userID;
+            console.log("SESSION STORED")
         });
+
+
+        //     socket.on("user logged in", (user) => {
+        //         console.log(`${user.userName} just connected`)
+        //         fetchAllUsers().then((data) => {
+        //             setAllUsers(data.users)
+        //         })
+        //     });
+        //     socket.on("user logged out", (user) => {
+        //         console.log(`${user} just disconnected`)
+        //         fetchAllUsers().then((data) => {
+        //             setAllUsers(data.users)
+        //         })
+        //     });
+
+        //     socket.on("session",async ({ sessionID, userID }) => {
+        //         // attach the session ID to the next reconnection attempts
+        //         socket.auth = { sessionID };
+        //         // store it in the localStorage
+        //         //await AsyncStorage.setItem("sessionID", sessionID);
+        //         // save the ID of the user
+        //         socket.userID = userID;
+        //         console.log("SESSION STORED")
+        //       });
     }, [socket])
 
     const handleCreatePrivateRoom = async (user) => {
         if (user._id !== self._id) {
             navigation.navigate({
-                name: 'DirectMessageScreen',
+                name: 'PrivateScreen',
                 params: {
                     recipientId: user._id,
                     recipientName: user.userName,

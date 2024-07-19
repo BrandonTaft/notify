@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-export const BASE_URL = "https://b941-2600-6c5a-4a7f-463a-a937-c48f-3791-c61a.ngrok-free.app";
+export const BASE_URL = "https://4e52-75-131-25-248.ngrok-free.app";
 import * as SecureStore from 'expo-secure-store';
 import { socket } from "../utils/socket";
 
@@ -46,7 +46,9 @@ export const logInUser = async (user) => {
 
 export const refreshUser = async (userId) => {
     let token = await SecureStore.getItemAsync("secureToken");
+    console.log("sendinf refresh user")
     return await fetch(BASE_URL + '/api/users/refresh', {
+        
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -74,8 +76,8 @@ export const logOutUser = async (user) => {
     .then(response => response.json())
     .then((response) => {
         if(response.success) {
-            console.log(`${user.userName} has logged out`)
-            socket.emit('logout', user._id)
+            console.log(`${user._id} has logged out`)
+            socket.emit('user logged out', user._id)
         }
     })
         .catch((error) => console.log("Server did not respond"))
@@ -122,26 +124,26 @@ export const updateUserProfile = async (userId, updatedProfileData) => {
         .catch((error) => console.log("Server "))
 }
 
-export const updateUserPrivateRoom = async (userId, otherPartyId, otherPartyName, message) => {
-    console.log(userId, otherPartyId, otherPartyName, message)
-    let token = await SecureStore.getItemAsync("secureToken");
-    return await fetch(BASE_URL + '/api/updateprivateroom', {
-        method: 'POST',
-        headers: {
-            'Authorization': `Bearer ${token}`,
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            userId,
-            otherPartyId,
-            otherPartyName,
-            message
-        })
-    })
-        .then(response => response.json())
-        .catch((error) => console.log("Server "))
-}
+// export const updateUserPrivateRoom = async (userId, otherPartyId, otherPartyName, message) => {
+//     console.log(userId, otherPartyId, otherPartyName, message)
+//     let token = await SecureStore.getItemAsync("secureToken");
+//     return await fetch(BASE_URL + '/api/updateprivateroom', {
+//         method: 'POST',
+//         headers: {
+//             'Authorization': `Bearer ${token}`,
+//             Accept: 'application/json',
+//             'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify({
+//             userId,
+//             otherPartyId,
+//             otherPartyName,
+//             message
+//         })
+//     })
+//         .then(response => response.json())
+//         .catch((error) => console.log("Server "))
+// }
 
 export const storeProfileImage = async (imageType, uri, userId) => {
     let uriParts = uri.split('.');

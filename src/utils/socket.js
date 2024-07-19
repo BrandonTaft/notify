@@ -1,3 +1,9 @@
 import { io } from "socket.io-client";
+const URL ="https://4e52-75-131-25-248.ngrok-free.app"
+//export const socket = io.connect("https://4e52-75-131-25-248.ngrok-free.app");
+export const socket = io(URL, { autoConnect: false });
+socket.onAny((event, ...args) => {
+    console.log("PRINTED FROM SOCKET",event, args);
+  });
 
-export const socket = io.connect("https://b941-2600-6c5a-4a7f-463a-a937-c48f-3791-c61a.ngrok-free.app");
+

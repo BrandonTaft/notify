@@ -1,7 +1,7 @@
 import { createSlice, nanoid, createAsyncThunk } from "@reduxjs/toolkit";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as SecureStore from 'expo-secure-store';
-import { BASE_URL,updateUserPrivateRoom } from "../utils/api";
+import { BASE_URL } from "../utils/api";
 
 
 export const postNoteToDb = createAsyncThunk('posts/postNoteToDb', async (note) => {
@@ -129,8 +129,7 @@ export const userSlice = createSlice({
           })
         }
       } else if
-        //updateUserPrivateRoom(state._id, action.payload.senderId, action.payload.sender, action.payload)
- (action.payload.fromSelf) {
+        (action.payload.fromSelf) {
         existingRoom = state.privateRooms.find(room => room.recipientId === action.payload.receiverId)
         if (existingRoom) {
           existingRoom.messages.push(action.payload)
@@ -140,10 +139,9 @@ export const userSlice = createSlice({
             recipientId: action.payload.receiverId, recipientName: action.payload.receiver, messages: [action.payload]
           })
         }
-        updateUserPrivateRoom( state._id, action.payload.receiverId, action.payload.receiver, action.payload)
-    }
-      
-      console.log("usersliceeeee private roooms",state.userName, state.privateRooms)
+      }
+
+      console.log("usersliceeeee private roooms", state.userName, state.privateRooms)
     },
     logOut: (state, action) => {
       return {

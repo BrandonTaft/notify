@@ -18,6 +18,7 @@ import { darkColors, lightColors } from './utils/theme';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import { Entypo } from '@expo/vector-icons';
 import DirectMessageScreen from './screens/DirectMessageScreen';
+import PrivateScreen from './screens/PrivateScreen';
 const Tab = createMaterialBottomTabNavigator();
 const Stack = createStackNavigator();
 registerTranslation('en', en)
@@ -129,6 +130,10 @@ export default function Root() {
                             <Stack.Screen
                                 name="DirectMessageScreen"
                                 component={DirectMessageScreen}
+                            />
+                            <Stack.Screen
+                                name="PrivateScreen"
+                                component={PrivateScreen}
                             />
                         </>
                     )}
