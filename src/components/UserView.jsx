@@ -18,26 +18,49 @@ export const UserView = () => {
     const navigation = useNavigation();
     const theme = useTheme();
 
+    const sortUsers = (users) => {
+        users.sort((a, b) => {
+            if (a._id === self._id) return -1;
+            if (b._id === self._id) return 1;
+            if (a.userName.toUpperCase() < b.userName.toUpperCase()) return -1;
+            return a.userName.toUpperCase() > b.userName.toUpperCase() ? 1 : 0;
+        });
+        setAllUsers(users)
+    };
 
     useLayoutEffect(() => {
-        fetchAllUsers().then((data) => {
-            setAllUsers(data.users)
+        //fetches users on layout
+        fetchAllUsers().then(({ users }) => {
+            if (users) {
+                sortUsers(users)
+            }
         });
         socket.off("connect_error");
     }, []);
 
-    //refreshes list anytime a user logs in/out or is disco'd/connected from/to server
-
-
+   
     useEffect(() => {
-
-        socket.on("users", (users) => {
-            console.log("refreshed user list")
-            fetchAllUsers().then((data) => {
-                setAllUsers(data.users)
+         //refreshes list anytime a user logs in/out or is disco'd/connected from/to server
+        socket.on("user connected", () => {
+            console.log("someone else connected")
+            fetchAllUsers().then(({ users }) => {
+                if (users) {         
+                        sortUsers(users)            
+                }
             })
         });
 
+          //refreshes list anytime a user logs in/out or is disco'd/connected from/to server
+          socket.on("user disconnected", () => {
+            console.log("someone disconnected")
+            fetchAllUsers().then(({ users }) => {
+                if (users) {
+                        sortUsers(users)
+                }
+            })
+        });
+
+        //stores session once logged in
         socket.on("session", async ({ sessionID, userID }) => {
             // attach the session ID to the next reconnection attempts
             socket.auth = { sessionID };
@@ -47,30 +70,7 @@ export const UserView = () => {
             socket.userID = userID;
             console.log("SESSION STORED")
         });
-
-
-        //     socket.on("user logged in", (user) => {
-        //         console.log(`${user.userName} just connected`)
-        //         fetchAllUsers().then((data) => {
-        //             setAllUsers(data.users)
-        //         })
-        //     });
-        //     socket.on("user logged out", (user) => {
-        //         console.log(`${user} just disconnected`)
-        //         fetchAllUsers().then((data) => {
-        //             setAllUsers(data.users)
-        //         })
-        //     });
-
-        //     socket.on("session",async ({ sessionID, userID }) => {
-        //         // attach the session ID to the next reconnection attempts
-        //         socket.auth = { sessionID };
-        //         // store it in the localStorage
-        //         //await AsyncStorage.setItem("sessionID", sessionID);
-        //         // save the ID of the user
-        //         socket.userID = userID;
-        //         console.log("SESSION STORED")
-        //       });
+       
     }, [socket])
 
     const handleCreatePrivateRoom = async (user) => {

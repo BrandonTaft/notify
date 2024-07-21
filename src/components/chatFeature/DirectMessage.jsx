@@ -1,25 +1,22 @@
 import { memo } from "react";
 import { View } from "react-native";
-import { useSelector } from "react-redux";
 import { Avatar, useTheme, Text } from 'react-native-paper';
 import { styles } from "../../utils/styles";
 import { BASE_URL } from "../../utils/api";
 
 const DirectMessage = memo(( { message } ) => {
-    const user = useSelector(state => state.user)
-    const isFromMe = message.sender === user.userName;
     const theme = useTheme();
 
     return (
             <View
                 style={
-                    isFromMe
+                    message.fromSelf
                         ? [styles.messageWrapper, { alignItems: "flex-end" }]
                         : styles.messageWrapper
                 }
             >
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    {isFromMe
+                    {message.fromSelf
                         ?
                         null
                         :
@@ -44,7 +41,7 @@ const DirectMessage = memo(( { message } ) => {
                     }
                     <View
                         style={[styles.message,
-                            isFromMe
+                            message.fromSelf
                                 ? { backgroundColor: theme.colors.primary, marginRight: 5 }
                                 : { backgroundColor: theme.colors.secondary }
                         ]}
@@ -58,7 +55,7 @@ const DirectMessage = memo(( { message } ) => {
 
                         <View
                             style={[
-                                isFromMe
+                                message.fromSelf
                                     ? [styles.rightArrow, { backgroundColor: theme.colors.primary }]
                                     : [styles.leftArrow,{ backgroundColor: theme.colors.secondary }]
                             ]}
@@ -66,7 +63,7 @@ const DirectMessage = memo(( { message } ) => {
                         </View>
                         <View
                             style={[
-                                isFromMe
+                                message.fromSelf
                                     ? styles.rightArrowOverlap
                                     : styles.leftArrowOverlap,
                                 { backgroundColor: theme.colors.background }

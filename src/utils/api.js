@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-export const BASE_URL = "https://4e52-75-131-25-248.ngrok-free.app";
+export const BASE_URL = "https://80c1-2600-6c5a-4a7f-463a-5ae-e745-58ef-f8b9.ngrok-free.app";
 import * as SecureStore from 'expo-secure-store';
 import { socket } from "../utils/socket";
 
@@ -48,7 +48,7 @@ export const refreshUser = async (userId) => {
     let token = await SecureStore.getItemAsync("secureToken");
     console.log("sendinf refresh user")
     return await fetch(BASE_URL + '/api/users/refresh', {
-        
+
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -63,6 +63,8 @@ export const refreshUser = async (userId) => {
 
 
 export const logOutUser = async (user) => {
+    
+    await AsyncStorage.removeItem("sessionID")
     await AsyncStorage.removeItem("notify_user");
     await SecureStore.deleteItemAsync("secureToken")
     return await fetch(BASE_URL + '/api/users/logout', {
@@ -73,13 +75,19 @@ export const logOutUser = async (user) => {
         },
         body: JSON.stringify({ userId: user._id })
     })
-    .then(response => response.json())
-    .then((response) => {
-        if(response.success) {
-            console.log(`${user._id} has logged out`)
-            socket.emit('user logged out', user._id)
-        }
-    })
+        .then(response => response.json())
+        .then((response) => {
+            if (response.success) {
+                console.log(`${user._id} has logged out`)
+                socket.emit('user logged out')
+                // socket.off("connect");
+                // socket.off("disconnect");
+                // socket.off("users");
+                // socket.off("user connected");
+                // socket.off("user disconnected");
+                // socket.off("private message");
+            }
+        })
         .catch((error) => console.log("Server did not respond"))
 };
 
