@@ -23,6 +23,8 @@ const Tab = createMaterialBottomTabNavigator();
 const Stack = createStackNavigator();
 registerTranslation('en', en)
 
+import { loadAllUsers } from './redux/allUsersSlice';
+
 export default function Root() {
     const dispatch = useDispatch();
     const isLoggedIn = useSelector(state => state.user.isLoggedIn);
@@ -44,11 +46,18 @@ export default function Root() {
     const appTheme = colorScheme === 'dark' ? DarkTheme : LightTheme;
     
     useEffect(() => {
-        socket.on("newPrivateMessage", ({ newPrivateMessage }) => {
+        function addNewPrivateMessage({ newPrivateMessage }) {
             dispatch(addPrivateMessage(newPrivateMessage))
-          });
-    },[socket])
+          }
 
+        socket.on("newPrivateMessage", addNewPrivateMessage);
+
+        return () => {
+            socket.off("newPrivateMessage", addNewPrivateMessage);
+          };
+    },[])
+
+    
     function TabNavigator() {
         const theme = useTheme();
         return (

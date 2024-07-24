@@ -58,7 +58,7 @@ export const DirectMessagePreviewItem = ({ item }) => {
                                     ?
                                     <Avatar.Image
                                         size={40}
-                                        source={{ uri: `${BASE_URL}/images/${message.userId}.jpeg` }}
+                                        source={{ uri: `${BASE_URL}/images/${message.senderId}.jpeg` }}
                                         style={{ position: 'relative', zIndex: 999 }}
                                     />
                                     :

@@ -1,7 +1,46 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-export const BASE_URL = "https://80c1-2600-6c5a-4a7f-463a-5ae-e745-58ef-f8b9.ngrok-free.app";
+export const BASE_URL = "https://da8a-75-131-25-248.ngrok-free.app";
 import * as SecureStore from 'expo-secure-store';
 import { socket } from "../utils/socket";
+
+export const logInUser = async (user) => {
+    return await fetch(BASE_URL + '/api/users/login', {
+        method: 'POST',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ user: user })
+    })
+        .then(response => response.json())
+        .catch((error) => console.log("An unexpected error has occurred :", error))
+};
+
+export const refreshUser = async (token) => {
+    console.log("sendinf refresh user")
+    return await fetch(BASE_URL + '/api/users/refresh', {
+
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        }
+    })
+        .then(response => response.json())
+        .catch((error) => console.log("An unexpected error has occurred :", error))
+};
+
+
+
+
+
+
+
+
+
+
+
 
 
 export const fetchAllUsers = async () => {
@@ -31,39 +70,12 @@ export const registerUser = async (user) => {
         .catch((error) => console.log("An unexpected error has occurred :", error))
 }
 
-export const logInUser = async (user) => {
-    return await fetch(BASE_URL + '/api/users/login', {
-        method: 'POST',
-        headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ user: user })
-    })
-        .then(response => response.json())
-        .catch((error) => console.log("An unexpected error has occurred :", error))
-};
 
-export const refreshUser = async (userId) => {
-    let token = await SecureStore.getItemAsync("secureToken");
-    console.log("sendinf refresh user")
-    return await fetch(BASE_URL + '/api/users/refresh', {
 
-        method: 'POST',
-        headers: {
-            'Authorization': `Bearer ${token}`,
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ userId: userId })
-    })
-        .then(response => response.json())
-        .catch((error) => console.log("An unexpected error has occurred :", error))
-};
 
 
 export const logOutUser = async (user) => {
-    
+    socket.disconnect()
     await AsyncStorage.removeItem("sessionID")
     await AsyncStorage.removeItem("notify_user");
     await SecureStore.deleteItemAsync("secureToken")

@@ -22,8 +22,6 @@ const LoginScreen = () => {
     const theme = useTheme();
 
     const signInToSocket = async (token, user) => {
-        console.log("SIGNING IN TO SOCKET")
-
         //Updates state and sets logged in true to navigate to home page
         dispatch(createUser({ ...user, isLoggedIn: true }))
 
@@ -51,7 +49,6 @@ const LoginScreen = () => {
             }
         });
 
-
         (async () => {
             //await AsyncStorage.removeItem("sessionID")
             // await AsyncStorage.removeItem("notify_user");
@@ -60,12 +57,9 @@ const LoginScreen = () => {
                 setIsLoading(true)
                 //checks for existing logged in user and token
                 const token = await SecureStore.getItemAsync("secureToken");
-                const existingUser = await AsyncStorage.getItem("notify_user");
-                if (token !== null && existingUser) {
+                if (token !== null) {
                     //sends user and token to be logged back in
-                    let user = JSON.parse(existingUser)
-                    console.log("USER IN LOGIN", user)
-                    refreshUser(user._id).then(async (result) => {
+                    refreshUser(token).then(async (result) => {
                         //once authenticated and logged in it sends session and/or user to socket server
                         if (result.success) {
                             signInToSocket(token, result.existingUser)
@@ -79,6 +73,7 @@ const LoginScreen = () => {
                     setIsLoading(false)
                 }
             } catch (error) {
+                setMessage(result.message)
                 console.log("Unable to access token", error);
             }
         })();
@@ -94,12 +89,11 @@ const LoginScreen = () => {
         } else if (!notifyUser.password.trim()) {
             setMessage("You must enter a password")
         } else {
-            socket.emit("user logging in")
+            
             //sends username and password to be authenticated
             logInUser(notifyUser).then(async (result) => {
                 //if auth. then store token and user - then sign in to socket
                 if (result.success) {
-                    
                     const jsonValue = JSON.stringify(result.existingUser)
                     await AsyncStorage.setItem("notify_user", jsonValue);
                     await SecureStore.setItemAsync("secureToken", result.token);

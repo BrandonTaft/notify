@@ -70,26 +70,7 @@ const DirectMessageScreen = ({ route, navigation }) => {
     }, []);
 
     useEffect(() => {
-        socket.on("users", (users) => {
-            users.forEach((user) => {
-                user.self = user.userID === socket.id;
-
-            });
-            // put the current user first, and then sort by username
-            users = users.sort((a, b) => {
-                if (a.self) return -1;
-                if (b.self) return 1;
-                if (a.username < b.username) return -1;
-                return a.username > b.username ? 1 : 0;
-            });
-            console.log("USERSSS", users)
-        });
-
-        socket.on("user connected", (user) => {
-           console.log("USERCONNECTED", user)
-          });
           socket.on("newPrivateMessage", ({ newPrivateMessage }) => {
-
             setChatMessages(chatMessages => [...chatMessages, newPrivateMessage])
         });
     }, [socket])
@@ -118,10 +99,6 @@ const DirectMessageScreen = ({ route, navigation }) => {
                 time: `${hour}:${mins}`,
                 text
             }
-            //sends message to socket server
-            // socket.emit("newPrivateMessage", {
-            //     newPrivateMessage
-            // });
 
             socket.emit("newPrivateMessage", {
                 newPrivateMessage,
