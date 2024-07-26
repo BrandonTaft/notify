@@ -38,6 +38,7 @@ const LoginScreen = () => {
             socket.auth = { token: token, userID: user._id, username: user.userName };
             socket.connect();
         }
+        socket.emit("user logged in")
     }
 
     useEffect(() => {
@@ -51,13 +52,13 @@ const LoginScreen = () => {
 
         (async () => {
             //await AsyncStorage.removeItem("sessionID")
-            // await AsyncStorage.removeItem("notify_user");
-            // await SecureStore.deleteItemAsync("secureToken")
+             //await AsyncStorage.removeItem("notify_user");
+             //await SecureStore.deleteItemAsync("secureToken")
             try {
                 setIsLoading(true)
                 //checks for existing logged in user and token
-                const token = await SecureStore.getItemAsync("secureToken");
-                if (token !== null) {
+                const token = SecureStore.getItem("secureToken");
+                if (token) {
                     //sends user and token to be logged back in
                     refreshUser(token).then(async (result) => {
                         //once authenticated and logged in it sends session and/or user to socket server
@@ -154,13 +155,13 @@ const LoginScreen = () => {
                         onChangeText={(value) => {
                             setNotifyUser({ ...notifyUser, password: value.trim() })
                         }}
-                        right={
-                            <TextInput.Icon
-                                icon="eye"
-                                iconColor={theme.colors.primary}
-                                onPress={() => setHidePassWord(!hidePassWord)}
-                            />
-                        }
+                        // right={
+                        //     <TextInput.Icon
+                        //         icon="eye"
+                        //         iconColor={theme.colors.primary}
+                        //         onPress={() => setHidePassWord(!hidePassWord)}
+                        //     />
+                        // }
                     />
 
                     <Button

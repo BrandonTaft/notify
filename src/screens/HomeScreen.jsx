@@ -9,6 +9,7 @@ import { Surface, useTheme, Divider } from 'react-native-paper';
 import DirectMessagePreview from '../components/chatFeature/DirectMessagePreview';
 import { socket } from "../utils/socket";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SecureStore from 'expo-secure-store';
 import { fetchAllUsers } from "../utils/api";
 import { loadAllUsers } from "../redux/allUsersSlice";
 import { UserView } from "../components/UserView";
@@ -62,8 +63,9 @@ const HomeScreen = () => {
 
         //stores session once logged in
         socket.on("session", async ({ sessionID, userID }) => {
+            const token = SecureStore.getItem("secureToken");
             // attach the session ID to the next reconnection attempts
-            socket.auth = { sessionID };
+            socket.auth = { token: token, sessionID: sessionID };
             // store it in the localStorage
             await AsyncStorage.setItem("sessionID", sessionID);
             // save the ID of the user

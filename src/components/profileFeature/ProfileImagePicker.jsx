@@ -21,7 +21,7 @@ export const ProfileImagePicker = ({buttonText, imageDescription}) => {
             dispatch(editUserProfileImage({ imageType: imageType, image: _image.assets[0].uri }));
             let imageToStore = JSON.stringify({ imageType: _image.assets[0].uri })
             await AsyncStorage.mergeItem('notify_user', imageToStore)
-            storeProfileImage(imageType, _image.assets[0].uri, user.userId)
+            storeProfileImage(imageType, _image.assets[0].uri, user._id)
         }
 
     };

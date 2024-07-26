@@ -3,6 +3,19 @@ export const BASE_URL = "https://da8a-75-131-25-248.ngrok-free.app";
 import * as SecureStore from 'expo-secure-store';
 import { socket } from "../utils/socket";
 
+export const registerUser = async (user) => {
+    return await fetch(BASE_URL + '/api/users/register', {
+        method: 'POST',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ user: user })
+    })
+        .then(response => response.json())
+        .catch((error) => console.log("An unexpected error has occurred :", error))
+}
+
 export const logInUser = async (user) => {
     return await fetch(BASE_URL + '/api/users/login', {
         method: 'POST',
@@ -17,7 +30,7 @@ export const logInUser = async (user) => {
 };
 
 export const refreshUser = async (token) => {
-    console.log("sendinf refresh user")
+    console.log("sendinf refresh user", token)
     return await fetch(BASE_URL + '/api/users/refresh', {
 
         method: 'GET',
@@ -31,17 +44,36 @@ export const refreshUser = async (token) => {
         .catch((error) => console.log("An unexpected error has occurred :", error))
 };
 
+export const logOutUser = async (user) => {
+    let token = await SecureStore.getItemAsync("secureToken");
+    socket.disconnect()
+    
+    return await fetch(BASE_URL + '/api/users/logout', {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        }
+    })
+        .then(response => response.json())
+        .catch((error) => console.log("Server did not respond", error))
+};
 
-
-
-
-
-
-
-
-
-
-
+export const deleteUser = async (user) => {
+    let token = await SecureStore.getItemAsync("secureToken");
+    socket.disconnect()
+    return await fetch(BASE_URL + '/api/users/delete', {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .catch((error) => console.log("Server did not respond", error))
+};
 
 export const fetchAllUsers = async () => {
     let token = await SecureStore.getItemAsync("secureToken");
@@ -57,74 +89,15 @@ export const fetchAllUsers = async () => {
         .catch((error) => console.log("Server did not respond", error))
 };
 
-export const registerUser = async (user) => {
-    return await fetch(BASE_URL + '/api/users/register', {
-        method: 'POST',
-        headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ user: user })
-    })
-        .then(response => response.json())
-        .catch((error) => console.log("An unexpected error has occurred :", error))
-}
 
 
 
 
 
-export const logOutUser = async (user) => {
-    socket.disconnect()
-    await AsyncStorage.removeItem("sessionID")
-    await AsyncStorage.removeItem("notify_user");
-    await SecureStore.deleteItemAsync("secureToken")
-    return await fetch(BASE_URL + '/api/users/logout', {
-        method: 'POST',
-        headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ userId: user._id })
-    })
-        .then(response => response.json())
-        .then((response) => {
-            if (response.success) {
-                console.log(`${user._id} has logged out`)
-                socket.emit('user logged out')
-                // socket.off("connect");
-                // socket.off("disconnect");
-                // socket.off("users");
-                // socket.off("user connected");
-                // socket.off("user disconnected");
-                // socket.off("private message");
-            }
-        })
-        .catch((error) => console.log("Server did not respond"))
-};
 
 
-export const deleteUser = async (user) => {
-    let token = await SecureStore.getItemAsync("secureToken");
-    await AsyncStorage.removeItem("notify_user");
-    return await fetch(BASE_URL + '/api/users/delete', {
-        method: 'DELETE',
-        headers: {
-            'Authorization': `Bearer ${token}`,
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ user: user })
-    })
-        .then(response => response.json())
-        .then(async (result) => {
-            await SecureStore.deleteItemAsync("secureToken")
-            if (!result.success) {
-                setMessage("There was an error deleting the profile");
-            }
-        })
-        .catch((error) => console.log("Server did not respond"))
-};
+
+
 
 export const updateUserProfile = async (userId, updatedProfileData) => {
     let token = await SecureStore.getItemAsync("secureToken");
@@ -141,7 +114,7 @@ export const updateUserProfile = async (userId, updatedProfileData) => {
         })
     })
         .then(response => response.json())
-        .catch((error) => console.log("Server "))
+        .catch((error) => console.log("Server did not respond", error))
 }
 
 // export const updateUserPrivateRoom = async (userId, otherPartyId, otherPartyName, message) => {

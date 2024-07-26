@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View } from "react-native";
 import { useDispatch, useSelector } from 'react-redux';
+import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Alert from "../Alert";
 import { Text, Button, IconButton, TextInput, Surface, useTheme } from 'react-native-paper';
@@ -58,7 +59,7 @@ export const ProfileFormModal = () => {
                 variant="headlineSmall"
                 style={{ color: theme.colors.primary }}
             >
-               Edit Profile
+                Edit Profile
             </Text>
             {showUserNameEdit ?
                 <TextInput
@@ -88,7 +89,7 @@ export const ProfileFormModal = () => {
                         justifyContent: 'space-evenly',
                         alignItems: 'center',
                         borderRadius: 20,
-                        margin:12
+                        margin: 12
                     }}
                 >
                     <Text
@@ -138,7 +139,7 @@ export const ProfileFormModal = () => {
                         justifyContent: 'space-evenly',
                         alignItems: 'center',
                         borderRadius: 20,
-                        margin:12
+                        margin: 12
                     }}
                 >
                     <Text
@@ -162,36 +163,49 @@ export const ProfileFormModal = () => {
 
             }
             <Button
-            style={{ width:"50%"}}
+                style={{ width: "50%" }}
                 icon="view-gallery"
                 mode="elevated"
                 onPress={() => handleProfileEdit()}
             >
                 Edit
             </Button>
-            <View style={{flexDirection:'column', marginVertical:25, width:"100%", alignItems:'center'}}>
-            <Button
-            style={{ width:'90%'}}
-                icon="view-gallery"
-                mode="elevated"
-                onPress={() => {
-                    logOutUser(user);
-                    dispatch(logOut(user));
-                }}
-            >
-                Log Out
-            </Button>
-            <Button
-                style={{backgroundColor:"red", width:"90%", marginVertical:10}}
-                icon="view-gallery"
-                mode="elevated"
-                onPress={() => {
-                    deleteUser(user)
-                    dispatch(logOut(user));
-                }}
-            >
-                Delete Profile
-            </Button>
+            <View style={{ flexDirection: 'column', marginVertical: 25, width: "100%", alignItems: 'center' }}>
+                <Button
+                    style={{ width: '90%' }}
+                    icon="view-gallery"
+                    mode="elevated"
+                    onPress={() => {
+                        logOutUser(user).then(async (response) => {
+                            if (response.success) {
+                                await AsyncStorage.removeItem("sessionID")
+                                await AsyncStorage.removeItem("notify_user");
+                                await SecureStore.deleteItemAsync("secureToken")
+                                dispatch(logOut(user));
+                            }
+                        });
+
+                    }}
+                >
+                    Log Out
+                </Button>
+                <Button
+                    style={{ backgroundColor: "red", width: "90%", marginVertical: 10 }}
+                    icon="view-gallery"
+                    mode="elevated"
+                    onPress={() => {
+                        deleteUser(user).then(async (response) => {
+                            if (response.success) {
+                                await AsyncStorage.removeItem("sessionID")
+                                await AsyncStorage.removeItem("notify_user");
+                                await SecureStore.deleteItemAsync("secureToken")
+                                dispatch(logOut(user));
+                            }
+                        });
+                    }}
+                >
+                    Delete Profile
+                </Button>
             </View>
         </Surface>
     );
