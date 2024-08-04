@@ -1,8 +1,7 @@
 import { useState, useLayoutEffect, useEffect } from "react";
 import { View, FlatList } from "react-native";
-import { fetchGroups } from "../../utils/api";
 import { useSelector, useDispatch } from 'react-redux';
-import { addChatRoom, addAllRoomsFromServer } from "../../redux/chatRoomSlice";
+import { fetchChatRooms } from "../../redux/chatRoomSlice";
 import ChatRoomListItem from "./ChatRoomListItem";
 import { Text, useTheme, Chip, FAB } from 'react-native-paper';
 import {socket} from "../../utils/socket";
@@ -12,25 +11,13 @@ export default function ChatRoomList() {
   const [showCreateChatComponent, setShowCreateChatComponent] = useState(false);
   const dispatch = useDispatch()
   const theme = useTheme();
-  const rooms = useSelector(state => state.chatRooms);
+  const { rooms, loading } = useSelector(state => state.chatRooms);
 
-  useLayoutEffect(() => {
-    fetchGroups()
-      .then((result) => {
-        if (result.success) {
-          dispatch(addAllRoomsFromServer(result.chatRooms))
-        }
-      })
-      .catch((err) => {
-        console.error(err)
-      });
-  }, []);
-
-  useEffect(() => {
-    socket.on("chatRoomList", (rooms) => {
-      dispatch(addChatRoom(rooms))
-    });
-  }, [socket]);
+  // useEffect(() => {
+  //   socket.on("chatRoomList", (rooms) => {
+  //     dispatch(fetchChatRooms());
+  //   });
+  // }, [socket]);
 
 
   return (

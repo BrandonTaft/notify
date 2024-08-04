@@ -1,10 +1,10 @@
 import { memo } from "react";
 import { View } from "react-native";
-import { Avatar, useTheme, Text } from 'react-native-paper';
+import { Avatar, useTheme, Text, Badge, Icon } from 'react-native-paper';
 import { styles } from "../../utils/styles";
 import { BASE_URL } from "../../utils/api";
 
-const DirectMessage = memo(( { message } ) => {
+const DirectMessage = memo(( { message, isLoggedIn } ) => {
     const theme = useTheme();
 
     return (
@@ -39,6 +39,7 @@ const DirectMessage = memo(( { message } ) => {
                         }
                         </>
                     }
+                    
                     <View
                         style={[styles.message,
                             message.fromSelf

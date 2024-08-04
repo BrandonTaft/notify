@@ -209,7 +209,6 @@ export default function RegisterModal() {
                             onPress={() => {
                                 setNewUser({ ...newUser, organization: item.name })
                                 setOrgIsSet(true)
-                                console.log("NEWWWUSERRRR",newUser)
                                 setExpanded(false)
                               }}
                               style={{borderRadius:0, marginBottom:3}}

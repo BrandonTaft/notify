@@ -7,12 +7,13 @@ import { useSelector, useDispatch } from "react-redux";
 import { useTheme, IconButton, Button, Text } from "react-native-paper";
 import { AvatarButton, BackButton } from "../components/Buttons";
 import { addMessage } from "../redux/chatRoomSlice";
+import * as Crypto from 'expo-crypto';
 
 const ChatRoomScreen = ({ route, navigation }) => {
     const dispatch = useDispatch();
     const { name, roomId } = route.params;
     const [chatMessages, setChatMessages] = useState([]);
-    const [message, setMessage] = useState("");
+    const [text, setText] = useState("");
     const notifyUser = useSelector(state => state.user)
     const chats = useSelector(state => state.chatRooms)
     const theme = useTheme();
@@ -65,12 +66,13 @@ const ChatRoomScreen = ({ route, navigation }) => {
     }, [roomId]);
 
     useEffect(() => {
-        socket.on("newMessage", (roomChats) => {
-            setChatMessages(roomChats)
+        socket.on("newMessage", (newMessage) => {
+            setChatMessages(chatMessages => [...chatMessages, newMessage])
         })
     }, [socket]);
 
     const handleNewMessage = () => {
+        const messageId = Crypto.randomUUID();
         const hour =
             new Date().getHours() < 10
                 ? `0${new Date().getHours()}`
@@ -83,20 +85,22 @@ const ChatRoomScreen = ({ route, navigation }) => {
 
         if (notifyUser.userName) {
             const newMessage = {
-                message,
+                messageId,
+                text,
                 roomId: roomId,
                 user: notifyUser.userName,
                 userId: notifyUser._id,
                 profileImage: notifyUser.profileImage,
                 org: notifyUser.organization,
                 reactions: { thumbsUp: 0, thumbsDown: 0, heart: 0 },
-                timestamp: { hour, mins },
+                time: `${ hour } : ${ mins }`,
             }
             console.log("NEW MWSSAGE", newMessage)
             socket.emit("newMessage", newMessage);
-            dispatch(addMessage(newMessage))
+            //dispatch(addMessage(newMessage))
+            setChatMessages(chatMessages => [...chatMessages, newMessage])
         }
-        setMessage("")
+        setText("")
     };
 
     return (
@@ -125,8 +129,8 @@ const ChatRoomScreen = ({ route, navigation }) => {
                     editable
                     multiline
                     style={styles.messaginginput}
-                    onChangeText={(value) => setMessage(value)}
-                    value={message}
+                    onChangeText={(value) => setText(value)}
+                    value={text}
                 />
                 <Button
                     style={{backgroundColor: theme.colors.primary, paddingHorizontal:5, justifyContent:'center'}}

@@ -38,7 +38,7 @@ const LoginScreen = () => {
             socket.auth = { token: token, userID: user._id, username: user.userName };
             socket.connect();
         }
-        socket.emit("user logged in")
+        // socket.emit("user logged in")
     }
 
     useEffect(() => {

@@ -19,11 +19,11 @@ import Icon from 'react-native-vector-icons/FontAwesome6';
 import { Entypo } from '@expo/vector-icons';
 import DirectMessageScreen from './screens/DirectMessageScreen';
 import PrivateScreen from './screens/PrivateScreen';
+import ChatRoomList from './components/chatFeature/ChatRoomList';
+import { addChatRooms } from './redux/chatRoomSlice';
 const Tab = createMaterialBottomTabNavigator();
 const Stack = createStackNavigator();
 registerTranslation('en', en)
-
-import { loadAllUsers } from './redux/allUsersSlice';
 
 export default function Root() {
     const dispatch = useDispatch();
@@ -44,7 +44,7 @@ export default function Root() {
         buttonRoundness: { isV3: false, roundness: 16 }
     };
     const appTheme = colorScheme === 'dark' ? DarkTheme : LightTheme;
-    
+
     useEffect(() => {
         function addNewPrivateMessage({ newPrivateMessage }) {
             dispatch(addPrivateMessage(newPrivateMessage))
@@ -55,7 +55,19 @@ export default function Root() {
         return () => {
             socket.off("newPrivateMessage", addNewPrivateMessage);
           };
-    },[])
+    },[socket]);
+
+    useEffect(() => {
+        function refreshRoomList(rooms) {
+            dispatch(addChatRooms(rooms))
+          }
+
+        socket.on("chatRoomList", refreshRoomList);
+
+        return () => {
+            socket.off("chatRoomList", refreshRoomList);
+          };
+    },[socket])
 
     
     function TabNavigator() {

@@ -6,7 +6,6 @@ import { useSelector } from "react-redux";
 import { useTheme, Text, TouchableRipple, Avatar } from "react-native-paper";
 import { styles } from "../../utils/styles";
 import { BASE_URL } from "../../utils/api";
-import ChatRoomMessage from "./ChatRoomMessage";
 
 export const ChatRoomPreviewItem = ({ item }) => {
     const user = useSelector(state => state.user)

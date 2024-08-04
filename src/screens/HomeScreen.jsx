@@ -11,7 +11,6 @@ import { socket } from "../utils/socket";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as SecureStore from 'expo-secure-store';
 import { fetchAllUsers } from "../utils/api";
-import { loadAllUsers } from "../redux/allUsersSlice";
 import { UserView } from "../components/UserView";
 
 const HomeScreen = () => {
@@ -20,6 +19,9 @@ const HomeScreen = () => {
     const rooms = useSelector(state => state.chatRooms);
     const dispatch = useDispatch();
 
+
+    const self = useSelector(state => state.user);
+
     const sortUsers = (users) => {
         users.sort((a, b) => {
             if (a._id === self._id) return -1;
@@ -27,7 +29,7 @@ const HomeScreen = () => {
             if (a.userName.toUpperCase() < b.userName.toUpperCase()) return -1;
             return a.userName.toUpperCase() > b.userName.toUpperCase() ? 1 : 0;
         });
-        setUsers(users)
+       setUsers(users)
     };
 
     useLayoutEffect(() => {
@@ -45,6 +47,7 @@ const HomeScreen = () => {
         socket.on("user connected", () => {
             console.log("someone else connected")
             fetchAllUsers().then(({ users }) => {
+                console.log("USERS",self.userName, users)
                 if (users) {         
                         sortUsers(users)            
                 }
@@ -55,6 +58,7 @@ const HomeScreen = () => {
           socket.on("user disconnected", () => {
             console.log("someone disconnected")
             fetchAllUsers().then(({ users }) => {
+                console.log("USERS",self.userName, users)
                 if (users) {
                         sortUsers(users)
                 }
@@ -88,7 +92,7 @@ const HomeScreen = () => {
             </Surface>
             <Divider horizontalInset />
             <Surface style={{ flexDirection: 'column', flex: 1,  margin: 10, borderRadius: 10 }} elevation={2}>
-                <UserView allUsers={users} />
+                <UserView  allUsers={users}/>
             </Surface>
         </View>
     )

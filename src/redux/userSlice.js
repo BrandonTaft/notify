@@ -3,7 +3,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as SecureStore from 'expo-secure-store';
 import { BASE_URL } from "../utils/api";
 
-
 export const postNoteToDb = createAsyncThunk('posts/postNoteToDb', async (note) => {
   console.log("POSTNOTETOCB", note)
   let token = await SecureStore.getItemAsync("secureToken");
@@ -19,8 +18,6 @@ export const postNoteToDb = createAsyncThunk('posts/postNoteToDb', async (note) 
     body: JSON.stringify({ userId: JSON.parse(user)._id, note: { body: note } })
   });
   const response = await apiResponse.json();
-  console.log("USERSlice NOTES", response)
-
   return response
 
 })
@@ -140,8 +137,6 @@ export const userSlice = createSlice({
           })
         }
       }
-
-      console.log("usersliceeeee private roooms", state.userName, state.privateRooms)
     },
     logOut: (state, action) => {
       return {

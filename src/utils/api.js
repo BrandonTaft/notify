@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-export const BASE_URL = "https://da8a-75-131-25-248.ngrok-free.app";
+export const BASE_URL = "https://3e70-2600-6c5a-4a7f-463a-60be-4176-cf8a-a137.ngrok-free.app";
 import * as SecureStore from 'expo-secure-store';
 import { socket } from "../utils/socket";
 
@@ -341,12 +341,6 @@ export const deleteNoteApi = async (noteId) => {
         .then(response => response.json())
         .catch((error) => console.log("An unexpected error has occurred :", error))
 }
-
-export const fetchGroups = async () => {
-    return await fetch(BASE_URL + '/api/chatrooms')
-        .then((res) => res.json())
-        .catch((error) => console.log("Chat Server did not respond", error))
-};
 
 export const fetchOrgs = async () => {
     return await fetch(BASE_URL + '/api/org')
