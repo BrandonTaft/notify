@@ -41,7 +41,7 @@ export default function ChatRoomPreview() {
     socket.on("chatRoomList", (rooms) => {
       // // setChatRooms(rooms.slice(0, 5))
       // setChatRooms(rooms)
-      dispatch(addChatRooms(rooms))
+      //dispatch(addChatRooms(rooms))
       setChatRooms(rooms.filter((room) => (room.isPrivate === false) || ((room.isPrivate === true) && (room.organization === user.organization))))
     });
     //dispatch(addChatRoom(rooms))
