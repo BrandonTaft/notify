@@ -1,9 +1,9 @@
-import { View, Pressable } from "react-native";
+import { View, Pressable, Text } from "react-native";
 import { useLayoutEffect, useState, useEffect } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
-import { useTheme, Text, TouchableRipple, Avatar } from "react-native-paper";
+import { useTheme, TouchableRipple, Avatar } from "react-native-paper";
 import { styles } from "../../utils/styles";
 import { BASE_URL } from "../../utils/api";
 import ChatRoomMessage from "./ChatRoomMessage";

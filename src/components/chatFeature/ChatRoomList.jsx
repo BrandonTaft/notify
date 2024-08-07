@@ -9,16 +9,15 @@ import { CreateChatRoom } from "./CreateChatRoom";
 
 export default function ChatRoomList() {
   const [showCreateChatComponent, setShowCreateChatComponent] = useState(false);
+  const [chatRooms, setChatRooms] = useState([]);
   const dispatch = useDispatch()
   const theme = useTheme();
   const { rooms, loading } = useSelector(state => state.chatRooms);
+  const user = useSelector(state => state.user)
 
-  // useEffect(() => {
-  //   socket.on("chatRoomList", (rooms) => {
-  //     dispatch(fetchChatRooms());
-  //   });
-  // }, [socket]);
-
+  useLayoutEffect(() => {
+    setChatRooms(user.privateRooms)
+  }, []);
 
   return (
     <View style={[{ flex: 1 }]}>
@@ -26,6 +25,11 @@ export default function ChatRoomList() {
         <>
           <FlatList
             data={rooms}
+            renderItem={({ item }) => <ChatRoomListItem item={item} />}
+            keyExtractor={(item) => item._id}
+          />
+           <FlatList
+            data={chatRooms}
             renderItem={({ item }) => <ChatRoomListItem item={item} />}
             keyExtractor={(item) => item._id}
           />

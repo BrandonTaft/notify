@@ -71,9 +71,11 @@ export default function UpdateReminderComponent({
   }, [setIsDateTimePickerVisible]);
 
   const onCalendarConfirm = useCallback((params) => {
+    if(params.date !== null) {
     setIsDateTimePickerVisible(false);
-    setDueDay(params.date.toString());
+    setDueDay(params.date.toLocaleDateString('en-US'));
     setIsTimePickerVisible(true);
+    }
   }, [setIsDateTimePickerVisible, setDueTime]);
 
   const onTimePickerDismiss = useCallback(() => {

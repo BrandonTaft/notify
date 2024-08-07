@@ -21,18 +21,13 @@ const ChatRoomListScreen = ({ navigation }) => {
   
   return (
     <View style={{ flex: 1 }}>
-      <FAB
+      {/* <FAB
         icon="plus"
         style={{bottom: 0, right: 0, zIndex:999, margin:20, position:'absolute'}}
         onPress={() => setShowCreateChatComponent(true)}
-      />
+      /> */}
       <Text variant="titleLarge" style={{ color: theme.colors.textMuted, textAlign: 'center' }}>Chat Rooms</Text>
       <ChatRoomList />
-      <CreateChatRoom
-        showCreateChatComponent={showCreateChatComponent}
-        setShowCreateChatComponent={setShowCreateChatComponent}
-      />
-
     </View >
   );
 };

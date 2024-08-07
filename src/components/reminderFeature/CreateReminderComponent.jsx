@@ -59,9 +59,12 @@ export default function CreateReminderComponent({
   }, [setIsDateTimePickerVisible]);
 
   const onCalendarConfirm = useCallback((params) => {
+    if(params.date !== null) {
     setIsDateTimePickerVisible(false);
-    setDueDay(params.date.toString());
+    console.log(params.date.toUTCString('en-US'))
+    setDueDay(params.date.toString('en-US'));
     setIsTimePickerVisible(true);
+    }
   }, [setIsDateTimePickerVisible, setDueTime]);
 
   const onTimePickerDismiss = useCallback(() => {
@@ -72,7 +75,7 @@ export default function CreateReminderComponent({
     let x = new Date(dueDay)
     x.setHours(hours)
     x.setMinutes(minutes)
-    console.log("TEST", x )
+     console.log("TEST", x )
     setDueTime({ hours, minutes });
     setIsTimePickerVisible(false);
   }, [setIsTimePickerVisible, dueDay, setDueTime]);
@@ -139,6 +142,7 @@ export default function CreateReminderComponent({
         />
         <TimePickerModal
           visible={isTimePickerVisible}
+          locale='en'
           onDismiss={() => onTimePickerDismiss()}
           onConfirm={(props) => onTimePickerConfirm(props)}
 

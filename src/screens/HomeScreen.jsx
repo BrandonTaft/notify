@@ -15,8 +15,8 @@ import { UserView } from "../components/UserView";
 
 const HomeScreen = () => {
     const [users, setUsers] = useState([]);
+    const [toggle, setToggle] = useState(false);
     const theme = useTheme();
-    const rooms = useSelector(state => state.chatRooms);
     const dispatch = useDispatch();
 
 
@@ -83,12 +83,11 @@ const HomeScreen = () => {
         <View style={{ flex: 1 }}>
             <Header />
             <Surface style={{ flexDirection: 'column', flex: 2, margin: 10, borderRadius: 10 }} elevation={2}>
-                <ChatRoomPreview rooms={rooms}/>
+                { toggle ? <DirectMessagePreview /> : <ChatRoomPreview/>  }
             </Surface>
             <Divider horizontalInset />
             <Surface style={{ flexDirection: 'column', flex: 2, margin: 10, borderRadius: 10 }} elevation={2}>
-               
-                <DirectMessagePreview />
+               <UpcomingReminders />
             </Surface>
             <Divider horizontalInset />
             <Surface style={{ flexDirection: 'column', flex: 1,  margin: 10, borderRadius: 10 }} elevation={2}>

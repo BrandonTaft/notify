@@ -87,7 +87,9 @@ export const ChatRoomPreviewItem = ({ item }) => {
                             </Text>
                         }
 
-                        <Text variant="bodySmall" style={{ color: theme.colors.textMuted }}>{message.time}</Text>
+                        <Text variant="bodySmall" style={{ color: theme.colors.textMuted }}>
+                            {message.time}
+                        </Text>
 
                         <View
                             style={[
@@ -134,8 +136,7 @@ export const ChatRoomPreviewItem = ({ item }) => {
                     size={24}
                     color={theme.colors.onPrimaryContainer}
                 />
-                {!item.isPrivate
-                    ?
+              
                     <Text
                         style={{
                             color: theme.colors.onPrimaryContainer,
@@ -145,27 +146,6 @@ export const ChatRoomPreviewItem = ({ item }) => {
                         }}>
                         {item.roomName}
                     </Text>
-                    :
-                    user._id === item.userId
-                        ?
-                        <Text
-                            variant="headlineSmall"
-                            style={{
-                                color: theme.colors.onPrimaryContainer,
-                                marginLeft: 5
-                            }}>
-                            {item.reciever}
-                        </Text>
-                        :
-                        <Text
-                            variant="headlineSmall"
-                            style={{
-                                color: theme.colors.onPrimaryContainer,
-                                marginLeft: 5
-                            }}>
-                            {item.user}
-                        </Text>
-                }
             </View>
 
             <View style={styles.chatRoomPreviewContent}>
