@@ -61,8 +61,8 @@ export default function CreateReminderComponent({
   const onCalendarConfirm = useCallback((params) => {
     if(params.date !== null) {
     setIsDateTimePickerVisible(false);
-    console.log(params.date.toUTCString('en-US'))
-    setDueDay(params.date.toString('en-US'));
+    console.log(params.date.toUTCString())
+    setDueDay(params.date.toUTCString());
     setIsTimePickerVisible(true);
     }
   }, [setIsDateTimePickerVisible, setDueTime]);
@@ -73,10 +73,13 @@ export default function CreateReminderComponent({
   
   const onTimePickerConfirm = useCallback(({ hours, minutes }) => {
     let x = new Date(dueDay)
-    x.setHours(hours)
-    x.setMinutes(minutes)
-     console.log("TEST", x )
-    setDueTime({ hours, minutes });
+     x.setHours(hours)
+     x.setMinutes(minutes)
+   
+     console.log("TEST UTC", x.toUTCString() )
+     setDueDay(x.toUTCString().slice(0, 16))
+     console.log("UTC HOURS", x.getUTCHours())
+    setDueTime({ hours: x.getUTCHours(), minutes: x.getUTCMinutes() });
     setIsTimePickerVisible(false);
   }, [setIsTimePickerVisible, dueDay, setDueTime]);
 
