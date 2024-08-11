@@ -17,7 +17,7 @@ import ProfileScreen from './screens/ProfileScreen';
 import { darkColors, lightColors } from './utils/theme';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import { Entypo } from '@expo/vector-icons';
-import DirectMessageScreen from './screens/DirectMessageScreen';
+// import DirectMessageScreen from './screens/DirectMessageScreen';
 import PrivateScreen from './screens/PrivateScreen';
 import ChatRoomList from './components/chatFeature/ChatRoomList';
 import { addChatRooms } from './redux/chatRoomSlice';
@@ -46,8 +46,8 @@ export default function Root() {
     const appTheme = colorScheme === 'dark' ? DarkTheme : LightTheme;
 
     useEffect(() => {
-        function addNewPrivateMessage({ newPrivateMessage }) {
-            dispatch(addPrivateMessage(newPrivateMessage))
+        function addNewPrivateMessage({ newMessage }) {
+            dispatch(addPrivateMessage(newMessage))
           }
 
         socket.on("newPrivateMessage", addNewPrivateMessage);
@@ -147,10 +147,6 @@ export default function Root() {
                             <Stack.Screen
                                 name="ChatRoomScreen"
                                 component={ChatRoomScreen}
-                            />
-                            <Stack.Screen
-                                name="DirectMessageScreen"
-                                component={DirectMessageScreen}
                             />
                             <Stack.Screen
                                 name="PrivateScreen"

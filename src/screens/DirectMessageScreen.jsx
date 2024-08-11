@@ -70,8 +70,8 @@ const DirectMessageScreen = ({ route, navigation }) => {
     }, []);
 
     useEffect(() => {
-          socket.on("newPrivateMessage", ({ newPrivateMessage }) => {
-            setChatMessages(chatMessages => [...chatMessages, newPrivateMessage])
+          socket.on("newPrivateMessage", ({ newMessage }) => {
+            setChatMessages(chatMessages => [...chatMessages, newMessage])
         });
     }, [socket])
 
@@ -88,7 +88,7 @@ const DirectMessageScreen = ({ route, navigation }) => {
                 : `${new Date().getMinutes()}`;
 
         if (notifyUser.userName) {
-            const newPrivateMessage = {
+            const newMessage = {
                 messageId,
                 fromSelf: true,
                 receiverId: recipientId,
@@ -101,12 +101,12 @@ const DirectMessageScreen = ({ route, navigation }) => {
             }
 
             socket.emit("newPrivateMessage", {
-                newPrivateMessage,
+                newMessage,
                 to: recipientId,
               });
 
-            setChatMessages([...chatMessages, newPrivateMessage])
-            dispatch(addPrivateMessage(newPrivateMessage))
+            setChatMessages([...chatMessages, newMessage])
+            dispatch(addPrivateMessage(newMessage))
         }
         setText("")
     };

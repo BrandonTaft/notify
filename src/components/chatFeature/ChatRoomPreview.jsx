@@ -31,9 +31,9 @@ export default function ChatRoomPreview() {
 
   useEffect(() => {
      if(!loading && rooms){
-    setChatRooms(rooms.filter((room) => (room.isPrivate === false) || ((room.isPrivate === true) && (room.organization === user.organization))))
+    setChatRooms([...rooms.filter((room) => (room.isPrivate === false) || ((room.isPrivate === true) && (room.organization === user.organization))), ...user.privateRooms])
      }
-   }, [rooms]);
+   }, [rooms, user]);
 
   useEffect(() => {
     positionAnimatedValue.setValue(0)
@@ -42,7 +42,7 @@ export default function ChatRoomPreview() {
       // // setChatRooms(rooms.slice(0, 5))
       // setChatRooms(rooms)
       //dispatch(addChatRooms(rooms))
-      setChatRooms(rooms.filter((room) => (room.isPrivate === false) || ((room.isPrivate === true) && (room.organization === user.organization))))
+      setChatRooms([...rooms.filter((room) => (room.isPrivate === false) || ((room.isPrivate === true) && (room.organization === user.organization))), ...user.privateRooms])
     });
     //dispatch(addChatRoom(rooms))
   }, [socket]);

@@ -88,8 +88,8 @@ const ChatRoomScreen = ({ route, navigation }) => {
                 messageId,
                 text,
                 roomId: roomId,
-                user: notifyUser.userName,
-                userId: notifyUser._id,
+                sender: notifyUser.userName,
+                senderId: notifyUser._id,
                 profileImage: notifyUser.profileImage,
                 org: notifyUser.organization,
                 reactions: { thumbsUp: 0, thumbsDown: 0, heart: 0 },
@@ -125,7 +125,6 @@ const ChatRoomScreen = ({ route, navigation }) => {
             </View>
             <View style={[styles.messaginginputContainer, { backgroundColor: theme.colors.primaryContainer }]}>
                 <TextInput
-                    autoFocus
                     editable
                     multiline
                     style={styles.messaginginput}

@@ -8,7 +8,7 @@ import { BASE_URL } from "../../utils/api";
 
 const ChatRoomMessage = memo(( { message } ) => {
     const user = useSelector(state => state.user)
-    const isFromMe = message.user === user.userName;
+    const isFromMe = message.senderId === user._id;
     const theme = useTheme();
     
     return (
@@ -31,13 +31,13 @@ const ChatRoomMessage = memo(( { message } ) => {
                                 ?
                                 <Avatar.Image 
                                 size={60} 
-                                source={{ uri: `${BASE_URL}/images/${message.userId}.jpeg` }} 
+                                source={{ uri: `${BASE_URL}/images/${message.senderId}.jpeg` }} 
                                 style={{ position: 'relative', zIndex: 999 }}
                                 />
                                 :
                                 <Avatar.Text
                                     size={60}
-                                    label={message.user.charAt(0).toUpperCase()}
+                                    label={message.sender.charAt(0).toUpperCase()}
                                     style={{ backgroundColor: theme.colors.onPrimaryContainer , position: 'relative', zIndex: 999 }}
                                     labelStyle={{ color: theme.colors.onPrimary, fontWeight: 'bold' }}
                                 />

@@ -70,10 +70,8 @@ const PrivateScreen = ({ route, navigation }) => {
     }, []);
 
     useEffect(() => {
-        socket.on("newPrivateMessage", ({ newPrivateMessage }) => {
-            if(newPrivateMessage.senderId === recipientId){
-            setChatMessages(chatMessages => [...chatMessages, newPrivateMessage])
-            }
+          socket.on("newPrivateMessage", ({ newMessage }) => {
+            setChatMessages(chatMessages => [...chatMessages, newMessage])
         });
     }, [socket])
 
@@ -90,7 +88,7 @@ const PrivateScreen = ({ route, navigation }) => {
                 : `${new Date().getMinutes()}`;
 
         if (notifyUser.userName) {
-            const newPrivateMessage = {
+            const newMessage = {
                 messageId,
                 fromSelf: true,
                 receiverId: recipientId,
@@ -101,12 +99,14 @@ const PrivateScreen = ({ route, navigation }) => {
                 time: `${hour}:${mins}`,
                 text
             }
-            //sends message to socket server
+
             socket.emit("newPrivateMessage", {
-                newPrivateMessage
-            });
-            setChatMessages([...chatMessages, newPrivateMessage])
-            dispatch(addPrivateMessage(newPrivateMessage))
+                newMessage,
+                to: recipientId,
+              });
+
+            setChatMessages([...chatMessages, newMessage])
+            dispatch(addPrivateMessage(newMessage))
         }
         setText("")
     };
@@ -123,7 +123,7 @@ const PrivateScreen = ({ route, navigation }) => {
                     <FlatList
                         data={[...chatMessages].reverse()}
                         renderItem={({ item }) => (
-                            <DirectMessage message={item} isLoggedIn={recipientIsLogged} />
+                            <DirectMessage message={item} />
                         )}
                         inverted
                         keyExtractor={(item) => item.messageId}
@@ -153,4 +153,4 @@ const PrivateScreen = ({ route, navigation }) => {
     );
 };
 
-export default PrivateScreen;
+export default DirectMessageScreen;

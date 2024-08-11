@@ -5,7 +5,7 @@ import Header from '../components/Header';
 import UpcomingReminders from '../components/reminderFeature/UpcomingReminders';
 import Tools from '../components/Tools';
 import ChatRoomPreview from '../components/chatFeature/ChatRoomPreview';
-import { Surface, useTheme, Divider } from 'react-native-paper';
+import { Surface, useTheme, Divider, Switch } from 'react-native-paper';
 import DirectMessagePreview from '../components/chatFeature/DirectMessagePreview';
 import { socket } from "../utils/socket";
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -15,12 +15,13 @@ import { UserView } from "../components/UserView";
 
 const HomeScreen = () => {
     const [users, setUsers] = useState([]);
-    const [toggle, setToggle] = useState(false);
+    const [showPrivateChats, setShowPrivateChats] = useState(false);
     const theme = useTheme();
     const dispatch = useDispatch();
 
 
     const self = useSelector(state => state.user);
+
 
     const sortUsers = (users) => {
         users.sort((a, b) => {
@@ -29,7 +30,7 @@ const HomeScreen = () => {
             if (a.userName.toUpperCase() < b.userName.toUpperCase()) return -1;
             return a.userName.toUpperCase() > b.userName.toUpperCase() ? 1 : 0;
         });
-       setUsers(users)
+        setUsers(users)
     };
 
     useLayoutEffect(() => {
@@ -41,26 +42,26 @@ const HomeScreen = () => {
         });
     }, []);
 
-   
+
     useEffect(() => {
-         //refreshes list anytime a user logs in/out or is disco'd/connected from/to server
+        //refreshes list anytime a user logs in/out or is disco'd/connected from/to server
         socket.on("user connected", () => {
             console.log("someone else connected")
             fetchAllUsers().then(({ users }) => {
-                console.log("USERS",self.userName, users)
-                if (users) {         
-                        sortUsers(users)            
+                console.log("USERS", self.userName, users)
+                if (users) {
+                    sortUsers(users)
                 }
             })
         });
 
-          //refreshes list anytime a user logs in/out or is disco'd/connected from/to server
-          socket.on("user disconnected", () => {
+        //refreshes list anytime a user logs in/out or is disco'd/connected from/to server
+        socket.on("user disconnected", () => {
             console.log("someone disconnected")
             fetchAllUsers().then(({ users }) => {
-                console.log("USERS",self.userName, users)
+                console.log("USERS", self.userName, users)
                 if (users) {
-                        sortUsers(users)
+                    sortUsers(users)
                 }
             })
         });
@@ -76,22 +77,26 @@ const HomeScreen = () => {
             socket.userID = userID;
             console.log("SESSION STORED")
         });
-       
+
     }, [])
 
+    const toggleSwitch = () => setShowPrivateChats(!showPrivateChats)
+    console.log(showPrivateChats)
     return (
         <View style={{ flex: 1 }}>
             <Header />
-            <Surface style={{ flexDirection: 'column', flex: 2, margin: 10, borderRadius: 10 }} elevation={2}>
-                { toggle ? <DirectMessagePreview /> : <ChatRoomPreview/>  }
+            {/* <Switch value={showPrivateChats} onValueChange={toggleSwitch} /> */}
+            <Surface style={{ flexDirection: 'column', flex: 3, margin: 5, borderRadius: 10 }} elevation={2}>
+                {showPrivateChats ? <DirectMessagePreview /> : <ChatRoomPreview />}
+
             </Surface>
-            <Divider horizontalInset />
-            <Surface style={{ flexDirection: 'column', flex: 2, margin: 10, borderRadius: 10 }} elevation={2}>
-               <UpcomingReminders />
+            {/* <Divider horizontalInset /> */}
+            <Surface style={{ flexDirection: 'column', flex: 2, margin: 5, borderRadius: 10 }} elevation={2}>
+                <UpcomingReminders />
             </Surface>
-            <Divider horizontalInset />
-            <Surface style={{ flexDirection: 'column', flex: 1,  margin: 10, borderRadius: 10 }} elevation={2}>
-                <UserView  allUsers={users}/>
+            {/* <Divider horizontalInset /> */}
+            <Surface style={{ flexDirection: 'column', flex: 1, margin: 5, borderRadius: 10 }} elevation={2}>
+                <UserView allUsers={users} />
             </Surface>
         </View>
     )
